@@ -1,0 +1,41 @@
+{
+  "cell": "gpt_low:agent-device",
+  "model": "gpt_low",
+  "tool": "agent-device",
+  "task": "element-20",
+  "app": "element",
+  "kind": "nav",
+  "nav_category": "menu-drawer",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 26.2,
+  "n_tool_calls": 8,
+  "tool_names": [
+    "skill",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash"
+  ],
+  "stderr_tail": "",
+  "ts": 1783473988,
+  "golden": {
+    "name": "bench-element",
+    "udid": "19BEA461-4975-4124-A4E7-9B2AF4821FCB"
+  },
+  "clone_udid": "50B3E190-6F79-4CCD-A64C-28B84DA9D7A5",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "cli",
+    "skills": true,
+    "tool": "0.17.6",
+    "tool_pinned": "0.17.6",
+    "app": null,
+    "app_pinned": null
+  }
+}

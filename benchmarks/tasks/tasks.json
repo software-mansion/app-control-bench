@@ -1,0 +1,545 @@
+{
+  "_comment": "150 tasks, 30 per app (bluesky, element, expensify, immich, mastodon). Each task: id, app, kind (nav|interact|post), needs_auth, nav_category (the report breakdown axis), prompt (what the agent is told; tool-agnostic - the harness injects the tool), solved_screen (prose description of the correct final screenshot - must describe EXACTLY the end state a literal execution of prompt produces, no more and no less). Optional: annulled + annulled_reason. The runner prepends a per-cell preamble naming the app, device and tool. Docs: docs/tasks.md.",
+  "tasks": [
+    {
+      "id": "bsky-01",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Feeds\" tab (next to Following) at the top of the Bluesky app.",
+      "solved_screen": "The Feeds screen is open with the header \"Feeds\" centered at top (back arrow left, gear icon right). Below are the sections \"My Feeds\" (\"All the feeds you've saved, right in one place.\") with a \"Following\" feed row, and \"Discover New Feeds\" with a \"Search feeds\" input box. Bottom tab bar shows Home, Search, Chat, Notifications, Profile.",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-02",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the navigation drawer / side menu in Bluesky (the menu button at the top-left).",
+      "solved_screen": "The left navigation drawer is slid open over the dimmed home feed. It shows the account header \"bench / @bench.test\" at top, followed by menu items Explore, Home (active), Chat, Notifications, Feeds, Lists, Saved, Profile, Settings, plus Terms of Service / Privacy Policy / Feedback at the bottom.",
+      "nav_category": "menu-drawer"
+    },
+    {
+      "id": "bsky-03",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Go to Search in Bluesky and search for the term \"cat\". Submit the search.",
+      "solved_screen": "The Explore/Search screen with the search field containing \"cat\" and result tabs Top (underlined/active), Latest, People, Feeds. At least one result post is visible, e.g. whiskers @whiskers.test \"Mochi napping in a sunbeam #caturday\" with a cat image.",
+      "nav_category": "search"
+    },
+    {
+      "id": "bsky-04",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In the Bluesky Following feed, open the profile of the author of the first post.",
+      "solved_screen": "A user profile page is open (a seeded account such as whiskers @whiskers.test with the blue butterfly avatar). It shows a display name, handle, follower/following/post counts, a Follow/Following button, and sub-tabs Posts (active), Replies, Media, Videos, with the account's first post below.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "bsky-05",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In Bluesky, open the Search / Explore tab (tap the magnifying-glass icon in the bottom navigation bar).",
+      "solved_screen": "The Search / Explore screen is open, reached via the magnifying-glass icon in the bottom navigation: the header reads \"Explore\" (hamburger menu at top-left, an \"All languages\" control at top-right) with a search input field (magnifying-glass icon and placeholder) directly below it, and the Search icon is the active/highlighted tab in the bottom navigation. Because no query has been typed, the body shows the default explore state (suggested-accounts / \"Discover new feeds\" sections, or an empty area) \u2014 the distinguishing feature is the \"Explore\" header and the search field, NOT the home screen's centered butterfly logo with the Following/Feeds tabs and \"What's up?\" composer. Any typed query is unnecessary; the empty Explore screen counts.",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-06",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the first post in the Bluesky Following feed to view it as a thread (the post detail page with its replies).",
+      "solved_screen": "A single post detail/thread page with the header \"Post\" centered, showing the whiskers @whiskers.test post \"Mochi napping in a sunbeam #caturday\" with its cat image, a timestamp line, engagement counts/icons, and a \"Write your reply\" composer field at the bottom.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "bsky-07",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In the Bluesky Following feed, open the \"...\" (more options) menu on the first post - tap the three-dots icon at the end of that post's action row.",
+      "solved_screen": "The first post's \"more options\" overflow menu is open: a modal action-sheet / popup layered over the dimmed Following feed, listing actions for the whiskers \"Mochi napping in a sunbeam #caturday\" post - options such as \"Copy post text\" / \"Share via...\", \"Mute thread\", \"Mute words & tags\", \"Hide post for me\", and \"Report post\". The open post-options menu itself is the durable end state; the exact list of items may differ by build, but a post-options menu must be OPEN over the feed rather than the plain, un-dimmed feed.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "bsky-08",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Use Bluesky Search to look up the handle \"whiskers.test\" and open its profile.",
+      "solved_screen": "The profile page of whiskers @whiskers.test, reached by searching the handle \"whiskers.test\": blue butterfly avatar, the whiskers display name/handle, follower/following/post counts, a Follow/Following button, and sub-tabs Posts (active)/Replies/Media/Videos showing that account's cat/#caturday posts.",
+      "nav_category": "search"
+    },
+    {
+      "id": "bsky-09",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open a user profile from the Bluesky Following feed, then switch to that profile's \"Media\" tab (or \"Replies\" tab).",
+      "solved_screen": "A profile page is open with a sub-tab other than Posts selected \u2014 e.g. the \"Media\" tab underlined/active \u2014 showing that account's media posts (cat/#caturday image posts).",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-10",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the Bluesky Settings screen (open the left menu / drawer, then tap Settings).",
+      "solved_screen": "The Settings screen with header \"Settings\" and a back arrow, showing the bench @bench.test account header, \"Add another account\", and rows: Account, Privacy and security, Moderation and content filters, Notifications, Content and media, Appearance, Accessibility, Languages, Help.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "bsky-11",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In Bluesky, open your own profile by tapping the profile tab (the avatar icon at the far right of the bottom navigation bar).",
+      "solved_screen": "Your own Bluesky profile is open, reached via the rightmost (avatar) tab of the bottom navigation: the blue butterfly avatar, the display name \"bench\" with handle \"@bench.test\", the stats row \"0 followers  4 following  0 posts\", an \"Edit Profile\" button and a \"...\" button, and the profile sub-tabs (Posts, Replies, Media, Videos, Likes, Feeds) \u2014 with \"Posts\" selected by default (its 0-posts empty state below). The criterion is simply that your own bench @bench.test profile page is showing; the exact sub-tab is not constrained, but this is your own profile (with \"Edit Profile\"), NOT another account's profile and NOT the home feed.",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-12",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the Notifications tab in Bluesky (the bell icon in the bottom navigation).",
+      "solved_screen": "The Notifications screen with \"Notifications\" header and \"All\"/\"Mentions\" sub-tabs, the \"All\" tab active. Because the test PDS has no activity, the body shows a centered bell icon with \"No notifications yet!\"; the bell is highlighted in the bottom navigation.",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-13",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the Chat / Messages (direct messages) section of Bluesky.",
+      "solved_screen": "The Chats screen with \"Chats\" as the header. Because the self-hosted test PDS has no chat service, the body shows an info (i) icon with heading \"Whoops!\", the text \"could not resolve iss did\", and a dark \"Retry\" button; the chat-bubble icon is active in the bottom navigation. (Reaching this Chats screen is the correct end state \u2014 the error is a backend limitation, not an agent failure.)",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-14",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In Bluesky Search, search for \"test\" and then switch the results to the \"People\" tab.",
+      "solved_screen": "The Explore search screen with \"test\" in the search box, result tabs Top/Latest/People/Feeds with \"People\" selected/underlined, and a list of matching accounts (e.g. loudspammer, newfriend, buddy, rex, mittens, whiskers, bench) each with a Follow/Following button.",
+      "nav_category": "search"
+    },
+    {
+      "id": "bsky-15",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In Bluesky Search, search for \"news\" and then switch the results to the \"Feeds\" tab.",
+      "solved_screen": "The Explore search screen with \"news\" in the search box and result tabs Top/Latest/People/Feeds with \"Feeds\" selected/underlined. Because the test PDS has no custom feeds, the body shows \"No results found for \\\"news\\\"\" with a suggestion to try a different term. (The Feeds tab being active with either results or this no-results state is the correct end state \u2014 the empty result is a backend limitation, not an agent failure.)",
+      "nav_category": "search"
+    },
+    {
+      "id": "bsky-16",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In Bluesky, open the hashtag feed for #caturday (search the hashtag, or tap a #caturday tag on a post, to open its dedicated feed).",
+      "solved_screen": "The Explore search results for #caturday with the query in the search box and the \"Top\" tab selected/underlined (this app has no dedicated hashtag-feed page), showing posts tagged #caturday such as whiskers' cat post with \"#caturday\" visible in the text.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "bsky-17",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open your own Bluesky profile and switch to its \"Likes\" sub-tab.",
+      "solved_screen": "Your own profile (bench / @bench.test, butterfly avatar, counts, \"Edit Profile\" button) with the \"Likes\" sub-tab selected/underlined among Replies/Media/Videos/Likes/Feeds. With no likes, the body shows a centered heart icon with \"No likes yet\".",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "bsky-18",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In the Bluesky Following feed, find a post that contains an image and tap the image to open it full-screen in the image viewer.",
+      "solved_screen": "A single image from a feed post displayed full-screen in the image lightbox: the photo (a seeded cat photo) maximized on a black background with a close (X) button, replacing the feed behind it. Whatever lightbox chrome the viewer happens to show (alt-text caption, Save/Share) is incidental \u2014 the image opened full-screen is the end state.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "bsky-19",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open Bluesky Settings and go to the Appearance screen (color mode / theme / font).",
+      "solved_screen": "The Appearance settings screen (header \"Appearance\", back arrow) showing a \"Color mode\" toggle (System/Light/Dark), a \"Dark theme\" toggle (Dim/Dark), a \"Font\" toggle, and a \"Font size\" toggle.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "bsky-20",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open Bluesky Settings and open the Moderation screen.",
+      "solved_screen": "The Moderation settings screen (header \"Moderation\", back arrow) showing \"Moderation tools\" (Interaction settings, Muted words & tags, Moderation lists, Muted accounts, Blocked accounts, Verification settings) and a \"Content filters\" section with an \"Enable adult content\" toggle.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "bsky-21",
+      "app": "bluesky",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open your own Bluesky profile and tap \"Edit Profile\" to open the profile editor (do not change or save anything).",
+      "solved_screen": "The \"Edit profile\" modal is open with \"Cancel\" (left) and \"Save\" (right) in the header, avatar/banner camera controls, a \"Display name\" field containing \"bench\", and a \"Description\" field with placeholder \"Tell us a bit about yourself\".",
+      "nav_category": "form-entry"
+    },
+    {
+      "id": "bsky-22",
+      "app": "bluesky",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Like the first post in the Bluesky Following feed (tap its heart icon).",
+      "solved_screen": "In the Following feed, the first post (whiskers \"Mochi napping in a sunbeam #caturday\") shows its heart/like icon filled red/pink with a like count of 1 beside it.",
+      "nav_category": "react"
+    },
+    {
+      "id": "bsky-23",
+      "app": "bluesky",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Repost the first post in the Bluesky Following feed (tap the repost icon and confirm \"Repost\").",
+      "solved_screen": "In the Following feed, the first post (whiskers \"Mochi napping in a sunbeam #caturday\") shows its repost icon in the active green state with a repost count of 1 next to it.",
+      "nav_category": "react"
+    },
+    {
+      "id": "bsky-24",
+      "app": "bluesky",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "In Bluesky, open the profile of whiskers.test (the author of the first Following-feed post) and unfollow that account - its button currently reads \"Following\"; tap it to unfollow.",
+      "solved_screen": "The profile of whiskers @whiskers.test is open with its top-right action button now reading \"Follow\" (the filled blue \"Follow\" button) instead of \"Following\", confirming the account has been unfollowed. The button MUST read \"Follow\": a button still reading \"Following\" means the account is still followed and does NOT count, and any other account's profile does NOT count.",
+      "nav_category": "react"
+    },
+    {
+      "id": "bsky-25",
+      "app": "bluesky",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Reply to the first post in the Bluesky Following feed with the text \"nice one\".",
+      "solved_screen": "The thread/detail view of the whiskers \"Mochi napping in a sunbeam #caturday\" post, with a published reply from bench @bench.test beneath it reading \"nice one\"; a \"Write your reply\" composer sits at the bottom. The reply must be sent \u2014 a composer still holding the unsent text does NOT count. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "form-entry"
+    },
+    {
+      "id": "bsky-26",
+      "app": "bluesky",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "In Bluesky, search for the account \"newfriend.test\", open its profile, and tap Follow to follow that account.",
+      "solved_screen": "The profile of newfriend @newfriend.test, with its top-right action button now showing the \"Following\" (followed) state instead of \"Follow\".",
+      "nav_category": "react"
+    },
+    {
+      "id": "bsky-27",
+      "app": "bluesky",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "In Bluesky, search for the account \"loudspammer.test\", open its profile, open its \"...\" overflow menu, and mute that account.",
+      "solved_screen": "The profile of loudspammer @loudspammer.test, now displaying an \"Account Muted\" pill/badge under the stats, confirming that account has been muted.",
+      "nav_category": "react"
+    },
+    {
+      "id": "bsky-28",
+      "app": "bluesky",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Compose and publish a new Bluesky post with the exact text \"hello from the benchmark\".",
+      "solved_screen": "The Following feed with the newly published post from bench @bench.test reading \"hello from the benchmark\" at the top of the feed. The post must actually be sent \u2014 a composer still holding the text does NOT count; the \"Your post was sent\" toast is transient and need not be visible. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "bsky-29",
+      "app": "bluesky",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Compose and publish a new Bluesky post with the exact text \"testing hashtags #silverbench\".",
+      "solved_screen": "The Following feed with the newly published post from bench @bench.test reading \"testing hashtags #silverbench\", with \"#silverbench\" rendered as a blue hashtag link. The post must actually be sent \u2014 a composer still holding the text does NOT count; the \"Your post was sent\" toast is transient and need not be visible. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "bsky-30",
+      "app": "bluesky",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "In the Bluesky Following feed, quote-post the first post: open its repost menu, choose \"Quote post\", and add the comment \"sharing this\".",
+      "solved_screen": "The quote-post of the first post with the comment \"sharing this\": either the published quote-post from bench @bench.test in the Following feed showing \"sharing this\" above the embedded original whiskers post (\"Mochi napping in a sunbeam #caturday\" with its image) in a bordered quote card, or \u2014 since the prompt's steps end at adding the comment \u2014 the open quote-post composer with \"sharing this\" typed above that same embedded quote card. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-01",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Team Standup\" conversation in the messenger.",
+      "solved_screen": "The Team Standup room timeline is open (header shows the \"T\" avatar and title \"Team Standup\"), displaying the room intro and messages from Alice, Bob, Carol and Dave, with the \"Send a message...\" composer at the bottom.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-02",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the direct-message (DM) conversation with Bob.",
+      "solved_screen": "The 1:1 direct-message conversation with Bob is open (header shows the \"B\" avatar and title \"Bob\"), with the intro line and Bob's message \"Hey Alice!\", plus the \"Send a message...\" composer.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-03",
+      "app": "element",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Open the \"Weekend Plans\" room and send the message \"benchmark test\".",
+      "solved_screen": "The Weekend Plans room timeline is open (header \"Weekend Plans\") showing Bob's \"Anyone up for hiking Saturday?\" followed by Alice's newly sent message reading \"benchmark test\" with a sent-check indicator. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-04",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Filter the room list to find rooms matching \"Book\".",
+      "solved_screen": "The \"All chats\" list filtered via the Search box containing \"Book\", narrowing the results to the matching room, Book Club. Whether the on-screen keyboard is still up is irrelevant.",
+      "nav_category": "search"
+    },
+    {
+      "id": "element-05",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the app Settings (the gear icon).",
+      "solved_screen": "The user Settings screen is open (title \"Settings\", back to \"All chats\"), showing a green \"Sign Out\" action and a USER SETTINGS section with Profile Picture (avatar \"A\"), Display Name \"Alice\", Change password, Add email address, Add phone number, and further preference sections.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-06",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Open the create-room menu (the + button) in the messenger.",
+      "solved_screen": "The \"All chats\" screen with the create/compose menu popover open, listing \"Start chat\", \"Create room\", \"Create a space\", and \"Explore rooms\" (there is no \"Join Room\" item in this app).",
+      "nav_category": "menu-drawer"
+    },
+    {
+      "id": "element-07",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Open the \"Project Phoenix\" room and open its room-options menu (the '...' in the header).",
+      "solved_screen": "The Project Phoenix room info/options screen is open (large \"P\" avatar, title \"Project Phoenix\", topic line), showing options such as Settings, Notifications, Integrations, members count, Poll history, Uploads, Search room, and the red \"Leave room\"/\"Report content\" actions.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-08",
+      "app": "element",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Open the Team Standup room and send the message \"good morning\".",
+      "solved_screen": "The Team Standup room timeline is open showing prior messages from Alice/Bob/Carol/Dave, with Alice's newly sent message \"good morning\" at the bottom with a sent indicator. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-09",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Book Club\" room and read its messages.",
+      "solved_screen": "The Book Club room timeline is open (header \"Book Club\") showing the room intro and messages from Alice (\"Welcome to Book Club!\"), Carol (\"This month we're reading Dune.\") and Dave (\"Loving it so far, the worldbuilding is great.\").",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-10",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open Settings and find the theme / appearance preferences.",
+      "solved_screen": "The in-app Settings screen scrolled to its USER INTERFACE section, showing Language \"English\" and the Theme row \u2014 the theme/appearance preference located and visible. The prompt only asks to FIND the preference, so the visible Theme row is the end state; if the \"Select a theme\" action sheet (Auto, Light, Dark, Black, Cancel) also happens to be open on top of it, that counts too.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-11",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Team Standup\" room and switch to its Threads view (the threads icon in the room header).",
+      "solved_screen": "The Threads view for the Team Standup room (header \"Threads\", subtitle \"Team Standup\"). With no threads, it shows the empty-state illustration and text \"Keep discussions organised with threads\".",
+      "nav_category": "tab-switch"
+    },
+    {
+      "id": "element-12",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "In the chat list, long-press the \"Book Club\" room and open its Notifications settings.",
+      "solved_screen": "The Book Club room's Notifications settings sheet (title \"Notifications\", Cancel/Save, the Book Club avatar/name) with a \"NOTIFY ME FOR\" section listing All Messages (checked), Mentions and Keywords only, and None.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-13",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Team Standup\" room, view its members, and open the profile of one of its members (for example Bob).",
+      "solved_screen": "The room-member profile screen of ONE of Team Standup's members \u2014 any member counts (Bob is only an example): the member's letter avatar, their display name and user ID (e.g. \"Bob\" / \"@bob:localhost\"), presence, and the sections SECURITY (Verify), OPTIONS (Hide messages, Mention), ADMIN TOOLS and DIRECT CHATS.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-14",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Team Standup\" room and open its room information screen (tap the room name/header).",
+      "solved_screen": "The Team Standup room info screen showing the \"T\" avatar, room name \"Team Standup\", topic \"Daily standup sync\", and a list of Settings, Notifications, Integrations, \"4 members\", Poll history, Uploads, Search room, plus Leave room and Report content.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-15",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Project Phoenix\" room and view its list of members/people.",
+      "solved_screen": "The room member list under \"Room Details\" with the Members tab selected, a \"Filter room members\" box, and participants Alice (Admin), Bob, Carol and Dave listed, with a green add-person button.",
+      "nav_category": "open-item"
+    },
+    {
+      "id": "element-16",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the app Settings and go to the Notifications settings.",
+      "solved_screen": "Element's OWN in-app notification settings, reached from the app's Settings (gear icon on All chats): the NOTIFICATIONS section of Element's long in-app Settings page, showing its notification preference rows/toggles. Per the app's structure this is a section of that one Settings page rather than a separate screen, and the section being reached/visible is the end state. This is NOT the iOS system Settings app's per-app notification page.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-17",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the app Settings and go to the Security & Privacy settings.",
+      "solved_screen": "Element's OWN in-app security/privacy settings, reached from the app's Settings: the app's SECURITY area (title \"Security\") with entries such as the PIN section (\"Enable PIN\" toggle) and the \"MY SESSIONS\" device list, plus the app's other security/privacy options. Per the app's structure this is a section of Element's one long in-app Settings page rather than a separate screen, and the section being reached/visible is the end state. This is NOT the iOS system Settings app's \"Privacy & Security\" page (Location Services, Tracking, Contacts, ...).",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-18",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the app Settings and open the Sessions / devices list (your logged-in sessions).",
+      "solved_screen": "The in-app Security screen (title \"Security\") with a PIN section (\"Enable PIN\" toggle) and a \"MY SESSIONS\" list of device sessions, including the current \"Element Classic iOS\" session and other session IDs.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-19",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the app Settings and go to the Help & About section.",
+      "solved_screen": "The Settings screen scrolled to its bottom ABOUT area, showing the account/version block such as \"Logged in as @alice:localhost\", \"Homeserver is http://localhost:8008\", and \"Element Classic 1.11.40\" (and SDK versions). There is no separate \"Help & About\" screen \u2014 the about/version info lives in this ABOUT section of Settings.",
+      "nav_category": "settings-nav"
+    },
+    {
+      "id": "element-20",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the account/user menu by tapping your avatar/profile picture in the top-left of the chat list.",
+      "solved_screen": "The chat list (\"All chats\") with the account menu popover open below the top-left \"A\" avatar, listing \"User settings\", \"Invite friends\", \"Feedback\", and \"Sign Out\" (in red). This menu shows the account actions; it does not display the raw display name/user ID.",
+      "nav_category": "menu-drawer"
+    },
+    {
+      "id": "element-21",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the Spaces area (the space list / space rail).",
+      "solved_screen": "A bottom sheet titled \"My spaces\" is open over the All chats list, with Cancel/Create actions and a list of spaces (an \"All chats\" entry plus space rows such as \"Benchmark HQ\" with member-count badges).",
+      "nav_category": "menu-drawer"
+    },
+    {
+      "id": "element-22",
+      "app": "element",
+      "kind": "nav",
+      "needs_auth": true,
+      "prompt": "Open the \"Team Standup\" room and use its message search to search for \"update\".",
+      "solved_screen": "Inside Team Standup's in-room search, the search field contains \"update\" with the Messages tab selected, showing result rows with the term highlighted (e.g. Bob \"Daily update: I finished the login flow.\").",
+      "nav_category": "search"
+    },
+    {
+      "id": "element-23",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "In the \"Team Standup\" room, add an emoji reaction (for example a thumbs-up) to one of the messages in the timeline.",
+      "solved_screen": "The Team Standup timeline shows an emoji reaction pill attached beneath one of its messages, next to the add-reaction button. Any emoji counts (a thumbs-up is only the prompt's example) and any message in the timeline counts.",
+      "nav_category": "react"
+    },
+    {
+      "id": "element-24",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "In the \"Book Club\" room, reply to one of the existing messages with the text \"sounds good\".",
+      "solved_screen": "In the Book Club timeline, Alice's newly sent reply reads \"sounds good\" and is attached as a reply to one of the room's existing messages \u2014 the sent bubble carries an \"In reply to <sender>\" quote of that message above the reply body, with a sent timestamp. Any of the existing messages may be the one replied to. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "form-entry"
+    },
+    {
+      "id": "element-25",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Open the \"Weekend Plans\" room and open the attachment / add menu in the message composer (the + / attachment button).",
+      "solved_screen": "The \"Weekend Plans\" room is open with the composer attachment menu expanded along the bottom, showing a close (X) plus icons for Photo/gallery, sticker, file/attachment, poll, location, and camera.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-26",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "In the chat list, long-press (press and hold) the \"Book Club\" room to open its context menu.",
+      "solved_screen": "The chat list shows the \"Book Club\" room long-pressed with its context menu open, listing Mark as read, Move to People, Notifications, Favourite, Low priority, and Leave; a Book Club room preview card sits above the menu.",
+      "nav_category": "menu-drawer"
+    },
+    {
+      "id": "element-27",
+      "app": "element",
+      "kind": "interact",
+      "needs_auth": true,
+      "prompt": "Open the \"Team Standup\" room and open the screen to invite/add people to the room.",
+      "solved_screen": "The invite/add-people screen for the \"Team Standup\" room, opened from inside that room (not the global \"Start chat\" / new-conversation picker): a \"Search / invite by User ID, Name...\" field at top and a \"Start by listing your contacts\" prompt with a \"Find your contacts\" button.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-28",
+      "app": "element",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Open the \"Project Phoenix\" room and send the message \"status update\".",
+      "solved_screen": "The Project Phoenix room timeline (header \"Project Phoenix\") shows Alice's newly sent message reading \"status update\" with a sent checkmark and timestamp; the composer is empty. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-29",
+      "app": "element",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Open the direct-message conversation with Bob and send the message \"hi bob\".",
+      "solved_screen": "The direct-message conversation with Bob shows Alice's newly sent message reading \"hi bob\" with a sent checkmark and timestamp, below Bob's \"Hey Alice!\". A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    },
+    {
+      "id": "element-30",
+      "app": "element",
+      "kind": "post",
+      "needs_auth": true,
+      "prompt": "Open the \"Book Club\" room and send the message \"great read\".",
+      "solved_screen": "The Book Club timeline shows Alice's newly sent message reading \"great read\" with a sent checkmark and timestamp, below Dave's \"Loving it so far, the worldbuilding is great.\". A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+      "nav_category": "compose"
+    }
+  ]
+}

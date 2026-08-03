@@ -1,0 +1,37 @@
+{
+  "cell": "haiku_low:argent",
+  "model": "haiku_low",
+  "tool": "argent",
+  "task": "bsky-13",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "tab-switch",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 26.3,
+  "n_tool_calls": 4,
+  "tool_names": [
+    "argent_screenshot",
+    "argent_describe",
+    "invalid",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1783550545,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+  },
+  "clone_udid": "F1CBD155-C205-40A3-AC16-B4652B3633A9",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  }
+}

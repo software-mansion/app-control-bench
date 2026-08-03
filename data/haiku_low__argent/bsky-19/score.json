@@ -1,0 +1,26 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The final screenshot clearly shows Bluesky's Appearance settings screen with Color mode, Dark theme, Font, and Font size options.",
+  "judge_model": "gpt-5.4",
+  "cell": "haiku_low:argent",
+  "task": "bsky-19",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Open Bluesky Settings and go to the Appearance screen (color mode / theme / font).",
+    "solved_screen": "The Appearance settings screen (header \"Appearance\", back arrow) showing a \"Color mode\" toggle (System/Light/Dark), a \"Dark theme\" toggle (Dim/Dark), a \"Font\" toggle, and a \"Font size\" toggle.",
+    "tool_names": [
+      "skill",
+      "argent_screenshot",
+      "argent_describe",
+      "invalid",
+      "argent_gesture-tap",
+      "argent_describe",
+      "argent_gesture-tap",
+      "argent_describe",
+      "argent_gesture-tap"
+    ],
+    "n_tool_calls": 9
+  },
+  "judge_prompt": "You are an impartial grader for a mobile-app agent benchmark. An AI agent was asked to do a task in an app shown inside an iOS Simulator (the screenshot may include the Safari browser chrome around a web app). Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot plus the list of device actions the agent took.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Open Bluesky Settings and go to the Appearance screen (color mode / theme / font).\nEXACT DESCRIPTION OF THE SOLVED SCREEN (what the final screenshot looks like once the task has been carried out correctly): The Appearance settings screen (header \"Appearance\", back arrow) showing a \"Color mode\" toggle (System/Light/Dark), a \"Dark theme\" toggle (Dim/Dark), a \"Font\" toggle, and a \"Font size\" toggle.\nDEVICE ACTIONS THE AGENT TOOK (in order): skill, argent_screenshot, argent_describe, invalid, argent_gesture-tap, argent_describe, argent_gesture-tap, argent_describe, argent_gesture-tap\nNUMBER OF ACTIONS: 9\n\nThe two descriptions above are the whole criterion, and they describe one and the same outcome:\n- TASK GIVEN TO AGENT is what the agent was actually asked to do. It defines the goal, and nothing beyond it is required of the agent.\n- EXACT DESCRIPTION OF THE SOLVED SCREEN is the visual specification of that same goal: it is what the screen looks like once that task, and only that task, has been done. It is what you match the FINAL screenshot against.\n- Use them together. If they ever appear to disagree, the TASK GIVEN TO AGENT is the authority on what was asked: never mark an agent down for not doing something its task never asked for.\n\nCarefully read the on-screen text and compare the FINAL screenshot against the EXACT DESCRIPTION OF THE SOLVED SCREEN above. When a task requires the agent to type or post specific text, treat automatic first-letter capitalization by the mobile keyboard and differing/added trailing punctuation as an acceptable match (they are keyboard artifacts, not agent errors) \u2014 only extra, missing, or changed WORDS count as a text mismatch. Grade as:\n- \"success\": the final screenshot shows the solved screen and the task given to the agent is plainly accomplished (or, for actions whose result isn't fully visible like scrolling, the actions taken plainly accomplish it).\n- \"partial\": meaningful progress toward the solved screen but it is not fully reached (e.g. the right screen but the specific element/state described is missing).\n- \"fail\": the solved screen is not reached and the task is not accomplished (wrong screen, no progress, stuck, or it never acted).\n\nReply with ONLY a single JSON object on one line, no prose, no code fences:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"<one concise sentence>\"}"
+}

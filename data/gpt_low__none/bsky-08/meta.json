@@ -1,0 +1,48 @@
+{
+  "cell": "gpt_low:none",
+  "model": "gpt_low",
+  "tool": "none",
+  "task": "bsky-08",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "search",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 67.3,
+  "n_tool_calls": 14,
+  "tool_names": [
+    "bash",
+    "read",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "read",
+    "bash",
+    "bash",
+    "bash",
+    "read",
+    "bash",
+    "bash",
+    "read"
+  ],
+  "stderr_tail": "",
+  "ts": 1783988521,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "BD1DCA41-5F4A-4EAF-A7F9-A641D2384C2B"
+  },
+  "clone_udid": "6457D6BC-3263-4405-A895-60EFEF09D470",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "shell",
+    "skills": false,
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  }
+}

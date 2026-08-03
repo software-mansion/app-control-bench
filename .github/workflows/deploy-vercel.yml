@@ -1,0 +1,56 @@
+name: Deploy to Vercel
+
+# The Vercel project is not git-connected (the Vercel GitHub App has no access to this private repo),
+# so push-to-deploy runs through the Vercel CLI here instead, authenticated by the VERCEL_* repo
+# secrets. `vercel build` runs the build described by vercel.json and `--prebuilt` uploads only its
+# output, so the repo's data tree never has to be shipped to Vercel.
+#
+# Required repo secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
+
+on:
+  push:
+  workflow_dispatch: {}
+
+# Collapse a burst of pushes on one branch into a single in-flight deploy.
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      # main publishes to production; every other branch gets a throwaway preview URL.
+      TARGET: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
+      PROD_FLAG: ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # The build is Python as well as Node: `npm run build` shells out to
+      # benchmarks/runner/report_data.py, which exports the report JSON and re-encodes each run's
+      # final.png as webp through Pillow, before Vite and the prerender pass run.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install Pillow
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel project settings
+        run: vercel pull --yes --environment="$TARGET" --token="$VERCEL_TOKEN"
+
+      - name: Build (runs the commands from vercel.json)
+        run: vercel build $PROD_FLAG --token="$VERCEL_TOKEN"
+
+      - name: Deploy prebuilt output
+        run: vercel deploy --prebuilt $PROD_FLAG --token="$VERCEL_TOKEN"

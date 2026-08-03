@@ -1,0 +1,18 @@
+{
+  "_comment": "Frozen versions of the target apps under test (the surfaces the agents drive) — version + upstream commit of the build actually installed on the benchmarking machine (radoniusz). bench.py compares each against the local checkout and warns on drift; report.py shows the ones the report covers. Bluesky: ~/dev/social-app package.json 1.122.0; that checkout has no .git, so the commit recorded is the bluesky-social/social-app 1.122.0 release commit (`Release prep 1.122.0 (#10634)`, 2026-05-27). Element: ~/dev/element-ios (branch develop, 2026-06-23), Config/AppVersion.xcconfig MARKETING_VERSION 1.11.40 — matches the installed Element.app Info.plist. Immich: iOS app built from ~/dev/immich main (mobile/pubspec.yaml 3.0.0+3053); the server stack it talks to is pinned separately at v3.0.1 @ f77c8a4699aec043ec4a1b404559a7a291d592dc (see docs/surfaces/immich-frozen.md). Mastodon/IceCubes is not listed: it has no source checkout on the bench host, so no version is verifiable there. Add other apps here as they are frozen.",
+  "bluesky": {
+    "version": "1.122.0",
+    "commit": "7f5dd4006970a67f11b85e3941a719cad293b078",
+    "repo": "bluesky-social/social-app"
+  },
+  "element": {
+    "version": "1.11.40",
+    "commit": "36a1788da26933557c468325da2851298ed0386b",
+    "repo": "element-hq/element-ios"
+  },
+  "immich": {
+    "version": "3.0.0+3053",
+    "commit": "237734bb26033ed55ada080ce40ea8de0427746e",
+    "repo": "immich-app/immich"
+  }
+}

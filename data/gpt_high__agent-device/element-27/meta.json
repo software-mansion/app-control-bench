@@ -1,0 +1,46 @@
+{
+  "cell": "gpt_high:agent-device",
+  "model": "gpt_high",
+  "tool": "agent-device",
+  "task": "element-27",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 36.9,
+  "n_tool_calls": 13,
+  "tool_names": [
+    "todowrite",
+    "skill",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "todowrite",
+    "bash"
+  ],
+  "stderr_tail": "",
+  "ts": 1783478452,
+  "golden": {
+    "name": "bench-element",
+    "udid": "19BEA461-4975-4124-A4E7-9B2AF4821FCB"
+  },
+  "clone_udid": "35004124-9CED-4B77-AF31-A68A1C00F110",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "cli",
+    "skills": true,
+    "tool": "0.17.6",
+    "tool_pinned": "0.17.6",
+    "app": null,
+    "app_pinned": null
+  }
+}

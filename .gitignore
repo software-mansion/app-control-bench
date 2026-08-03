@@ -1,0 +1,7 @@
+node_modules/
+public/
+website/.vite-ssr/
+.vercel
+.DS_Store
+__pycache__/
+*.pyc
