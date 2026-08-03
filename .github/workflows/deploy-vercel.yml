@@ -29,6 +29,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The build is Python as well as Node: `npm run build` shells out to
+      # benchmarks/runner/report_data.py, which exports the report JSON and re-encodes each run's
+      # final.png as webp through Pillow, before Vite and the prerender pass run.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install Pillow
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
