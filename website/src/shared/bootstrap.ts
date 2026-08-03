@@ -5,7 +5,7 @@
 // root and no payload — so there is nothing to hydrate and the page would render blank. In that case
 // the same ReportInitial is assembled in the browser from the exporter's JSON, using the very same
 // deriveReportView the prerenderer calls.
-import type { BuildManifest, ReportInitial, ReportMeta, RunIndex } from './contract';
+import type { BuildManifest, Provenance, ReportInitial, ReportMeta, RunIndex } from './contract';
 import { deriveReportView } from './metrics';
 import { fetchJson } from './resources';
 
@@ -40,9 +40,13 @@ export async function buildReportInitial(): Promise<ReportInitial> {
   };
 }
 
-export async function buildExplorerBootstrap(): Promise<{ runIndex: RunIndex; manifest: BuildManifest }> {
+export async function buildExplorerBootstrap(): Promise<{
+  runIndex: RunIndex;
+  manifest: BuildManifest;
+  provenance: Provenance;
+}> {
   const { runIndex, meta } = await loadMeta();
-  return { runIndex, manifest: meta.manifest };
+  return { runIndex, manifest: meta.manifest, provenance: meta.provenance };
 }
 
 /**

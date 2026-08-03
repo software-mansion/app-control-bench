@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:data": "python3 ../benchmarks/runner/report_data.py --results ../data --out ../public",
-    "build": "npm run clean && npm run dev:data && vite build --config vite.config.ts && vite build --config vite.config.ssr.ts && node .vite-ssr/prerender.js ..",
+    "generate:data": "python3 ../benchmarks/runner/report_data.py --results ../data --out ../public",
+    "build": "npm run clean && npm run generate:data && vite build --config vite.config.ts && vite build --config vite.config.ssr.ts && node .vite-ssr/prerender.js ..",
     "clean": "rm -rf ../public/assets ../public/.vite .vite-ssr ../public/report.html ../public/report-runs.html",
     "check": "python3 ../benchmarks/runner/check_theme.py",
     "typecheck": "tsc --noEmit"

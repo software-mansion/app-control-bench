@@ -50,7 +50,11 @@
   --p-stone-050:#f4f4f0;       /* page ground */
   --p-stone-025:#f7f7f3;       /* raised ground (table heads, secondary panels) */
   --p-white:#fdfdfc;
-  --p-test:#f4f2ea;
+  --p-test:#FAFAF9;
+  --p-feedback-ink:#000000;
+  --p-feedback-muted:#9595a0;
+  --p-feedback-faint:#c4c4c4;
+  --p-feedback-white:#ffffff;
 
   /* ---- 2. SEMANTIC (light) --------------------------------------------------------------- */
   --bg:var(--p-test);           /* page */
@@ -63,6 +67,9 @@
   --ink:var(--p-ink);                /* strong headings / big numbers */
   --mut:var(--p-stone-600);          /* muted text */
   --faint:var(--p-stone-400);        /* faint text */
+  --feedback-ink:var(--p-feedback-ink);
+  --feedback-muted:var(--p-feedback-muted);
+  --feedback-faint:var(--p-feedback-faint);
   --pend:var(--p-stone-350);         /* pending runs */
   --fill:var(--p-stone-250);         /* non-leader bar fill */
   --sw-off:var(--p-stone-300);       /* switch track, off */
@@ -75,6 +82,7 @@
   --hero-fg:#f4f2ea;
   --hero-header-muted:rgb(244 242 234 / .54);
   --hero-lead:rgb(244 242 234 / .72);
+  --hero-copy-fg:var(--p-feedback-white);
   --hero-muted:rgb(244 242 234 / .65);
   --hero-faint:rgb(244 242 234 / .5);
   --hero-rule:rgb(244 242 234 / .26);
@@ -222,10 +230,11 @@
   --fs-section:clamp(28px,3vw,40px);
   --fs-display:clamp(44px,5.4vw,76px);
   --fs-metric:30px;
-  --fs-hero-title:clamp(52px,5.1vw,96px);
+  --fs-section-title:40px;
+  --fs-hero-title:84px;
   --fs-hero-score:clamp(64px,6.6vw,100px);
   --fs-hero-score-unit:clamp(22px,2.2vw,34px);
-  --fs-hero-lead:clamp(15px,1.25vw,21px);
+  --fs-hero-lead:20px;
   --fs-hero-pair:clamp(17px,1.65vw,26px);
   --fs-hero-completion:clamp(12px,1.1vw,16px);
   --fs-hero-stats:clamp(10px,.85vw,13px);
@@ -240,7 +249,7 @@
   --fw-light:300; --fw-normal:400; --fw-medium:500; --fw-semi:600; --fw-h1:650; --fw-bold:700;
 
   --lh-tight:1;      /* single-line numerics */
-  --lh-hero-title:.9;
+  --lh-hero-title:1;
   --lh-hero-score:.75;
   --lh-snug:1.12;    /* clamped two-line labels */
   --lh-body:1.4;
@@ -261,7 +270,7 @@
   --tr-tight:-.01em; /* large display numerals */
   --tr-hero-header:.17em;
   --tr-hero-card:.16em;
-  --tr-hero-title:-.075em;
+  --tr-hero-title:normal;
   --tr-hero-pair:-.05em;
   --tr-hero-score:-.08em;
   --tr-hero-unit:-.04em;

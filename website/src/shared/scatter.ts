@@ -538,6 +538,8 @@ export function scatterLegend(
     }),
     tools: tools
       .filter((tool) => plotted.some((point) => point.toolId === tool.id))
+      .slice()
+      .sort((a, b) => a.label.localeCompare(b.label))
       .map((tool) => {
         const shape = TOOL_MARK[tool.id] ?? 'circle';
         return {

@@ -7,3 +7,147 @@
  * Vite emits one hashed stylesheet from this entry and both pages link it. */
 @import '../../../benchmarks/runner/theme.css';
 @import '../../../benchmarks/runner/report.css';
+
+/* Web-only body font. Not in theme.css: that file is inlined into every report.py page with the
+ * explicit invariant of zero external requests (see its header comment) — a hosted @font-face
+ * would break that for the standalone report. Self-hosted here instead, scoped to the Vite app. */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url('./fonts/dm-sans-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/VT323-Regular.ttf') format('truetype');
+}
+
+:root {
+  --grotesque: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Hero title only — web app gets the pixel font, standalone report.py keeps --hero-font
+ * (that file must stay zero-external-request, see the import comment above). */
+#benchmark-title {
+  font-family: 'VT323', var(--hero-font);
+}
+
+/* Cost-efficiency filters are inline controls in the web report. The standalone Python report
+ * keeps the compact, colour-and-shape legend defined in report.css. */
+.efficiency-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 32px 40px;
+}
+
+.efficiency-section > .sec {
+  grid-column: 1;
+  grid-row: 1;
+  margin-bottom: 0;
+}
+
+.efficiency-section > #stat-scatter {
+  display: contents;
+}
+
+.efficiency-section .scatterlegend {
+  grid-column: 2;
+  grid-row: 1;
+  align-items: center;
+  justify-content: flex-end;
+  justify-self: end;
+  gap: 12px;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  color: var(--feedback-ink);
+  font-family: var(--grotesque);
+  font-size: var(--fs-10);
+  letter-spacing: normal;
+}
+
+.efficiency-section #stat-scatter > .panel {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.efficiency-section .scatterlegend-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.efficiency-section .scatterlegend-title {
+  flex: none;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+}
+
+.efficiency-section .scatterlegend-items {
+  gap: 6px;
+}
+
+.efficiency-section .scatterlegend-item {
+  min-height: 36px;
+  padding: 5px 8px;
+  border: var(--hair) solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  color: var(--feedback-ink);
+  font-weight: var(--fw-normal);
+  letter-spacing: normal;
+  gap: 6px;
+}
+
+.efficiency-section .scatterlegend-item:hover,
+.efficiency-section .scatterlegend-item[aria-pressed='true'] {
+  border-color: var(--feedback-faint);
+  background: var(--card);
+  color: var(--feedback-ink);
+  font-weight: var(--fw-normal);
+}
+
+.efficiency-section
+  .scatterlegend-group[data-active='true']
+  .scatterlegend-item[aria-pressed='false'] {
+  background: var(--head);
+  color: var(--feedback-muted);
+}
+
+.efficiency-section .scatterlegend-item .mlogo {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  opacity: 1;
+}
+
+.efficiency-section
+  .scatterlegend-group[data-active='true']
+  .scatterlegend-item[aria-pressed='false']
+  .mlogo {
+  opacity: 0.45;
+}
+
+@media (max-width: 1100px) {
+  .efficiency-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .efficiency-section .scatterlegend {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .efficiency-section #stat-scatter > .panel {
+    grid-row: 3;
+  }
+}

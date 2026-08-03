@@ -8,11 +8,11 @@
 // drawer that actually runs is this file's run panel.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 
-import type { BuildManifest, RunCell, RunDetail, RunIndex, RunTranscript, Verdict } from '../shared/contract';
+import type { BuildManifest, Provenance, RunCell, RunDetail, RunIndex, RunTranscript, Verdict } from '../shared/contract';
 import { runKey } from '../shared/contract';
 import { fmtTime, modelEffortLabel } from '../shared/format';
 import { loadRunDetail, loadTranscript } from '../shared/resources';
-import { ExplorerFooter, Nav } from '../ui/Chrome';
+import { Nav, ReportFooter } from '../ui/Chrome';
 
 const FOCUS_KEY = 'appcontrolbench:run-focus:v1';
 
@@ -23,7 +23,6 @@ type Config = {
   id: string;
   modelId: string;
   toolId: string;
-  modelLabel: string;
   base: string;
   effort: string | null;
   effortRank: number;
@@ -32,7 +31,8 @@ type Config = {
 };
 
 type Selection =
-  | { level: 'field' | 'task'; taskId: string; configId: null }
+  | { level: 'field'; taskId: string; configId: null }
+  | { level: 'task'; taskId: string; configId: null }
   | { level: 'run'; taskId: string; configId: string };
 
 type Filters = { query: string; suite: string; outcome: 'all' | 'mixed' | 'awaiting' };
@@ -119,7 +119,15 @@ function ConfigHead({ config }: { config: Config }) {
   );
 }
 
-export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manifest: BuildManifest }) {
+export function ExplorerPage({
+  runIndex,
+  manifest,
+  provenance,
+}: {
+  runIndex: RunIndex;
+  manifest: BuildManifest;
+  provenance: Provenance;
+}) {
   const { catalog } = runIndex;
 
   const configs = useMemo<Config[]>(
@@ -129,7 +137,6 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
           id: `${model.id}__${tool.id}`,
           modelId: model.id,
           toolId: tool.id,
-          modelLabel: model.label,
           base: model.base,
           effort: model.effort,
           effortRank: model.effortRank,
@@ -175,9 +182,10 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [traceOpen, setTraceOpen] = useState(false);
-  const [pinned, setPinned] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLElement | null>(null);
+  const panelReturnFocusRef = useRef<HTMLElement | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const announce = useCallback((message: string) => {
@@ -233,6 +241,17 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, [readUrl]);
+
+  const panelOpen = selection !== null;
+  useEffect(() => {
+    if (panelOpen) {
+      panelReturnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const frame = requestAnimationFrame(() => panelRef.current?.focus());
+      return () => cancelAnimationFrame(frame);
+    }
+    panelReturnFocusRef.current?.focus();
+    panelReturnFocusRef.current = null;
+  }, [panelOpen]);
 
   const select = useCallback((next: Selection | null, sync = true) => {
     setSelection(next);
@@ -323,6 +342,11 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
+      if (e.key === 'Escape' && pickerOpen) {
+        e.preventDefault();
+        setPickerOpen(false);
+        return;
+      }
       if (target && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
       if (e.key === 'Escape' && selection) {
         e.preventDefault();
@@ -336,18 +360,11 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
         moveConfig(e.key === 'ArrowLeft' ? -1 : 1);
-      } else if (e.key === 'Enter') {
-        setPinned((p) => {
-          announce(p ? 'Detail panel unpinned.' : 'Detail panel pinned.');
-          return !p;
-        });
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [selection, select, moveTask, moveConfig, announce]);
-
-  void pinned;
+  }, [selection, pickerOpen, select, moveTask, moveConfig]);
 
   const restCount = Math.max(0, configs.length - focus.length);
   const othersWide = restCount ? restCount * 4 + (restCount - 1) * 2 + 16 : 16;
@@ -363,7 +380,7 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
             <h1>Run explorer</h1>
             <p>Discover how configurations handled each task. Choose a small focus set, then inspect every remaining configuration in the field.</p>
           </header>
-          <div id="run-explorer-root" aria-live="polite" ref={rootRef}>
+          <div id="run-explorer-root" ref={rootRef}>
             <TaskFilters
               filters={filters}
               suites={suites}
@@ -427,6 +444,7 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
                   </div>
                 </div>
                 <aside
+                  ref={panelRef}
                   class={selection?.level !== 'run' ? 'rx-panel is-field' : 'rx-panel'}
                   aria-label="Run explorer details"
                   role={selection ? 'dialog' : undefined}
@@ -436,8 +454,8 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
                   {selection && (
                     <Panel
                       selection={selection}
-                      runIndex={runIndex}
                       manifest={manifest}
+                      scoringWeights={runIndex.scoring.weights}
                       configs={configs}
                       cfgById={cfgById}
                       tasks={tasks}
@@ -464,7 +482,7 @@ export function ExplorerPage({ runIndex, manifest }: { runIndex: RunIndex; manif
           </div>
         </section>
       </main>
-      <ExplorerFooter />
+      <ReportFooter provenance={provenance} />
     </>
   );
 }
@@ -503,6 +521,7 @@ function FilterControls({
         >
           <option value="all">all outcomes</option>
           <option value="mixed">mixed outcomes</option>
+          <option value="awaiting">awaiting results</option>
         </select>
       </label>
     </>
@@ -577,6 +596,14 @@ function Toolbar({
   const available = configs.filter((c) => !focus.includes(c.id));
   const q = search.toLowerCase();
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!pickerOpen) return;
+    returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    searchRef.current?.focus();
+  }, [pickerOpen]);
 
   useEffect(() => {
     if (!pickerOpen) return;
@@ -590,7 +617,7 @@ function Toolbar({
   return (
     <div class="rx-toolbar">
       <div class="rx-focus-desktop">
-        <span class="rx-toolbar-label">IN FOCUS</span>
+        <span class="rx-toolbar-label">Comparing</span>
         <div class="rx-focus-list">
           {focus.map((id) => {
             const c = cfgById.get(id);
@@ -613,11 +640,27 @@ function Toolbar({
         </div>
       </div>
       <div class="rx-add-wrap" ref={wrapRef}>
-        <button class="rx-add rx-add-desktop" type="button" aria-expanded={pickerOpen} onClick={onTogglePicker}>
+        <button
+          class="rx-add rx-add-desktop"
+          type="button"
+          aria-expanded={pickerOpen}
+          onClick={onTogglePicker}
+        >
           Add more  
         </button>
         {pickerOpen && (
-          <div class="rx-picker" role="dialog" aria-label="Add a configuration to focus">
+          <div
+            class="rx-picker"
+            role="dialog"
+            aria-label="Add a configuration to focus"
+            onKeyDown={(event) => {
+              if (event.key !== 'Escape') return;
+              event.preventDefault();
+              event.stopPropagation();
+              onClosePicker();
+              requestAnimationFrame(() => returnFocusRef.current?.focus());
+            }}
+          >
             <label>
               Find configuration
               <input
@@ -626,6 +669,7 @@ function Toolbar({
                 placeholder="model, effort, or harness"
                 value={search}
                 onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
+                ref={searchRef}
               />
             </label>
             <div class="rx-picker-list">
@@ -687,7 +731,7 @@ function Matrix({
   return (
     <>
       <div class="rx-grid rx-column-head">
-        <div>task</div>
+        <div>Task</div>
         {focus.map((id) => {
           const c = cfgById.get(id);
           return <div key={id}>{c && <ConfigHead config={c} />}</div>;
@@ -715,9 +759,7 @@ function Matrix({
               data-task={task.id}
               style={{ '--rx-row-index': index }}
             >
-              <div
-                class="rx-task-cell"
-              >
+              <div class="rx-task-cell">
                 <span>
                   <b>{task.id}</b>
                   <small>{task.kind}</small>
@@ -872,8 +914,8 @@ function MobileTaskList({
 
 function Panel(props: {
   selection: Selection;
-  runIndex: RunIndex;
   manifest: BuildManifest;
+  scoringWeights: RunIndex['scoring']['weights'];
   configs: Config[];
   cfgById: Map<string, Config>;
   tasks: TaskRow[];
@@ -889,9 +931,16 @@ function Panel(props: {
   onOpenPicker: () => void;
   announce: (message: string) => void;
 }) {
-  const { selection } = props;
-  if (selection.level !== 'run') return <FieldPanel {...props} taskId={selection.taskId} />;
-  return <RunPanel {...props} taskId={selection.taskId} configId={selection.configId} />;
+  if (props.selection.level === 'task') return <TaskPanel {...props} taskId={props.selection.taskId} />;
+  if (props.selection.level === 'field') return <FieldPanel {...props} taskId={props.selection.taskId} />;
+  return (
+    <RunPanel
+      {...props}
+      key={`${props.selection.taskId}__${props.selection.configId}`}
+      taskId={props.selection.taskId}
+      configId={props.selection.configId}
+    />
+  );
 }
 
 function PanelHead({
@@ -921,6 +970,225 @@ function PanelHead({
   );
 }
 
+function scoreOf(cell: RunCell | undefined, weights: RunIndex['scoring']['weights']): number | null {
+  if (cell?.verdict === 'success' || cell?.verdict === 'partial' || cell?.verdict === 'fail') {
+    return weights[cell.verdict];
+  }
+  return null;
+}
+
+function median(values: number[]): number | null {
+  if (!values.length) return null;
+  values.sort((a, b) => a - b);
+  const mid = Math.floor(values.length / 2);
+  return values.length % 2 ? values[mid] : (values[mid - 1] + values[mid]) / 2;
+}
+
+function signed(value: number): string {
+  return `${value > 0 ? '+' : ''}${value}`;
+}
+
+function TaskPanel({
+  taskId,
+  configs,
+  tasks,
+  taskById,
+  scoringWeights,
+  cellAt,
+  displayState,
+  onSelect,
+  onMoveTask,
+  onOpenPicker,
+  announce,
+}: Parameters<typeof Panel>[0] & { taskId: string }) {
+  const task = taskById.get(taskId)!;
+  const taskIndex = tasks.findIndex((item) => item.id === taskId);
+  const byBase = new Map<string, Config[]>();
+  const effortRanks = new Map<string | null, number>();
+  const tools = new Map<string, Pick<Config, 'toolId' | 'toolLabel' | 'toolShort'>>();
+  const byTool = new Map<string, { label: string; scores: number[] }>();
+  const byEffort = new Map<string, { rank: number; scores: number[] }>();
+  const wallSeconds: number[] = [];
+  let pass = 0;
+
+  for (const config of configs) {
+    const cell = cellAt(taskId, config.id);
+    const baseConfigs = byBase.get(config.base) ?? [];
+    baseConfigs.push(config);
+    byBase.set(config.base, baseConfigs);
+    effortRanks.set(config.effort, Math.min(effortRanks.get(config.effort) ?? Infinity, config.effortRank));
+    tools.set(config.toolId, config);
+    if (cell?.verdict === 'success') pass += 1;
+    if (cell?.wallSeconds != null) wallSeconds.push(cell.wallSeconds);
+
+    const score = scoreOf(cell, scoringWeights);
+    if (score == null) continue;
+    const tool = byTool.get(config.toolId) ?? { label: config.toolLabel, scores: [] };
+    tool.scores.push(score);
+    byTool.set(config.toolId, tool);
+    if (config.effort) {
+      const effort = byEffort.get(config.effort) ?? { rank: config.effortRank, scores: [] };
+      effort.scores.push(score);
+      byEffort.set(config.effort, effort);
+    }
+  }
+
+  const toolScores = [...byTool.values()]
+    .map((tool) => ({ ...tool, value: tool.scores.reduce((sum, score) => sum + score, 0) / tool.scores.length }))
+    .sort((a, b) => a.value - b.value);
+  const worstTool = toolScores[0];
+  const bestTool = toolScores.at(-1);
+  const effortScores = [...byEffort.values()].sort((a, b) => a.rank - b.rank);
+  const lowEffort = effortScores[0];
+  const highEffort = effortScores.at(-1);
+  const effortDelta =
+    lowEffort && highEffort && lowEffort !== highEffort
+      ? Math.round(
+          (highEffort.scores.reduce((sum, score) => sum + score, 0) / highEffort.scores.length -
+            lowEffort.scores.reduce((sum, score) => sum + score, 0) / lowEffort.scores.length) *
+            100,
+        )
+      : null;
+  const worst =
+    worstTool && bestTool
+      ? `${worstTool.label} ${signed(Math.round((worstTool.value - bestTool.value) * 100))}`
+      : 'no judged runs';
+  const effort = effortDelta == null ? 'effort n/a' : `effort ${signed(effortDelta)}`;
+  const medianSeconds = median(wallSeconds);
+  const med = medianSeconds == null ? 'median n/a' : `median ${fmtTime(medianSeconds)}`;
+  const efforts = [...effortRanks.keys()].sort(
+    (a, b) => (effortRanks.get(a) ?? Infinity) - (effortRanks.get(b) ?? Infinity),
+  );
+  const axes = efforts.flatMap((axisEffort) =>
+    [...tools.values()].map((tool) => ({ effort: axisEffort, tool })),
+  );
+  const firstFailure = configs.find((config) => cellAt(taskId, config.id)?.verdict === 'fail');
+
+  return (
+    <>
+      <PanelHead
+        onClose={() => onSelect(null)}
+        nav={
+          <>
+            <button type="button" disabled={taskIndex <= 0} onClick={() => onMoveTask(-1)} aria-label="Previous task">
+              ‹
+            </button>
+            <button
+              type="button"
+              disabled={taskIndex < 0 || taskIndex >= tasks.length - 1}
+              onClick={() => onMoveTask(1)}
+              aria-label="Next task"
+            >
+              ›
+            </button>
+          </>
+        }
+      >
+        <span class="rx-breadcrumb">{taskId}</span>
+      </PanelHead>
+      <div class="rx-panel-scroll">
+        <section class="rx-task-summary">
+          <h2>{taskId}</h2>
+          <span>
+            {task.kind} / {task.app}
+          </span>
+          <p>{clean(task.prompt)}</p>
+          <div class="rx-summary-chips">
+            <b>
+              {pass}/{configs.length} pass
+            </b>
+            <b class="is-negative">{worst}</b>
+            <b class={effortDelta != null && effortDelta >= 0 ? 'is-positive' : 'is-negative'}>{effort}</b>
+            <b>{med}</b>
+          </div>
+        </section>
+        <section class="rx-panel-section">
+          <div class="rx-fingerprint" style={{ '--rx-fp-cols': axes.length }}>
+            <div class="rx-fp-head">model</div>
+            {axes.map((axis) => (
+              <div
+                class="rx-fp-head"
+                key={`${axis.effort ?? 'default'}__${axis.tool.toolId}`}
+                title={`${axis.effort ?? 'default'} / ${axis.tool.toolId}`}
+              >
+                {axis.tool.toolShort}
+              </div>
+            ))}
+            {[...byBase].flatMap(([base, baseConfigs]) => [
+              <div class="rx-fp-model" key={`${base}__label`}>
+                {base}
+              </div>,
+              ...axes.map((axis) => {
+                const config = baseConfigs.find(
+                  (item) => item.effort === axis.effort && item.toolId === axis.tool.toolId,
+                );
+                return config ? (
+                  <button
+                    type="button"
+                    class={`rx-fp-cell rx-tick-${displayState(taskId, config.id)}`}
+                    key={`${base}__${axis.effort ?? 'default'}__${axis.tool.toolId}`}
+                    title={`${configLabel(config)} ${configSub(config)}`}
+                    aria-label={`Open ${configLabel(config)} ${configSub(config)} run`}
+                    onClick={() => onSelect({ level: 'run', taskId, configId: config.id })}
+                  />
+                ) : (
+                  <span
+                    class="rx-fp-cell rx-tick-pending"
+                    key={`${base}__${axis.effort ?? 'default'}__${axis.tool.toolId}`}
+                  />
+                );
+              }),
+            ])}
+          </div>
+          <div class="rx-fp-legend">
+            → effort × harness&nbsp;&nbsp; / &nbsp;&nbsp;↓ {byBase.size} models&nbsp;&nbsp; / &nbsp;&nbsp;all{' '}
+            {configs.length} configurations
+          </div>
+        </section>
+        <section class="rx-panel-section">
+          <header>
+            <b>BY MODEL</b>
+          </header>
+          {[...byBase].map(([base, baseConfigs]) => (
+            <div class="rx-model-row" key={base}>
+              <b>{base}</b>
+              <span>
+                {baseConfigs.map((config) => (
+                  <i
+                    class={`rx-model-dot rx-tick-${displayState(taskId, config.id)}`}
+                    key={config.id}
+                    title={configSub(config)}
+                  />
+                ))}
+              </span>
+              <small>
+                {baseConfigs.filter((config) => cellAt(taskId, config.id)?.verdict === 'success').length}/
+                {baseConfigs.length}
+              </small>
+            </div>
+          ))}
+        </section>
+        <div class="rx-panel-actions">
+          <button
+            class="is-primary"
+            type="button"
+            onClick={() =>
+              firstFailure
+                ? onSelect({ level: 'run', taskId, configId: firstFailure.id })
+                : announce('No failed run is recorded for this task.')
+            }
+          >
+            open first failure
+          </button>
+          <button type="button" onClick={onOpenPicker}>
+            add a config to focus
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 
 function FieldPanel({
   taskId,
@@ -929,6 +1197,7 @@ function FieldPanel({
   cellAt,
   displayState,
   onSelect,
+  onPromote,
 }: Parameters<typeof Panel>[0] & { taskId: string }) {
   const order: Record<string, number> = {
     fail: 0,
@@ -941,7 +1210,6 @@ function FieldPanel({
   };
   const rest = configs
     .filter((c) => !focus.includes(c.id))
-    .slice()
     .sort((a, b) => (order[displayState(taskId, a.id)] ?? 9) - (order[displayState(taskId, b.id)] ?? 9));
   return (
     <>
@@ -968,6 +1236,14 @@ function FieldPanel({
                   <Chip state={displayState(taskId, c.id)} />
                   <small>{cell?.wallSeconds != null ? fmtTime(cell.wallSeconds) : 'n/a'}</small>
                 </button>
+                <button
+                  class="rx-promote"
+                  type="button"
+                  onClick={() => onPromote(c.id)}
+                  aria-label={`Promote ${configLabel(c)} into focus`}
+                >
+                  +
+                </button>
               </div>
             );
           })
@@ -980,6 +1256,13 @@ function FieldPanel({
   );
 }
 
+type LoadState<T> = { status: 'loading' } | { status: 'ready'; data: T } | { status: 'error'; message: string };
+type DeferredLoadState<T> = LoadState<T> | { status: 'idle' };
+
+function loadErrorMessage(error: unknown): string {
+  return clean(error instanceof Error ? error.message : error);
+}
+
 function RunPanel({
   taskId,
   configId,
@@ -990,28 +1273,30 @@ function RunPanel({
   traceOpen,
   onToggleTrace,
   onSelect,
-  announce,
 }: Parameters<typeof Panel>[0] & { taskId: string; configId: string }) {
   const c = cfgById.get(configId);
   const cell = cellAt(taskId, configId);
   const state = displayState(taskId, configId);
 
-  const [detail, setDetail] = useState<RunDetail | null>(null);
-  const [transcript, setTranscript] = useState<RunTranscript | null>(null);
+  const [detailState, setDetailState] = useState<LoadState<RunDetail>>({ status: 'loading' });
+  const [transcriptState, setTranscriptState] = useState<DeferredLoadState<RunTranscript>>({ status: 'idle' });
 
   // One request per opened run, and only when it is opened. report.py inlined every run's facts and
   // every transcript into the page instead.
   useEffect(() => {
     let live = true;
-    setDetail(null);
-    setTranscript(null);
-    if (!c) return;
+    setDetailState({ status: 'loading' });
+    setTranscriptState({ status: 'idle' });
+    if (!c) {
+      setDetailState({ status: 'error', message: 'Configuration not found.' });
+      return;
+    }
     loadRunDetail(manifest, c.modelId, c.toolId, taskId)
       .then((d) => {
-        if (live) setDetail(d);
+        if (live) setDetailState({ status: 'ready', data: d });
       })
-      .catch(() => {
-        if (live) setDetail(null);
+      .catch((error: unknown) => {
+        if (live) setDetailState({ status: 'error', message: loadErrorMessage(error) });
       });
     return () => {
       live = false;
@@ -1021,47 +1306,35 @@ function RunPanel({
   // The trace is a second request, made only when the reader opens it. A run with no transcript has
   // href null and must never produce a request (contract line 247).
   useEffect(() => {
-    if (!traceOpen || !detail?.transcript.href) return;
+    if (!traceOpen || detailState.status !== 'ready' || !detailState.data.transcript.href) return;
     let live = true;
-    loadTranscript(detail.transcript.href)
+    setTranscriptState({ status: 'loading' });
+    loadTranscript(detailState.data.transcript.href)
       .then((t) => {
-        if (live) setTranscript(t);
+        if (live) setTranscriptState({ status: 'ready', data: t });
       })
-      .catch(() => {
-        if (live) setTranscript(null);
+      .catch((error: unknown) => {
+        if (live) setTranscriptState({ status: 'error', message: loadErrorMessage(error) });
       });
     return () => {
       live = false;
     };
-  }, [traceOpen, detail]);
+  }, [traceOpen, detailState]);
 
-  const steps = detail?.steps ?? [];
   const metric = cell?.wallSeconds != null ? fmtTime(cell.wallSeconds) : 'n/a';
 
   return (
     <>
-      <div class="rx-panel-head">
-        <div>
-          <button
-            class="rx-crumb-link"
-            type="button"
-            onClick={() => onSelect({ level: 'task', taskId, configId: null })}
-          >
-            {taskId}
-          </button>
-          <span class="rx-breadcrumb">▸ run</span>
-        </div>
-        <button type="button" onClick={() => onSelect(null)} aria-label="Close details">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
-              fill="currentColor"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            />
-          </svg>
+      <PanelHead onClose={() => onSelect(null)}>
+        <button
+          class="rx-crumb-link"
+          type="button"
+          onClick={() => onSelect({ level: 'task', taskId, configId: null })}
+        >
+          {taskId}
         </button>
-      </div>
+        <span class="rx-breadcrumb">▸ run</span>
+      </PanelHead>
       <div class="rx-panel-scroll">
         <section class="rx-run-title">
           <h2>{c && configLabel(c)}</h2>
@@ -1071,76 +1344,100 @@ function RunPanel({
             <b>{metric}</b>
           </div>
         </section>
-        <section class="rx-judge">
-          <b>JUDGE</b>
-          <p>{clean(detail?.run.reason || 'No judge verdict recorded.')}</p>
-        </section>
-        <section class="rx-panel-section">
-          <header>
-            <b>STEPS</b>
-            <span>
-              {steps.length} of {steps.length}
-            </span>
-          </header>
-          <div class="rx-steps">
-            {steps.length ? (
-              steps.map((step, index) => (
-                <div
-                  key={step.index}
-                  class={
-                    detail?.run.verdict === 'fail' && index === steps.length - 1 ? 'rx-step is-terminal' : 'rx-step'
-                  }
-                >
-                  <span>{step.index}</span>
-                  <i />
-                  <b>{clean(step.label)}</b>
-                  <small>{step.elapsedSeconds == null ? '' : fmtTime(step.elapsedSeconds)}</small>
-                </div>
-              ))
-            ) : (
-              <div class="rx-panel-empty">No tool-call steps recorded.</div>
+        {detailState.status === 'loading' ? (
+          <div class="rx-panel-empty">Loading run details…</div>
+        ) : detailState.status === 'error' ? (
+          <div class="rx-panel-empty">Could not load run details: {detailState.message}</div>
+        ) : (
+          <>
+            <section class="rx-judge">
+              <b>JUDGE</b>
+              <p>{clean(detailState.data.run.reason || 'No judge verdict recorded.')}</p>
+            </section>
+            <section class="rx-panel-section">
+              <header>
+                <b>STEPS</b>
+                <span>
+                  {detailState.data.steps.length} of {detailState.data.steps.length}
+                </span>
+              </header>
+              <div class="rx-steps">
+                {detailState.data.steps.length ? (
+                  detailState.data.steps.map((step, index) => (
+                    <div
+                      key={step.index}
+                      class={
+                        detailState.data.run.verdict === 'fail' && index === detailState.data.steps.length - 1
+                          ? 'rx-step is-terminal'
+                          : 'rx-step'
+                      }
+                    >
+                      <span>{step.index}</span>
+                      <i />
+                      <b>{clean(step.label)}</b>
+                      <small>{step.elapsedSeconds == null ? '' : fmtTime(step.elapsedSeconds)}</small>
+                    </div>
+                  ))
+                ) : (
+                  <div class="rx-panel-empty">No tool-call steps recorded.</div>
+                )}
+              </div>
+            </section>
+            <section class="rx-panel-section">
+              <header>
+                <b>FINAL FRAME</b>
+              </header>
+              <div class="rx-run-media">
+                {/* The screenshot is requested only because this drawer rendered. */}
+                {detailState.data.run.screenshotHref ? (
+                  <img
+                    src={detailState.data.run.screenshotHref}
+                    alt={`Final screenshot for ${c && configLabel(c)} ${taskId}`}
+                  />
+                ) : (
+                  <div class="rx-media-placeholder">No final screenshot recorded</div>
+                )}
+              </div>
+            </section>
+            {traceOpen && (
+              <section class="rx-panel-section">
+                <header>
+                  <b>FULL TRACE</b>
+                  <span>{detailState.data.transcript.eventCount} events</span>
+                </header>
+                <Trace detail={detailState.data} transcriptState={transcriptState} />
+              </section>
             )}
-          </div>
-        </section>
-        <section class="rx-panel-section">
-          <header>
-            <b>FINAL FRAME</b>
-          </header>
-          <div class="rx-run-media">
-            {/* The screenshot is requested only because this drawer rendered. */}
-            {detail?.run.screenshotHref ? (
-              <img src={detail.run.screenshotHref} alt={`Final screenshot for ${c && configLabel(c)} ${taskId}`} />
-            ) : (
-              <div class="rx-media-placeholder">No final screenshot recorded</div>
-            )}
-          </div>
-        </section>
-        {traceOpen && (
-          <section class="rx-panel-section">
-            <header>
-              <b>FULL TRACE</b>
-              <span>{detail?.transcript.eventCount ?? 0} events</span>
-            </header>
-            <Trace detail={detail} transcript={transcript} />
-          </section>
+            <div class="rx-panel-actions">
+              <button class="is-primary" type="button" onClick={onToggleTrace}>
+                {traceOpen ? 'hide full trace' : 'open full trace'}
+              </button>
+            </div>
+          </>
         )}
-        <div class="rx-panel-actions">
-          <button class="is-primary" type="button" onClick={onToggleTrace}>
-            {traceOpen ? 'hide full trace' : 'open full trace'}
-          </button>
-        </div>
       </div>
     </>
   );
 }
 
-function Trace({ detail, transcript }: { detail: RunDetail | null; transcript: RunTranscript | null }) {
-  if (detail && !detail.transcript.href) return <div class="rx-panel-empty">No transcript recorded.</div>;
-  if (!transcript) return <div class="rx-panel-empty">Loading transcript…</div>;
-  if (!transcript.events.length) return <div class="rx-panel-empty">No transcript recorded.</div>;
+function Trace({
+  detail,
+  transcriptState,
+}: {
+  detail: RunDetail;
+  transcriptState: DeferredLoadState<RunTranscript>;
+}) {
+  if (!detail.transcript.href) return <div class="rx-panel-empty">No transcript recorded.</div>;
+  if (transcriptState.status === 'idle' || transcriptState.status === 'loading') {
+    return <div class="rx-panel-empty">Loading transcript…</div>;
+  }
+  if (transcriptState.status === 'error') {
+    return <div class="rx-panel-empty">Could not load transcript: {transcriptState.message}</div>;
+  }
+  if (!transcriptState.data.events.length) return <div class="rx-panel-empty">No transcript recorded.</div>;
   return (
     <div class="rx-trace">
-      {transcript.events.map((entry, i) => {
+      {transcriptState.data.events.map((entry, i) => {
         if (entry.k === 'u') {
           const input = (entry.i ?? {}) as { description?: unknown; command?: unknown };
           let raw = typeof input.description === 'string' ? input.description.trim() : '';

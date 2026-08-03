@@ -139,12 +139,12 @@ function main(): void {
       title: 'AppControlBench Results - Run explorer',
       bodyClass: 'run-explorer-page',
       rootId: 'explorer-root',
-      markup: render(h(ExplorerPage, { runIndex, manifest: manifestBlock })),
+      markup: render(h(ExplorerPage, { runIndex, manifest: manifestBlock, provenance: meta.provenance })),
       payloadId: 'acb-explorer-bootstrap',
       // RunIndex is embedded because the Explorer must render and hydrate its matrix immediately
       // (contract line 118); BuildManifest rides along as page bootstrap (line 114) so the drawer can
       // derive resource paths without a second round trip.
-      payload: serializeInlineJson({ runIndex, manifest: manifestBlock }),
+      payload: serializeInlineJson({ runIndex, manifest: manifestBlock, provenance: meta.provenance }),
       script: explorer.script,
       styles: explorer.styles,
     }),

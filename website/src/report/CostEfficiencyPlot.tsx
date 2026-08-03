@@ -3,12 +3,14 @@
 // filtering, and the hover/focus tooltip with its SVG crosshair.
 //
 // Geometry comes from web/src/shared/scatter.ts as data; nothing here computes a coordinate.
+import { Fragment } from 'preact';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 
 import type { ReportView, Tool } from '../shared/contract';
 import { fmtCoord } from '../shared/format';
 import { hasScatterData, scatterLegend, scatterSvg, type ScatterLayout } from '../shared/scatter';
 import { SectionHeader } from '../ui/Chrome';
+import { ProviderLogo } from '../ui/ProviderLogo';
 
 type Selection = { model: string | null; tool: string | null };
 
@@ -50,13 +52,32 @@ function pressed(sel: Selection, model: string, tool: string): 'true' | 'false' 
   return active(sel) && matches(sel, model, tool) ? 'true' : 'false';
 }
 
+function modelFilterLabel(base: string): string {
+  const [name, ...rest] = base.split('-');
+  const suffix = rest.join(' ');
+  if (name.toLowerCase() === 'gpt') return suffix ? `GPT-${suffix}` : 'GPT';
+  return name.charAt(0).toUpperCase() + name.slice(1) + (suffix ? ` ${suffix}` : '');
+}
+
+function toolFilterLabel(label: string): string {
+  return label
+    .split(/[-\s]+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
 type Hover = { cx: number; cy: number; tip: string; stroke: string } | null;
+type TipPosition = { x: number; y: number };
+type TipSize = { width: number; height: number };
 
 export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: Tool[] }) {
   const [sel, setSel] = useState<Selection>(NONE);
   const [hover, setHover] = useState<Hover>(null);
-  const [tipAt, setTipAt] = useState<{ x: number; y: number } | null>(null);
+  const hoverRef = useRef<Hover>(null);
   const tipRef = useRef<HTMLDivElement | null>(null);
+  const tipAtRef = useRef<TipPosition | null>(null);
+  const tipSizeRef = useRef<TipSize | null>(null);
+  const tipFrameRef = useRef<number | null>(null);
   const layout = useScatterLayout();
 
   const geometry = useMemo(
@@ -65,20 +86,40 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
   );
   const legend = useMemo(() => scatterLegend(view.scatter.points, tools), [view.scatter.points, tools]);
 
-  // The tooltip is positioned against the viewport, so it can only be placed once it has a size —
-  // i.e. in an effect, never during prerender.
+  // Tooltip coordinates are transient: move the DOM node at most once per animation frame without
+  // rerendering the plot. Its dimensions only need measuring when the hovered content changes.
+  const positionTip = (position: TipPosition) => {
+    tipAtRef.current = position;
+    if (tipFrameRef.current !== null) return;
+
+    tipFrameRef.current = requestAnimationFrame(() => {
+      tipFrameRef.current = null;
+      const tip = tipRef.current;
+      const tipAt = tipAtRef.current;
+      if (!tip || !tipAt || !hoverRef.current) return;
+
+      const pad = 10;
+      const gap = 12;
+      const size = tipSizeRef.current ?? {
+        width: tip.offsetWidth,
+        height: tip.offsetHeight,
+      };
+      tipSizeRef.current = size;
+      const left = Math.min(window.innerWidth - size.width - pad, tipAt.x + gap);
+      let top = tipAt.y - size.height - gap;
+      if (top < pad) {
+        top = Math.min(window.innerHeight - size.height - pad, tipAt.y + gap);
+      }
+      tip.style.left = `${Math.max(pad, left)}px`;
+      tip.style.top = `${Math.max(pad, top)}px`;
+    });
+  };
+
   useEffect(() => {
-    const tip = tipRef.current;
-    if (!tip || !hover || !tipAt) return;
-    const pad = 10;
-    const gap = 12;
-    const { offsetWidth: w, offsetHeight: h } = tip;
-    let left = Math.min(window.innerWidth - w - pad, tipAt.x + gap);
-    let top = tipAt.y - h - gap;
-    if (top < pad) top = Math.min(window.innerHeight - h - pad, tipAt.y + gap);
-    tip.style.left = `${Math.max(pad, left)}px`;
-    tip.style.top = `${Math.max(pad, top)}px`;
-  }, [hover, tipAt]);
+    return () => {
+      if (tipFrameRef.current !== null) cancelAnimationFrame(tipFrameRef.current);
+    };
+  }, []);
 
   if (!hasScatterData(view.scatter.points)) return null;
 
@@ -91,9 +132,7 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
     const cx = el.getAttribute('data-cx');
     const cy = el.getAttribute('data-cy');
     if (!tip) return;
-    const box = el.getBoundingClientRect();
-    setTipAt({ x: x ?? box.left + box.width / 2, y: y ?? box.top });
-    setHover(
+    const next: Exclude<Hover, null> =
       cx !== null && cy !== null
         ? {
             cx: parseFloat(cx),
@@ -102,13 +141,38 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
             // The crosshair takes the mark's own colour; .scatter-crosshair sets no stroke of its own.
             stroke: getComputedStyle(el).fill,
           }
-        : { cx: NaN, cy: NaN, tip, stroke: '' },
-    );
+        : { cx: NaN, cy: NaN, tip, stroke: '' };
+    const current = hoverRef.current;
+    if (
+      !current ||
+      !Object.is(current.cx, next.cx) ||
+      !Object.is(current.cy, next.cy) ||
+      current.tip !== next.tip ||
+      current.stroke !== next.stroke
+    ) {
+      hoverRef.current = next;
+      tipSizeRef.current = null;
+      setHover(next);
+    }
+
+    if (x === undefined || y === undefined) {
+      const box = el.getBoundingClientRect();
+      positionTip({ x: box.left + box.width / 2, y: box.top });
+    } else {
+      positionTip({ x, y });
+    }
   };
 
   const hide = () => {
-    setHover(null);
-    setTipAt(null);
+    const hadHover = hoverRef.current !== null;
+    hoverRef.current = null;
+    tipAtRef.current = null;
+    tipSizeRef.current = null;
+    if (tipFrameRef.current !== null) {
+      cancelAnimationFrame(tipFrameRef.current);
+      tipFrameRef.current = null;
+    }
+    if (hadHover) setHover(null);
   };
 
   /** Clicking a mark, a connector or a legend entry toggles that filter. TOGGLE_JS:1701. */
@@ -161,7 +225,7 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
         }}
         onPointerMove={(e) => {
           const el = e.target instanceof Element ? e.target.closest('[data-scatter-tip]') : null;
-          if (el) show(el, e.clientX, e.clientY);
+          if (el) positionTip({ x: e.clientX, y: e.clientY });
         }}
         onPointerOut={hide}
         onFocusIn={(e) => {
@@ -171,8 +235,8 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
         onFocusOut={hide}
       >
         <div class="scatterlegend" aria-label="Scatterplot legend">
-          <div class="scatterlegend-group">
-            <span class="scatterlegend-title">model</span>
+          <div class="scatterlegend-group" data-active={sel.model !== null ? 'true' : undefined}>
+            <span class="scatterlegend-title">Model:</span>
             <div class="scatterlegend-items">
               {legend.models.map((entry) => (
                 <button
@@ -182,27 +246,28 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
                   data-legend-model={entry.base}
                   aria-pressed={sel.model === entry.base ? 'true' : 'false'}
                 >
-                  <i class={entry.swatchClassName} />
-                  {entry.base}
+                  <ProviderLogo provider={entry.family} />
+                  {modelFilterLabel(entry.base)}
                 </button>
               ))}
             </div>
           </div>
-          <div class="scatterlegend-group">
-            <span class="scatterlegend-title">tool</span>
+          <div class="scatterlegend-group" data-active={sel.tool !== null ? 'true' : undefined}>
+            <span class="scatterlegend-title">Tool:</span>
             <div class="scatterlegend-items">
-              {legend.tools.map((entry) => (
-                <button
-                  key={entry.toolId}
-                  type="button"
-                  class="scatterlegend-item"
-                  data-legend-tool={entry.toolId}
-                  aria-pressed={sel.tool === entry.toolId ? 'true' : 'false'}
-                >
-                  <i class={entry.markClassName} aria-hidden="true" />
-                  {entry.label}
-                </button>
-              ))}
+              {legend.tools
+                .filter((entry) => entry.toolId !== 'none')
+                .map((entry) => (
+                  <button
+                    key={entry.toolId}
+                    type="button"
+                    class="scatterlegend-item"
+                    data-legend-tool={entry.toolId}
+                    aria-pressed={sel.tool === entry.toolId ? 'true' : 'false'}
+                  >
+                    {toolFilterLabel(entry.label)}
+                  </button>
+                ))}
             </div>
           </div>
         </div>
@@ -245,9 +310,8 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
               </text>
 
               {geometry.connectors.map((c) => (
-                <>
+                <Fragment key={c.pair}>
                   <polyline
-                    key={`${c.pair}-line`}
                     class={muteClass(c.className, sel, c.model, c.tool)}
                     data-pair={c.pair}
                     data-model={c.model}
@@ -256,7 +320,6 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
                     points={c.pointsAttr}
                   />
                   <polyline
-                    key={`${c.pair}-hit`}
                     class={c.hitClassName}
                     data-pair={c.pair}
                     data-model={c.model}
@@ -267,7 +330,7 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
                     aria-label={c.ariaLabel}
                     points={c.pointsAttr}
                   />
-                </>
+                </Fragment>
               ))}
               {geometry.leaders.map((l, i) => (
                 <polyline
@@ -292,7 +355,7 @@ export function CostEfficiencyPlot({ view, tools }: { view: ReportView; tools: T
                   role: 'button' as const,
                   tabIndex: 0,
                   'aria-pressed': pressed(sel, m.model, m.tool),
-                  'aria-label': m.ariaLabel,
+                  'aria-label': `${m.tip}. ${m.ariaLabel}.`,
                 };
                 const g = m.geometry;
                 if (g.shape === 'square') {

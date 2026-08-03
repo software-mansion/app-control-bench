@@ -23,6 +23,7 @@
 import type {
   BarItem,
   BreakdownPanel,
+  GradedVerdict,
   LeaderRow,
   MatrixCell,
   MatrixRow,
@@ -35,8 +36,6 @@ import type {
   Stat,
   Verdict,
 } from './contract';
-
-type GradedVerdict = 'success' | 'partial' | 'fail';
 
 /** Everything the aggregates need beyond the cells themselves. */
 type Policy = {
@@ -196,7 +195,7 @@ export function deriveReportView(runIndex: RunIndex): ReportView {
       const completion = grade(pair, policy);
       if (completion.value === null) continue;
       // The composition bar is drawn from graded verdicts only, so `error` gets no segment.
-      const dist = verdictDistribution(pair, policy);
+      const pairDistribution = verdictDistribution(pair, policy);
       leaders.push({
         modelId: model.id,
         toolId,
@@ -204,7 +203,11 @@ export function deriveReportView(runIndex: RunIndex): ReportView {
         avgSeconds: avgTimeSuccess(pair, policy).value,
         avgPrice: avgPrice(pair, policy).value,
         n: completion.n,
-        distribution: { success: dist.success, partial: dist.partial, fail: dist.fail },
+        distribution: {
+          success: pairDistribution.success,
+          partial: pairDistribution.partial,
+          fail: pairDistribution.fail,
+        },
       });
     }
   }

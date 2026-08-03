@@ -29,16 +29,18 @@ async function installHeroDither(canvas: HTMLCanvasElement): Promise<HeroDitherH
   const animationTime = root.createUniform(d.f32, 0);
   const pointerData = root.createUniform(d.vec4f, d.vec4f(0.5, 0.5, 0, 0));
   const paperColor = root.createUniform(d.vec3f, cssColor(canvas));
-  const trailPoints = root.createUniform(
-    d.arrayOf(d.vec4f, TRAIL_COUNT),
-    Array.from({ length: TRAIL_COUNT }, () => d.vec4f(4, 4, 1, 0)),
-  );
+  const trailUpload = new Float32Array(TRAIL_COUNT * 4);
+  for (let index = 0; index < TRAIL_COUNT; index += 1) {
+    trailUpload.set([4, 4, 1, 0], index * 4);
+  }
+  const trailPoints = root.createUniform(d.arrayOf(d.vec4f, TRAIL_COUNT), trailUpload);
   const perlinCache = perlin2d.staticCache({ root, size: d.vec2u(64, 64) });
 
   const trailInfluenceAt = (uv: d.v2f, aspect: number) => {
     'use gpu';
     let influence = d.f32(0);
     for (const trailPoint of trailPoints.$) {
+      if (trailPoint.z >= 1) break;
       const delta = uv.sub(trailPoint.xy).mul(d.vec2f(aspect, 1));
       const distance = std.length(delta);
       const life = std.clamp(1 - trailPoint.z, 0, 1);
@@ -126,12 +128,15 @@ async function installHeroDither(canvas: HTMLCanvasElement): Promise<HeroDitherH
       lastTrailPosition = [pointerCurrent[0], pointerCurrent[1]];
       lastPointerSample = elapsedTime;
     }
-    trailPoints.write(
-      Array.from({ length: TRAIL_COUNT }, (_, index) => {
-        const point = trail[index];
-        return point ? d.vec4f(point.x, point.y, point.age, point.speed) : d.vec4f(4, 4, 1, 0);
-      }),
-    );
+    for (let index = 0; index < TRAIL_COUNT; index += 1) {
+      const offset = index * 4;
+      const point = trail[index];
+      trailUpload[offset] = point?.x ?? 4;
+      trailUpload[offset + 1] = point?.y ?? 4;
+      trailUpload[offset + 2] = point?.age ?? 1;
+      trailUpload[offset + 3] = point?.speed ?? 0;
+    }
+    trailPoints.write(trailUpload);
   };
 
   const draw = (timestamp: number) => {

@@ -80,7 +80,7 @@ function Mark({ provider }: { provider: Provider }) {
 export function ProviderLogo({ provider }: { provider: string | null }) {
   if (provider === null || !isProvider(provider)) return null;
   return (
-    <span class={`mlogo fam-${provider}`}>
+    <span class={`mlogo fam-${provider}`} aria-hidden="true">
       <Mark provider={provider} />
     </span>
   );

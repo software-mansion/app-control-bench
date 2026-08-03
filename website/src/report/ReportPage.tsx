@@ -13,7 +13,6 @@ import type {
   MatrixRow,
   MethodExample,
   Model,
-  Provenance,
   ReportInitial,
   ReportView,
   Tool,
@@ -44,13 +43,33 @@ function useLookup(models: Model[], tools: Tool[]): Lookup {
   }, [models, tools]);
 }
 
+function ModelEffortLabel({ model }: { model: Model }) {
+  const effortSuffix = model.effort ? ` (${model.effort})` : "";
+  if (!effortSuffix || !model.label.endsWith(effortSuffix)) {
+    return <>{model.label}</>;
+  }
+
+  return (
+    <>
+      {model.label.slice(0, -effortSuffix.length)}
+      <span class="model-effort">{effortSuffix}</span>
+    </>
+  );
+}
+
 /** The provider mark plus the model's label, as `mlogo(m) + mlabel(m)` produced. */
-function ModelName({ model }: { model: Model | undefined }) {
+function ModelName({
+  model,
+  separateEffort = false,
+}: {
+  model: Model | undefined;
+  separateEffort?: boolean;
+}) {
   if (!model) return null;
   return (
     <>
       <ProviderLogo provider={model.provider} />
-      {model.label}
+      {separateEffort ? <ModelEffortLabel model={model} /> : model.label}
     </>
   );
 }
@@ -60,11 +79,9 @@ function ModelName({ model }: { model: Model | undefined }) {
 function Hero({
   view,
   lookup,
-  provenance,
 }: {
   view: ReportView;
   lookup: Lookup;
-  provenance: Provenance;
 }) {
   const best = view.best;
   const lead =
@@ -79,8 +96,7 @@ function Hero({
           Created by
           <img
             src={swmMark}
-            alt="Software Mansion logo"
-            aria-hidden="true"
+            alt="Software Mansion"
             class="swm-mark"
           />
         </p>
@@ -146,18 +162,73 @@ function BestSummary({ best, lookup }: { best: LeaderRow; lookup: Lookup }) {
 
 // // ---------------------------------------------------------------------------- leaderboard
 
-// // Best first, against the ramp: success is usually the widest segment, so it absorbs the sparse head
-// // of the dither while partial and fail land in the dense tail and read as solid amber and red.
 const GRADED = ["success", "partial", "fail"] as const;
+
+const OUTCOME_LABEL: Record<(typeof GRADED)[number], string> = {
+  success: "Passed",
+  partial: "Partial",
+  fail: "Failed",
+};
+
+function OutcomeBreakdown({ row }: { row: LeaderRow }) {
+  const outcomes = GRADED.reduce(
+    (sum, verdict) => sum + row.distribution[verdict],
+    0,
+  );
+  if (outcomes === 0) return <span class="lb-outcome-na">n/a</span>;
+
+  const summary = GRADED.map(
+    (verdict) =>
+      `${OUTCOME_LABEL[verdict]} ${pct(row.distribution[verdict] / outcomes)}`,
+  );
+
+  const label = `Task outcomes: ${summary.join(", ")}`;
+  const tooltipId = `lb-outcomes-${row.modelId}-${row.toolId}`;
+
+  return (
+    <div class="lb-outcomes">
+      <span
+        class="lb-outcome-bar"
+        role="img"
+        aria-label={label}
+        aria-describedby={tooltipId}
+        tabIndex={0}
+      >
+        {GRADED.map((verdict) => {
+          const count = row.distribution[verdict];
+          return (
+            count > 0 && (
+              <i
+                key={verdict}
+                class={`lb-outcome-segment lb-${verdict}`}
+                style={{ flex: `${count} 0 0` }}
+              />
+            )
+          );
+        })}
+      </span>
+      <span class="lb-outcome-tooltip" id={tooltipId} role="tooltip">
+        {summary.join(", ")}
+      </span>
+      <span class="lb-outcome-summary" aria-hidden="true">
+        {GRADED.map((verdict) => (
+          <span key={verdict} class={`lb-outcome-value lb-${verdict}`}>
+            <i aria-hidden="true" />
+            <b>{pct(row.distribution[verdict] / outcomes)}</b>
+            {OUTCOME_LABEL[verdict]}
+          </span>
+        ))}
+      </span>
+    </div>
+  );
+}
 
 function HeroLeaderboard({
   view,
   lookup,
-  provenance,
 }: {
   view: ReportView;
   lookup: Lookup;
-  provenance: Provenance;
 }) {
   const top = view.leaders.slice(0, 10);
   return (
@@ -168,7 +239,7 @@ function HeroLeaderboard({
           <div class="benchmark-paper-fade" aria-hidden="true" />
           <div class="benchmark-vignette" aria-hidden="true" />
           <Nav page="report" />
-          <Hero view={view} lookup={lookup} provenance={provenance} />
+          <Hero view={view} lookup={lookup} />
         </div>
         <header class="section-intro" id="leaderboard">
           <div>
@@ -181,20 +252,6 @@ function HeroLeaderboard({
         </header>
       </div>
       <div class="leaderboard-wrap">
-        <div class="leaderboard-frame-head">
-          <span>
-            Top {Math.min(10, view.leaders.length)} of {view.leaders.length}{" "}
-            configurations
-          </span>
-          <span class="leaderboard-legend">
-            <i class="lb-success" />
-            success
-            <i class="lb-partial" />
-            partial
-            <i class="lb-fail" />
-            fail
-          </span>
-        </div>
         <table class="leaderboard">
           <thead>
             <tr>
@@ -204,17 +261,15 @@ function HeroLeaderboard({
               <th>Completion</th>
               <th>Time / run</th>
               <th>Cost / run</th>
-              <th>Composition</th>
+              <th>
+                Task outcomes
+              </th>
             </tr>
           </thead>
           <tbody>
             {top.map((row, i) => {
               const rank = i + 1;
               const version = lookup.tool(row.toolId)?.version;
-              const outcomes = GRADED.reduce(
-                (sum, v) => sum + row.distribution[v],
-                0,
-              );
               return (
                 <tr
                   key={`${row.modelId}__${row.toolId}`}
@@ -223,7 +278,10 @@ function HeroLeaderboard({
                   <td class="rank-pos">{String(rank).padStart(2, "0")}</td>
                   <th scope="row">
                     <span class="rank-model">
-                      <ModelName model={lookup.model(row.modelId)} />
+                      <ModelName
+                        model={lookup.model(row.modelId)}
+                        separateEffort
+                      />
                       <span class="leaderboard-mobile-tool">
                         · {lookup.toolLabel(row.toolId)}
                         {version && ` v${version}`}
@@ -239,26 +297,8 @@ function HeroLeaderboard({
                   <td class="lb-completion num">{pct(row.completion)}</td>
                   <td class="lb-time num">{fmtTime(row.avgSeconds)}</td>
                   <td class="lb-cost num">{fmtPrice(row.avgPrice)}</td>
-                  <td
-                    class="lb-score"
-                    aria-label={`Outcome composition for ${pct(row.completion)} completion`}
-                  >
-                    {outcomes > 0 && (
-                      <span class="lb-composition">
-                        <DitheredGradientBar
-                          label={`Outcome composition for ${pct(row.completion)} completion`}
-                          segments={GRADED.map((verdict) => ({
-                            width: row.distribution[verdict] / outcomes,
-                            color:
-                              verdict === "success"
-                                ? "--ok"
-                                : verdict === "partial"
-                                  ? "--warn"
-                                  : "--bad",
-                          }))}
-                        />
-                      </span>
-                    )}
+                  <td class="lb-score">
+                    <OutcomeBreakdown row={row} />
                     <div class="leaderboard-mobile-metrics">
                       <span>
                         <small>Time / run</small>
@@ -288,7 +328,7 @@ function MatrixRowCells({ row, lookup }: { row: MatrixRow; lookup: Lookup }) {
       <th class="rh sub">{row.label}</th>
     ) : row.modelId ? (
       <th class="rh">
-        <ModelName model={lookup.model(row.modelId)} />
+        <ModelName model={lookup.model(row.modelId)} separateEffort />
       </th>
     ) : (
       <th class="rh">
@@ -395,7 +435,7 @@ function MobileToolComparison({
   return (
     <div class="mobile-tool-comparison">
       <label class="mobile-tool-selector">
-        <span>Completion score</span>
+        <span>Tool</span>
         <select
           value={selectedToolId}
           onChange={(event) => {
@@ -417,15 +457,38 @@ function MobileToolComparison({
       </label>
 
       <div class="mobile-tool-overall">
-        <span>Overall</span>
+        <span>Average completion score</span>
         <div>
           <strong>{pct(overall.value)}</strong>
-          <small> n={overall.n}</small>
+          <small>n={overall.n}</small>
         </div>
       </div>
 
       <ol class="mobile-tool-ranking">
         {groups.map((group, index) => {
+          const rowContent = (
+            <>
+              <span class="mobile-tool-rank">{index + 1}</span>
+              <span class="mobile-tool-model">
+                <ProviderLogo provider={group.family || null} />
+                {group.label}
+              </span>
+              <span class="mobile-tool-score">
+                {pct(group.cell.value)}
+              </span>
+            </>
+          );
+
+          if (group.variants.length === 0) {
+            return (
+              <li key={group.id}>
+                <div class="mobile-tool-rank-row" style={{ cursor: "default" }}>
+                  {rowContent}
+                </div>
+              </li>
+            );
+          }
+
           const expanded = group.id === expandedGroupId;
           const detailId = `mobile-tool-detail-${group.id}`;
           return (
@@ -437,19 +500,22 @@ function MobileToolComparison({
                 aria-controls={detailId}
                 onClick={() => setExpandedGroupId(expanded ? null : group.id)}
               >
-                <span class="mobile-tool-rank">{index + 1}</span>
-                <span class="mobile-tool-model">
-                  <ProviderLogo provider={group.family || null} />
-                  {group.label}
-                </span>
-                <span
-                  class="mobile-tool-score"
-                  style={{ "--hm": group.cell.heat.toFixed(3) }}
-                >
-                  {pct(group.cell.value)}
-                </span>
+                {rowContent}
                 <span class="mobile-tool-chevron" aria-hidden="true">
-                  ⌄
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 15 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z"
+                      fill="currentColor"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </span>
               </button>
               <div
@@ -458,17 +524,15 @@ function MobileToolComparison({
                 hidden={!expanded}
                 aria-label={`${group.label} completion score details`}
               >
-                {group.variants.length > 0 && (
-                  <ul>
-                    {group.variants.map((variant) => (
-                      <li key={variant.label}>
-                        <span>{variant.label}</span>
-                        <b>{pct(variant.cell.value)}</b>
-                        <small>n={variant.cell.n}</small>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <ul>
+                  {group.variants.map((variant) => (
+                    <li key={variant.label}>
+                      <span>{variant.label}</span>
+                      <b>{pct(variant.cell.value)}</b>
+                      <small>n={variant.cell.n}</small>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </li>
           );
@@ -555,6 +619,7 @@ function BarPanel({
       <h3>{panel.title}</h3>
       <div class="bars">
         {panel.items.map((item) => {
+          const model = item.modelId ? lookup.model(item.modelId) : undefined;
           const label = (
             <span class="blab">
               {item.modelId && (
@@ -562,7 +627,9 @@ function BarPanel({
                   provider={lookup.model(item.modelId)?.provider ?? null}
                 />
               )}
-              <span class="bname">{item.label}</span>
+              <span class="bname">
+                {model ? <ModelEffortLabel model={model} /> : item.label}
+              </span>
             </span>
           );
           if (!shown(item)) {
@@ -587,7 +654,6 @@ function BarPanel({
               </span>
               <span class="bval">
                 {isCost ? fmtPrice(value) : fmtTime(value)}
-                <i> n{item.n}</i>
               </span>
             </div>
           );
@@ -761,10 +827,7 @@ function Methodology({
           </div>
           <p class="method-limit-note">
             The judge is never told which model produced a screenshot, though
-            the action names reveal which tool drove the device. It cannot see
-            intermediate screens, so a run that reaches the right end state by a
-            wrong route still scores as a success. That is the main known
-            weakness of final-state grading.
+            the action names reveal which tool drove the device.
           </p>
         </div>
       )}
@@ -780,11 +843,7 @@ export function ReportPage({ initial }: { initial: ReportInitial }) {
   return (
     <>
       <main id="top">
-        <HeroLeaderboard
-          view={initial.view}
-          lookup={lookup}
-          provenance={initial.provenance}
-        />
+        <HeroLeaderboard view={initial.view} lookup={lookup} />
         <ComparisonMatrix view={initial.view} lookup={lookup} />
         <Breakdowns view={initial.view} lookup={lookup} />
         <CostEfficiencyPlot view={initial.view} tools={initial.tools} />

@@ -1,32 +1,7 @@
 import { perlin2d } from '@typegpu/noise';
 import { d, std } from 'typegpu';
 
-function bayer2(x: number, y: number) {
-  'use gpu';
-  let value = d.f32(0);
-  if (y < 0.5) {
-    if (x > 0.5) value = 2;
-  } else {
-    value = 3;
-    if (x > 0.5) value = 1;
-  }
-  return value;
-}
-
-function bayer8(pixel: d.v2f) {
-  'use gpu';
-  const cell = pixel.sub(std.floor(pixel.div(8)).mul(8));
-  const lowBits = cell.sub(std.floor(cell.div(2)).mul(2));
-  const middleBits = std.floor(cell.div(2)).sub(std.floor(cell.div(4)).mul(2));
-  const highBits = std.floor(cell.div(4));
-  return (
-    (bayer2(lowBits.x, lowBits.y) * 16 +
-      bayer2(middleBits.x, middleBits.y) * 4 +
-      bayer2(highBits.x, highBits.y) +
-      0.5) /
-    64
-  );
-}
+import { bayer8 } from './bayer8';
 
 function palettePositionAt(uv: d.v2f, aspect: number, time: number) {
   'use gpu';
@@ -99,15 +74,17 @@ export const ditheredChromaticDisturbance = (
   const channelOffset = direction.mul(0.008 + std.min(speed, 0.08) * 0.42).mul(disturbance);
 
   const centerField = palettePositionAt(uv, aspect, time);
-  const redField = palettePositionAt(uv.add(channelOffset), aspect, time);
-  const greenField = palettePositionAt(uv.sub(channelOffset.mul(0.24)), aspect, time);
-  const blueField = palettePositionAt(uv.sub(channelOffset), aspect, time);
   const center = ditheredPalette(centerField, pixel);
-  const red = ditheredPalette(redField, pixel.add(channelOffset.mul(180)));
-  const green = ditheredPalette(greenField, pixel.sub(channelOffset.mul(42)));
-  const blue = ditheredPalette(blueField, pixel.sub(channelOffset.mul(180)));
-  const separated = d.vec3f(red.r, green.g, blue.b);
-  const revealed = std.mix(center, separated, disturbance);
+  let revealed = d.vec3f(center);
+  if (disturbance > 0) {
+    const redField = palettePositionAt(uv.add(channelOffset), aspect, time);
+    const greenField = palettePositionAt(uv.sub(channelOffset.mul(0.24)), aspect, time);
+    const blueField = palettePositionAt(uv.sub(channelOffset), aspect, time);
+    const red = ditheredPalette(redField, pixel.add(channelOffset.mul(180)));
+    const green = ditheredPalette(greenField, pixel.sub(channelOffset.mul(42)));
+    const blue = ditheredPalette(blueField, pixel.sub(channelOffset.mul(180)));
+    revealed = std.mix(center, d.vec3f(red.r, green.g, blue.b), disturbance);
+  }
   const luminance = std.dot(center, d.vec3f(0.2126, 0.7152, 0.0722));
   const monochrome = d.vec3f(luminance * 0.86 + 0.018);
   const disturbanceColor = std.mix(monochrome, revealed, std.max(cursorReveal, trailInfluence));

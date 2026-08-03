@@ -67,18 +67,18 @@ export function pct(p: number | null | undefined): string {
   return p === null || p === undefined ? 'n/a' : `${pyFixed(p * 100, 0)}%`;
 }
 
-/** Seconds as `"12s"` / `"3m07s"` — the minutes form zero-pads its seconds. */
+/** Seconds as `"12s"` / `"3m 07s"` — the minutes form zero-pads its seconds. */
 export function fmtTime(s: number | null | undefined): string {
   if (s === null || s === undefined) return 'n/a';
   const t = pyRound(s);
-  return t < 60 ? `${t}s` : `${Math.floor(t / 60)}m${String(t % 60).padStart(2, '0')}s`;
+  return t < 60 ? `${t}s` : `${Math.floor(t / 60)}m ${String(t % 60).padStart(2, '0')}s`;
 }
 
-/** USD per run. Sub-dime prices keep a third digit; a zero or negative price reads as "free". */
+/** USD per run, always two decimals. A zero or negative price reads as "free". */
 export function fmtPrice(p: number | null | undefined): string {
   if (p === null || p === undefined) return 'n/a';
   if (p <= 0) return 'free';
-  return p < 0.1 ? `$${pyFixed(p, 3)}` : `$${pyFixed(p, 2)}`;
+  return `$${pyFixed(p, 2)}`;
 }
 
 /** One-decimal SVG coordinate, matching the precision `report.py` writes into its markup. */
