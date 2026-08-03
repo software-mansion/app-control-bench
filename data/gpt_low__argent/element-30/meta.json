@@ -1,0 +1,47 @@
+{
+  "cell": "gpt_low:argent",
+  "model": "gpt_low",
+  "tool": "argent",
+  "task": "element-30",
+  "app": "element",
+  "kind": "post",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 73.2,
+  "n_tool_calls": 13,
+  "tool_names": [
+    "skill",
+    "argent_describe",
+    "argent_boot-device",
+    "argent_launch-app",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_run-sequence",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_keyboard"
+  ],
+  "stderr_tail": "",
+  "ts": 1784227654,
+  "golden": {
+    "name": "bench-element",
+    "udid": "53CBD69C-E05C-4DAC-9A2C-2504C42CB57F"
+  },
+  "clone_udid": "14C0C26C-3C9B-4B64-B8F8-2B2C6BFEBE1E",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  }
+}

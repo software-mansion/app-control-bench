@@ -1,0 +1,9 @@
+/* The report's stylesheet, assembled from the two files that live in benchmarks/runner/.
+ *
+ * They live there, not here, so the `stylized` branch reskin stays a theme.css value swap, and so
+ * benchmarks/runner/check_theme.py can guard both trees from one place. Neither file contains a
+ * url(), so Vite has no asset references to rewrite.
+ *
+ * Vite emits one hashed stylesheet from this entry and both pages link it. */
+@import '../../../benchmarks/runner/theme.css';
+@import '../../../benchmarks/runner/report.css';

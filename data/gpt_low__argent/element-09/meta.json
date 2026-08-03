@@ -1,0 +1,39 @@
+{
+  "cell": "gpt_low:argent",
+  "model": "gpt_low",
+  "tool": "argent",
+  "task": "element-09",
+  "app": "element",
+  "kind": "nav",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 26.3,
+  "n_tool_calls": 5,
+  "tool_names": [
+    "skill",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1784224148,
+  "golden": {
+    "name": "bench-element",
+    "udid": "53CBD69C-E05C-4DAC-9A2C-2504C42CB57F"
+  },
+  "clone_udid": "11B450C0-A794-46C5-B3E2-329268178380",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  }
+}

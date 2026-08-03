@@ -1,0 +1,41 @@
+{
+  "cell": "gpt_low:agent-device",
+  "model": "gpt_low",
+  "tool": "agent-device",
+  "task": "bsky-22",
+  "app": "bluesky",
+  "kind": "interact",
+  "nav_category": "react",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 31.2,
+  "n_tool_calls": 8,
+  "tool_names": [
+    "skill",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash"
+  ],
+  "stderr_tail": "",
+  "ts": 1783528959,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+  },
+  "clone_udid": "087045B2-DC9A-4CCF-9F79-21520F0AE0ED",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "cli",
+    "skills": true,
+    "tool": "0.17.6",
+    "tool_pinned": "0.17.6",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "cell": "gpt_low:none",
+  "model": "gpt_low",
+  "tool": "none",
+  "task": "element-08",
+  "app": "element",
+  "kind": "post",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 28.0,
+  "n_tool_calls": 7,
+  "tool_names": [
+    "bash",
+    "read",
+    "bash",
+    "bash",
+    "bash",
+    "grep",
+    "glob"
+  ],
+  "stderr_tail": "",
+  "ts": 1783975885,
+  "golden": {
+    "name": "bench-element",
+    "udid": "53CBD69C-E05C-4DAC-9A2C-2504C42CB57F"
+  },
+  "clone_udid": "5B863330-F4C0-40FF-8708-D7CC086822A8",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "shell",
+    "skills": false,
+    "tool": null,
+    "tool_pinned": null,
+    "app": null,
+    "app_pinned": null
+  }
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<!-- data-tw-heatmap / data-tw-heat-curve are load-bearing: runner/report.css:104-126 keys the entire
+     hero-matrix heatmap off these two attributes. Remove them and the heatmap silently disappears.
+     data-tw-explain is deliberately absent — its absence is what keeps the [i] tooltips rather than
+     inline section captions. -->
+<html lang="en" data-tw-heatmap="on" data-tw-heat-curve="exp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AppControlBench Results</title>
+  </head>
+  <body>
+    <div class="wrap" id="report-root"></div>
+    <script type="module" src="/src/report/main.tsx"></script>
+  </body>
+</html>

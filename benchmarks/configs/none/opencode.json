@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": "allow",
+  "mcp": {
+    "radon": {
+      "enabled": false
+    },
+    "linear": {
+      "enabled": false
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://localhost:8788/v1"
+      }
+    },
+    "openai": {
+      "options": {
+        "baseURL": "http://localhost:8790/v1"
+      }
+    }
+  }
+}

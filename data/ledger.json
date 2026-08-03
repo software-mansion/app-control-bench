@@ -1,0 +1,3968 @@
+{
+  "units": {
+    "haiku_low__agent-device__element-01": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-01",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-01": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-01",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-02": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-02",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-03": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-03",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__element-04": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-04",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-05": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-05",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-06": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-06",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-07": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-07",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "gpt_low__agent-device__element-08": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-08",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__element-09": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-09",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-10": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-10",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__element-11": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-11",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-12": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-12",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-13": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-13",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-14": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-14",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-15": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-15",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-16": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-16",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "gpt_low__agent-device__element-17": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-17",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-18": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-18",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-19": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-19",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-20": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-20",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-21": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-21",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-22": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-22",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-23": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-23",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-24": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-24",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-25": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-25",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "gpt_low__agent-device__element-26": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-26",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__element-27": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-27",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__element-28": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-28",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__element-29": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-29",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__element-30": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "element-30",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_high__agent-device__element-01": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-01",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-02": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-02",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-03": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-03",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-04": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-04",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-05": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-05",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-06": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-06",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-07": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-07",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "gpt_high__agent-device__element-08": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-08",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-09": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-09",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-10": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-10",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-11": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-11",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-12": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-12",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-13": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-13",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_high__agent-device__element-14": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-14",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-15": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-15",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-16": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-16",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "gpt_high__agent-device__element-17": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-17",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_high__agent-device__element-18": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-18",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-19": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-19",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-20": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-20",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_high__agent-device__element-21": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-21",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-22": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-22",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-23": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-23",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-24": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-24",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-25": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-25",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-26": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-26",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-27": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-27",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_high__agent-device__element-28": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-28",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_high__agent-device__element-29": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-29",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_high__agent-device__element-30": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "element-30",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-02": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-02",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-03": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-03",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-04": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-04",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-05": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-05",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-06": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-06",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-07": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-07",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "haiku_low__agent-device__element-08": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-08",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "haiku_low__agent-device__element-09": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-09",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-10": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-10",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-11": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-11",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-12": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-12",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-13": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-13",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-14": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-14",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-15": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-15",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-16": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-16",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "haiku_low__agent-device__element-17": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-17",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-18": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-18",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-19": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-19",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "haiku_low__agent-device__element-20": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-20",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-21": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-21",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-22": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-22",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-23": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-23",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-24": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-24",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-25": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-25",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-26": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-26",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-27": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-27",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-28": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-28",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__element-29": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-29",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "haiku_low__agent-device__element-30": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "element-30",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-01": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-01",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-02": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-02",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-03": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-03",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-04": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-04",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "haiku_high__agent-device__element-05": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-05",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-06": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-06",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-07": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-07",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "haiku_high__agent-device__element-08": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-08",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-09": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-09",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-10": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-10",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "haiku_high__agent-device__element-11": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-11",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-12": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-12",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-13": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-13",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-14": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-14",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-15": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-15",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-16": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-16",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-17": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-17",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-18": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-18",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-19": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-19",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-20": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-20",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-21": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-21",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-22": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-22",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-23": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-23",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-24": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-24",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-25": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-25",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-26": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-26",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-27": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-27",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "haiku_high__agent-device__element-28": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-28",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_high__agent-device__element-29": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-29",
+      "state": "judged",
+      "verdict": "partial"
+    },
+    "haiku_high__agent-device__element-30": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "element-30",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "haiku_low__agent-device__bsky-22": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-25": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-01": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-01",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__bsky-02": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-02",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__bsky-03": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-03",
+      "state": "judged",
+      "verdict": "fail"
+    },
+    "gpt_low__agent-device__bsky-04": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-04",
+      "state": "judged",
+      "verdict": "success"
+    },
+    "gpt_low__agent-device__bsky-05": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-06": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-07": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-08": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-09": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-10": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-12": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-13": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-14": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-15": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-16": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-17": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-18": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-19": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-20": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-21": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-22": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-23": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-24": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-25": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-26": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-27": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-28": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-29": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "gpt_low__agent-device__bsky-30": {
+      "model": "gpt_low",
+      "tool": "agent-device",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-01": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-02": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-03": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-04": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-05": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-06": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-07": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-08": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-09": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-10": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-12": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-13": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-14": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-15": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-16": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-17": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-18": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-19": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-20": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-21": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-22": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-23": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-24": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-25": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-26": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-27": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-28": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-29": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "gpt_high__agent-device__bsky-30": {
+      "model": "gpt_high",
+      "tool": "agent-device",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-01": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-02": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-03": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-04": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-05": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-06": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-07": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-08": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-09": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-10": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-12": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-13": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-14": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-15": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-16": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-17": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-18": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-19": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-20": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-21": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-23": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-24": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-26": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-27": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-28": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-29": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "haiku_low__agent-device__bsky-30": {
+      "model": "haiku_low",
+      "tool": "agent-device",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-01": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-02": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-03": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-04": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-05": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-06": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-07": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-08": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-09": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-10": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-12": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-13": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-14": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-15": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-16": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-17": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-18": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-19": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-20": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-21": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-22": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-23": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-24": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-25": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-26": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-27": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-28": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-29": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "haiku_high__agent-device__bsky-30": {
+      "model": "haiku_high",
+      "tool": "agent-device",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-01": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-02": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-03": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-04": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-05": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-06": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-07": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-08": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-09": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-10": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-12": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-13": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-14": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-15": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-16": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-17": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-18": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-19": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-20": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-21": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-22": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-23": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-24": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-25": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-26": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-27": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-28": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-29": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "gpt_low__argent__bsky-30": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-01": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-02": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-03": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-04": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-05": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-06": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-07": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-08": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-09": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-10": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-12": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-13": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-14": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-15": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-16": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-17": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-18": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-19": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-20": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-21": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-22": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-23": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-24": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-25": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-26": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-27": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-28": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-29": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "gpt_high__argent__bsky-30": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-01": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-02": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-03": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-04": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-05": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-06": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-07": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-08": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-09": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-10": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-12": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-13": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-14": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-15": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-16": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-17": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-18": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-19": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-20": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-21": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-22": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-23": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-24": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-25": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-26": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-27": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-28": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-29": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "haiku_low__argent__bsky-30": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-01": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-02": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-03": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-04": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-05": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-06": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-07": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-08": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-09": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-10": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-12": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-13": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-14": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-15": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-16": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-17": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-18": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-19": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-20": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-21": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-22": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-23": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-24": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-25": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-26": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-27": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-28": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-29": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "haiku_high__argent__bsky-30": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-01": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-01",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-02": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-02",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-03": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-03",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-04": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-04",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-05": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-05",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-06": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-06",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-07": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-07",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-08": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-08",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-09": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-09",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-10": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-10",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-11": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-11",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-12": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-12",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-13": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-13",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-14": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-14",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-15": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-15",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-16": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-16",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-17": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-17",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-18": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-18",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-19": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-19",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-20": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-20",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-21": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-21",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-22": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-22",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-23": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-23",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-24": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-24",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-25": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-25",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-26": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-26",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-27": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-27",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-28": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-28",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-29": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-29",
+      "state": "completed"
+    },
+    "gpt_low__argent__element-30": {
+      "model": "gpt_low",
+      "tool": "argent",
+      "task": "element-30",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-01": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-01",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-02": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-02",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-03": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-03",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-04": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-04",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-05": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-05",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-06": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-06",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-07": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-07",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-08": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-08",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-09": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-09",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-10": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-10",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-11": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-11",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-12": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-12",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-13": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-13",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-14": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-14",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-15": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-15",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-16": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-16",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-17": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-17",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-18": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-18",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-19": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-19",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-20": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-20",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-21": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-21",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-22": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-22",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-23": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-23",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-24": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-24",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-25": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-25",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-26": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-26",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-27": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-27",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-28": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-28",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-29": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-29",
+      "state": "completed"
+    },
+    "gpt_high__argent__element-30": {
+      "model": "gpt_high",
+      "tool": "argent",
+      "task": "element-30",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-01": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-01",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-02": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-02",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-03": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-03",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-04": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-04",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-05": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-05",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-06": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-06",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-07": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-07",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-08": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-08",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-09": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-09",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-10": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-10",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-11": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-11",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-12": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-12",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-13": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-13",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-14": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-14",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-15": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-15",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-16": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-16",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-17": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-17",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-18": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-18",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-19": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-19",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-20": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-20",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-21": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-21",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-22": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-22",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-23": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-23",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-24": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-24",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-25": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-25",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-26": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-26",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-27": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-27",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-28": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-28",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-29": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-29",
+      "state": "completed"
+    },
+    "haiku_low__argent__element-30": {
+      "model": "haiku_low",
+      "tool": "argent",
+      "task": "element-30",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-01": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-01",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-02": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-02",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-03": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-03",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-04": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-04",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-05": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-05",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-06": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-06",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-07": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-07",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-08": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-08",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-09": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-09",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-10": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-10",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-11": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-11",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-12": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-12",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-13": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-13",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-14": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-14",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-15": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-15",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-16": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-16",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-17": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-17",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-18": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-18",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-19": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-19",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-20": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-20",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-21": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-21",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-22": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-22",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-23": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-23",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-24": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-24",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-25": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-25",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-26": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-26",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-27": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-27",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-28": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-28",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-29": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-29",
+      "state": "completed"
+    },
+    "haiku_high__argent__element-30": {
+      "model": "haiku_high",
+      "tool": "argent",
+      "task": "element-30",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-01": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-02": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-03": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-04": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-05": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-06": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-07": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-08": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-09": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-10": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-12": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-13": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-14": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-15": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-16": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-17": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-18": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-19": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-20": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-21": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-22": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-23": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-24": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-25": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-26": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-27": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-28": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-29": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "gpt_low__none__bsky-30": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-01": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-02": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-03": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-04": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-05": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-06": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-07": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-08": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-09": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-10": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-12": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-13": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-14": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-15": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-16": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-17": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-18": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-19": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-20": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-21": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-22": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-23": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-24": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-25": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-26": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-27": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-28": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-29": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "gpt_high__none__bsky-30": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-01": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-02": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-03": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-04": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-05": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-06": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-07": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-08": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-09": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-10": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-12": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-13": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-14": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-15": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-16": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-17": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-18": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-19": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-20": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-21": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-22": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-23": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-24": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-25": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-26": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-27": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-28": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-29": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "haiku_low__none__bsky-30": {
+      "model": "haiku_low",
+      "tool": "none",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-01": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-01",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-02": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-02",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-03": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-03",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-04": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-04",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-05": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-05",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-06": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-06",
+      "state": "completed"
+    },
+    "gpt_low__none__element-01": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-01",
+      "state": "completed"
+    },
+    "gpt_low__none__element-02": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-02",
+      "state": "completed"
+    },
+    "gpt_low__none__element-03": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-03",
+      "state": "completed"
+    },
+    "gpt_low__none__element-04": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-04",
+      "state": "completed"
+    },
+    "gpt_low__none__element-05": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-05",
+      "state": "completed"
+    },
+    "gpt_low__none__element-06": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-06",
+      "state": "completed"
+    },
+    "gpt_low__none__element-07": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-07",
+      "state": "completed"
+    },
+    "gpt_low__none__element-08": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-08",
+      "state": "completed"
+    },
+    "gpt_low__none__element-09": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-09",
+      "state": "completed"
+    },
+    "gpt_low__none__element-10": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-10",
+      "state": "completed"
+    },
+    "gpt_low__none__element-11": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-11",
+      "state": "completed"
+    },
+    "gpt_low__none__element-12": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-12",
+      "state": "completed"
+    },
+    "gpt_low__none__element-13": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-13",
+      "state": "completed"
+    },
+    "gpt_low__none__element-14": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-14",
+      "state": "completed"
+    },
+    "gpt_low__none__element-15": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-15",
+      "state": "completed"
+    },
+    "gpt_low__none__element-16": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-16",
+      "state": "completed"
+    },
+    "gpt_low__none__element-17": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-17",
+      "state": "completed"
+    },
+    "gpt_low__none__element-18": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-18",
+      "state": "completed"
+    },
+    "gpt_low__none__element-19": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-19",
+      "state": "completed"
+    },
+    "gpt_low__none__element-20": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-20",
+      "state": "completed"
+    },
+    "gpt_low__none__element-21": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-21",
+      "state": "completed"
+    },
+    "gpt_low__none__element-22": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-22",
+      "state": "completed"
+    },
+    "gpt_low__none__element-23": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-23",
+      "state": "completed"
+    },
+    "gpt_low__none__element-24": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-24",
+      "state": "completed"
+    },
+    "gpt_low__none__element-25": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-25",
+      "state": "completed"
+    },
+    "gpt_low__none__element-26": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-26",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-07": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-07",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-08": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-08",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-09": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-09",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-10": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-10",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-12": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-12",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-13": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-13",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-14": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-14",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-15": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-15",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-16": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-16",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-17": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-17",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-18": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-18",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-19": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-19",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-20": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-20",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-21": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-21",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-22": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-22",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-23": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-23",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-24": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-24",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-25": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-25",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-26": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-26",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-27": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-27",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-28": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-28",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-29": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-29",
+      "state": "completed"
+    },
+    "haiku_high__none__bsky-30": {
+      "model": "haiku_high",
+      "tool": "none",
+      "task": "bsky-30",
+      "state": "completed"
+    },
+    "gpt_low__none__element-27": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-27",
+      "state": "completed"
+    },
+    "gpt_low__none__element-28": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-28",
+      "state": "completed"
+    },
+    "gpt_low__none__element-29": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-29",
+      "state": "completed"
+    },
+    "gpt_low__none__element-30": {
+      "model": "gpt_low",
+      "tool": "none",
+      "task": "element-30",
+      "state": "completed"
+    },
+    "gpt_high__none__element-01": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-01",
+      "state": "completed"
+    },
+    "gpt_high__none__element-02": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-02",
+      "state": "completed"
+    },
+    "gpt_high__none__element-03": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-03",
+      "state": "completed"
+    },
+    "gpt_high__none__element-04": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-04",
+      "state": "completed"
+    },
+    "gpt_high__none__element-05": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-05",
+      "state": "completed"
+    },
+    "gpt_high__none__element-06": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-06",
+      "state": "completed"
+    },
+    "gpt_high__none__element-07": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-07",
+      "state": "completed"
+    },
+    "gpt_high__none__element-08": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-08",
+      "state": "completed"
+    },
+    "gpt_high__none__element-09": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-09",
+      "state": "completed"
+    },
+    "gpt_high__none__element-10": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-10",
+      "state": "completed"
+    },
+    "gpt_high__none__element-11": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-11",
+      "state": "completed"
+    },
+    "gpt_high__none__element-12": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-12",
+      "state": "completed"
+    },
+    "gpt_high__none__element-13": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-13",
+      "state": "completed"
+    },
+    "gpt_high__none__element-14": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-14",
+      "state": "completed"
+    },
+    "gpt_high__none__element-15": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-15",
+      "state": "completed"
+    },
+    "gpt_high__none__element-16": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-16",
+      "state": "completed"
+    },
+    "gpt_high__none__element-17": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-17",
+      "state": "completed"
+    },
+    "gpt_high__none__element-18": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-18",
+      "state": "completed"
+    },
+    "gpt_high__none__element-19": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-19",
+      "state": "completed"
+    },
+    "gpt_high__none__element-20": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-20",
+      "state": "completed"
+    },
+    "gpt_high__none__element-21": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-21",
+      "state": "completed"
+    },
+    "gpt_high__none__element-22": {
+      "model": "gpt_high",
+      "tool": "none",
+      "task": "element-22",
+      "state": "completed"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "_comment": "Pinned versions of the benchmarked agent tools. These are the versions actually installed and used to produce the results. argent bumped to 0.15.0 on 2026-07-08 (first release confirmed working on macOS 27; the argent SoTA element+bsky phase runs on it). agent-device 0.17.6 from ~/dev/agent-device/package.json + configs/agent-device/daemon.json. bench.py checks installed tools against these and warns on drift; report.py displays them on the site. Bump these when the tools are upgraded AND a fresh run follows.",
+  "argent": "0.15.0",
+  "agent-device": "0.17.6"
+}

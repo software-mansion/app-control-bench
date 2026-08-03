@@ -1,0 +1,42 @@
+{
+  "cell": "haiku_high:argent",
+  "model": "haiku_high",
+  "tool": "argent",
+  "task": "element-27",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 51.4,
+  "n_tool_calls": 9,
+  "tool_names": [
+    "skill",
+    "argent_screenshot",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1783618340,
+  "golden": {
+    "name": "bench-element",
+    "udid": "77F1A359-A13B-4318-B8D3-733C28AD320F"
+  },
+  "clone_udid": "EFD9B846-0572-424D-80CB-F74CA15D10CD",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  }
+}

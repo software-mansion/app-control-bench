@@ -1,0 +1,52 @@
+{
+  "cell": "gpt_high:argent",
+  "model": "gpt_high",
+  "tool": "argent",
+  "task": "element-07",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 123.5,
+  "n_tool_calls": 19,
+  "tool_names": [
+    "skill",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_native-devtools-status",
+    "argent_restart-app",
+    "argent_native-devtools-status",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_native-describe-screen",
+    "argent_native-find-views",
+    "argent_native-user-interactable-view-at-point",
+    "argent_native-full-hierarchy",
+    "argent_native-find-views",
+    "argent_native-find-views",
+    "argent_gesture-tap",
+    "argent_stop-all-simulator-servers"
+  ],
+  "stderr_tail": "",
+  "ts": 1783597739,
+  "golden": {
+    "name": "bench-element",
+    "udid": "77F1A359-A13B-4318-B8D3-733C28AD320F"
+  },
+  "clone_udid": "1DD2FDF4-F09D-47A5-BD3B-142CA6E3C672",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  }
+}

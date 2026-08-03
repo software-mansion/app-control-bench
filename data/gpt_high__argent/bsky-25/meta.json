@@ -1,0 +1,43 @@
+{
+  "cell": "gpt_high:argent",
+  "model": "gpt_high",
+  "tool": "argent",
+  "task": "bsky-25",
+  "app": "bluesky",
+  "kind": "interact",
+  "nav_category": "form-entry",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 48.9,
+  "n_tool_calls": 10,
+  "tool_names": [
+    "skill",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_keyboard",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_await-ui-element",
+    "argent_describe"
+  ],
+  "stderr_tail": "",
+  "ts": 1783548656,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+  },
+  "clone_udid": "F6BE57BC-618D-4DC8-BE0D-A0C6B94280EB",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  }
+}

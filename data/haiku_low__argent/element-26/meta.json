@@ -1,0 +1,37 @@
+{
+  "cell": "haiku_low:argent",
+  "model": "haiku_low",
+  "tool": "argent",
+  "task": "element-26",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "menu-drawer",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 34.1,
+  "n_tool_calls": 4,
+  "tool_names": [
+    "skill",
+    "argent_screenshot",
+    "argent_describe",
+    "argent_gesture-custom"
+  ],
+  "stderr_tail": "",
+  "ts": 1783613575,
+  "golden": {
+    "name": "bench-element",
+    "udid": "77F1A359-A13B-4318-B8D3-733C28AD320F"
+  },
+  "clone_udid": "879C4BC0-7BC0-4725-9161-91358D507523",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  }
+}

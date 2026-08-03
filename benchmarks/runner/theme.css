@@ -1,0 +1,391 @@
+/* ============================================================================================
+   theme.css — THE SINGLE SOURCE OF TRUTH FOR EVERY RAW STYLE VALUE IN THIS REPO.
+
+   This is the only file allowed to contain a literal colour, font stack, font size, shadow or
+   z-index. report.css, web/src/**, and dashboard.py consume these tokens through
+   var() and must never restate a value. `python3 runner/check_theme.py` enforces that — add a
+   literal anywhere else and CI fails.
+
+   It is inlined (never linked) into every page we emit, so the report stays ONE self-contained
+   HTML file with no external requests. See docs/reporting.md.
+
+   Reskinning the report = editing the numbers in here, and nowhere else.
+
+   Layers:
+     1. PALETTE   — raw hues. The only place a hex may appear.
+     2. SEMANTIC  — what a colour MEANS (--accent, --ok, --bad). Components use these, never the palette.
+     3. TYPE      — font stacks, size scale, weights, tracking, leading.
+     4. GEOMETRY  — hairlines and the dimensions of components that must agree with each other.
+     5. ELEVATION — shadows + scrim, all derived from one --shadow-rgb.
+     6. MOTION    — durations + easing.
+     7. LAYERS    — z-index.
+     8. TWEAKS    — the live look-and-feel playground overrides these on <html> at runtime.
+     9. DASHBOARD — the live run dashboard is a SEPARATE product with its own scale. See §9.
+
+   Not tokenised on purpose: one-off padding, margins and grid templates. They are intra-component
+   layout, not theme — a --sp-9px used once is indirection, not a design token.
+   ============================================================================================ */
+
+:root{
+  /* ---- 1. PALETTE (light) — raw hues only ------------------------------------------------
+     ONE neutral ramp, and it is WARM. The page ground is a warm off-white (--p-stone-050), so a
+     cool slate ramp on top of it read as two greys fighting; every neutral here is now mixed from
+     the same near-black, which is what makes the page read as off-white-and-ink rather than as a
+     tinted UI. Hue is spent ONLY on state (green/amber/red) and on parent-company identity
+     (--fam-*). Nothing else on this page is allowed to be a colour. */
+  --p-navy:#001a72;            /* the old brand accent. Retained for ONE job: the heatmap-hue tweak. */
+  --p-green:#2f7d4f;  --p-green-mid:#2f7d4f;  --p-green-wash:#e7f1ea;
+  --p-amber:#94701a;  --p-amber-mid:#94701a;  --p-amber-wash:#f6efdb;
+  --p-red:#b23c3c;    --p-red-mid:#b23c3c;    --p-red-wash:#fae9e9;
+  --p-ink:#1b1b17;             /* near-black: headings, big numbers, THE accent */
+  --p-stone-900:#3d3d36;       /* body text */
+  --p-stone-600:#55554d;       /* muted text */
+  --p-stone-400:#86867c;       /* faint text */
+  --p-stone-350:#a9a99e;       /* pending */
+  --p-stone-300:#cfcec4;       /* switch track, off */
+  --p-stone-250:#b9bbaa;       /* neutral bar fill */
+  --p-stone-200:#e6e5dd;       /* hairline */
+  --p-stone-150:#edece4;       /* hairline, softer */
+  --p-stone-100:#e8e7de;       /* inert ground (judge-error / stale chips) */
+  --p-stone-050:#f4f4f0;       /* page ground */
+  --p-stone-025:#f7f7f3;       /* raised ground (table heads, secondary panels) */
+  --p-white:#fdfdfc;
+  --p-test:#f4f2ea;
+
+  /* ---- 2. SEMANTIC (light) --------------------------------------------------------------- */
+  --bg:var(--p-test);           /* page */
+  --card:var(--p-white);             /* raised surface */
+  --panel-bg:var(--p-white);         /* small raised surfaces: buttons, inputs, thumbs */
+  --head:var(--p-stone-025);         /* table heads, secondary grounds */
+  --line:var(--p-stone-200);         /* hairline */
+  --line2:var(--p-stone-150);        /* hairline, softer */
+  --tx:var(--p-stone-900);           /* body text */
+  --ink:var(--p-ink);                /* strong headings / big numbers */
+  --mut:var(--p-stone-600);          /* muted text */
+  --faint:var(--p-stone-400);        /* faint text */
+  --pend:var(--p-stone-350);         /* pending runs */
+  --fill:var(--p-stone-250);         /* non-leader bar fill */
+  --sw-off:var(--p-stone-300);       /* switch track, off */
+  --sw-knob:var(--p-white);          /* switch knob */
+  --badge-fg:var(--p-ink);           /* text on a saturated state colour (preview.py's live badge) */
+
+  /* The report introduction is an intentionally self-contained benchmark signal field. Its palette
+     comes from the TypeGPU prototype and does not alter the analytical report surfaces below it. */
+  --hero-bg:#070807;
+  --hero-fg:#f4f2ea;
+  --hero-header-muted:rgb(244 242 234 / .54);
+  --hero-lead:rgb(244 242 234 / .72);
+  --hero-muted:rgb(244 242 234 / .65);
+  --hero-faint:rgb(244 242 234 / .5);
+  --hero-rule:rgb(244 242 234 / .26);
+  --hero-card-rule:rgb(244 242 234 / .2);
+  --hero-card-rule-strong:rgb(244 242 234 / .38);
+  --hero-card-rule-soft:rgb(244 242 234 / .15);
+  --hero-card-ground:rgb(7 9 10 / .12);
+  --hero-card-surface:linear-gradient(135deg,rgb(255 255 255 / .09),transparent 42%),rgb(7 9 10 / .48);
+  --hero-card-surface-shadow:inset 0 1px 0 rgb(255 255 255 / .18),inset 0 -1px 0 rgb(255 255 255 / .06);
+  --hero-card-shadow:0 28px 80px rgb(2 4 5 / .3),0 0 0 1px rgb(255 255 255 / .035);
+  --hero-title-shadow:0 3px 28px rgb(0 0 0 / .42);
+  --hero-copy-shadow:0 2px 18px rgb(0 0 0 / .7);
+  --hero-brand-shadow:0 0 12px rgb(255 255 255 / .36);
+  --hero-vignette:
+    linear-gradient(90deg,rgb(5 7 9 / .76) 0%,rgb(5 7 9 / .5) 34%,rgb(5 7 9 / .12) 68%,rgb(5 7 9 / .2) 100%),
+    linear-gradient(180deg,rgb(0 0 0 / .38),transparent 22% 70%,rgb(0 0 0 / .009) 73.75%,rgb(0 0 0 / .058) 77.5%,rgb(0 0 0 / .154) 81.25%,rgb(0 0 0 / .28) 85%,rgb(0 0 0 / .406) 88.75%,rgb(0 0 0 / .502) 92.5%,rgb(0 0 0 / .551) 96.25%,rgb(0 0 0 / .56)),
+    radial-gradient(circle at 50% 45%,transparent 34%,rgb(0 0 0 / .24) 100%);
+  --hero-font:Arial,Helvetica,sans-serif;
+  --mask-fade:rgb(0 0 0 / .35);
+  --mask-solid:#000;
+
+  /* Best-configuration card (agent-transcript treatment, "5A"). Hero is fixed-dark, so — like
+     --hero-card-* above — these are hardcoded rather than routed through the light/dark palette. */
+  --bcc-border:rgb(255 255 255 / .13);
+  --bcc-border-top:rgb(255 255 255 / .30);
+  --bcc-bg:linear-gradient(165deg,rgb(12 12 10 / .38),rgb(8 8 7 / .70));
+  --bcc-bg-fallback:rgb(11 11 10 / .92);
+  --bcc-shadow:0 40px 90px -34px rgb(0 0 0 / .95),inset 0 -1px 0 rgb(0 0 0 / .5);
+  --bcc-titlebar-bg:linear-gradient(rgb(255 255 255 / .09),rgb(255 255 255 / .03));
+  --bcc-titlebar-rule:rgb(255 255 255 / .12);
+  --bcc-scanlines:repeating-linear-gradient(to bottom,rgb(255 255 255 / .028) 0 1px,transparent 1px 3px);
+  --bcc-fade-mask:linear-gradient(to bottom,rgb(0 0 0 / .45),#000 40%);
+  --bcc-panel-bg:rgb(255 255 255 / .03);
+  --bcc-panel-border:rgb(255 255 255 / .14);
+  --bcc-score-shadow:0 4px 26px rgb(0 0 0 / .6);
+  --bcc-gold:oklch(0.86 0.10 92);     /* rank, conclusion bullet, panel spine */
+  --bcc-green:oklch(0.84 0.13 140);   /* success bullets */
+  --bcc-red:oklch(0.72 0.14 45);      /* failures */
+  --bcc-score:#fcfbf6;                /* the completion score */
+  --bcc-metric-fg:#f8f6ef;            /* cost/time/rank values */
+  --bcc-percent:rgb(252 251 246 / .72); /* the score's "%" sign */
+  /* the rest of the card's text is one cream (242,239,230) at a ladder of alphas, named by role */
+  --bcc-titlebar-left:rgb(242 239 230 / .55);
+  --bcc-chevron:rgb(242 239 230 / .35);
+  --bcc-prompt:rgb(242 239 230 / .78);
+  --bcc-strong:rgb(242 239 230 / .8);   /* tool-call names, cursor block */
+  --bcc-conclusion:rgb(242 239 230 / .85);
+  --bcc-label:rgb(242 239 230 / .5);    /* the score's "COMPLETION" caption */
+  --bcc-sub:rgb(242 239 230 / .6);      /* "N / M tasks passed" */
+  --bcc-dim:rgb(242 239 230 / .45);     /* tool-call args/results, neutral bullets */
+  --bcc-metric-label:rgb(242 239 230 / .42);
+
+  /* THE ACCENT IS INK, NOT A HUE. Links, row leaders, focus rings, active toggles and the heatmap
+     all key off the same near-black the headings use. Emphasis on this page is carried by weight,
+     tint and rule — never by introducing a second colour, because the only colours left (state and
+     parent-company identity) each mean something specific, and an accent hue would compete. */
+  --accent:var(--p-ink);
+  --accent-bg:var(--p-stone-100);    /* accent-tinted ground */
+  --accent-line:var(--p-stone-300);  /* accent-tinted border */
+
+  /* The heatmap is the one place a colour is used as a SCALE rather than as an emphasis, so it gets
+     its own token even though it now resolves to the same ink as --accent: the ramp's endpoints are
+     tuned against the tint curve (§8) and the cell's own text flips to --card as the cell darkens,
+     which is a property of the scale, not of the accent. The tweaks menu can still swap in the old
+     brand navy at runtime for anyone who wants a hue back. */
+  --heat-ink:var(--p-ink);           /* the default: the same ink as everything else */
+  --heat-navy:var(--p-navy);         /* opt back in to the old brand hue */
+  --heat:var(--heat-ink);
+
+  --ok:var(--p-green);   --okd:var(--p-green-mid);  --okb:var(--p-green-wash);
+  --warn:var(--p-amber); --warnd:var(--p-amber-mid); --warnb:var(--p-amber-wash);
+  --bad:var(--p-red);    --badd:var(--p-red-mid);   --badb:var(--p-red-wash);
+  --erd:var(--p-stone-400); --erb:var(--p-stone-100);  /* judge error / stale: inert, no hue */
+  --hatch:var(--p-stone-200);                           /* annulled rows: diagonal hatch stripe */
+  --row-tint:rgb(0 0 0 / .035);                         /* child rows: one step down from their parent */
+
+  /* Run explorer, scoped by .run-explorer-page in report.css. It USED to carry its own palette so the
+     accepted desktop surface could stay faithful without repainting the report. That bought a second
+     product: an indigo accent that exists nowhere else, and a candy state ramp (#22c55e / #ef4444)
+     against the report's muted one — two pages behind one nav disagreeing about what "fail" looks
+     like. It now derives from the semantic layer, so the two pages are one product. */
+  --rx-bg:var(--bg); --rx-raised:var(--card); --rx-sunken:var(--head); --rx-sunken-2:var(--p-stone-100);
+  --rx-frame:var(--line); --rx-header-line:var(--line2); --rx-row-line:var(--line2); --rx-control-line:var(--line);
+  --rx-text:var(--ink); --rx-body:var(--tx); --rx-secondary:var(--mut); --rx-muted:var(--mut);
+  --rx-label:var(--faint); --rx-faint:var(--faint);
+  --rx-accent:var(--accent); --rx-selected:var(--accent-bg); --rx-selected-line:var(--accent-line);
+  --rx-accent-deep:var(--ink);
+  --rx-positive-bg:var(--okb); --rx-positive:var(--ok); --rx-negative-bg:var(--badb); --rx-negative:var(--bad);
+  --rx-ok:var(--ok); --rx-ok-dot:var(--okd); --rx-ok-bg:var(--okb);
+  --rx-warn:var(--warn); --rx-warn-dot:var(--warnd); --rx-warn-bg:var(--warnb);
+  --rx-bad:var(--bad); --rx-bad-dot:var(--badd); --rx-bad-bg:var(--badb);
+
+  /* per-parent-company brand hues — IDENTITY only (scatter dots, ladder connectors), never a
+     result. Theme-invariant on purpose: a brand is a brand in both themes. THIS IS THEIR ONLY
+     DEFINITION — the tweaks menu's colour inputs read these values back out via getComputedStyle
+     at load, so there is no second copy in Python. */
+  --fam-openai:#000000; --fam-anthropic:#d9604a; --fam-google:#4285f4; --fam-meta:#0866ff;
+  --fam-xai:#71767b; --fam-mistral:#f2551f; --fam-deepseek:#4d6bfe; --fam-qwen:#615ced;
+
+  /* within-family model shades: one family hue, up to three distinguishable models. Colour identifies
+     the MODEL in the scatter; the family hue is still the base so brand identity survives. v0 (no
+     class) is the brand hue itself — these only apply from v1 on. Percentages, not hues, so they stay
+     theme-invariant like --fam-* above (color-mix's OTHER side, --card / --tx, is what shifts per theme). */
+  --famv-1-mix:34%;   /* v1: toward --card */
+  --famv-2-mix:30%;   /* v2: toward --tx */
+
+  /* The leaderboard score bar is a RESULT, so it does NOT take the family hue — it is drawn in ink
+     like every other bar on the page. The family hue reaches the leaderboard through the provider
+     mark beside the model name instead, which is identity, ~13px, and the only colour in the row.
+     (This replaces a --lb-anthropic / --lb-openai pair that painted the full-width bars.) */
+  --bar-ink:var(--p-stone-600);        /* score bars: mid ink — ten near-full black bars in one column
+                                          out-shout the model names they are ranking */
+  --bar-ink-lead:var(--p-stone-900);   /* ...so full ink is spent only on the rows that lead */
+
+  /* ---- 3. TYPE ---------------------------------------------------------------------------
+     16 steps, because that is what the report actually uses. Several sit within 0.5px of each
+     other (--fs-4/5, --fs-6/7, --fs-8/9) — accidental rather than designed. They are preserved
+     verbatim so tokenising changed no pixels; collapsing the scale is a deliberate design
+     decision and should be made as one, not smuggled in here. */
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;
+  /* the tweaks menu's alternative faces — offered as tokens so no font stack lives in Python */
+  --serif:Georgia,"Times New Roman",serif;
+  --grotesque:"Helvetica Neue",Arial,sans-serif;
+  --humanist:Verdana,Geneva,sans-serif;
+
+  --fs-1:8.5px;    /* vertical-bar labels */
+  --fs-2:9px;      /* tool-version subhead, message role */
+  --fs-3:9.5px;    /* n= counts, cell subtitles */
+  --fs-4:10px;     /* small mono meta */
+  --fs-5:10.5px;   /* verdict chips, judge notes */
+  --fs-6:11px;     /* section labels, tags */
+  --fs-7:11.5px;   /* dense body — the workhorse */
+  --fs-8:12px;     /* controls */
+  --fs-9:12.5px;   /* prose */
+  --fs-10:13px;    /* body base */
+  --fs-11:14px;    /* row headers */
+  --fs-12:16px;    /* summary metric */
+  --fs-13:17px;    /* gear glyph */
+  --fs-14:18px;    /* grand metric */
+  --fs-15:20px;    /* h1 */
+  --fs-16:22px;    /* hero metric, modal close */
+  --fs-body:15px;
+  --fs-lead:18px;
+  --fs-section:clamp(28px,3vw,40px);
+  --fs-display:clamp(44px,5.4vw,76px);
+  --fs-metric:30px;
+  --fs-hero-title:clamp(52px,5.1vw,96px);
+  --fs-hero-score:clamp(64px,6.6vw,100px);
+  --fs-hero-score-unit:clamp(22px,2.2vw,34px);
+  --fs-hero-lead:clamp(15px,1.25vw,21px);
+  --fs-hero-pair:clamp(17px,1.65vw,26px);
+  --fs-hero-completion:clamp(12px,1.1vw,16px);
+  --fs-hero-stats:clamp(10px,.85vw,13px);
+  --fs-hero-title-mobile:clamp(43px,10.5vw,76px);
+  --fs-hero-lead-mobile:clamp(14px,2.8vw,18px);
+  --fs-hero-score-mobile:58px;
+  --fs-hero-title-short:clamp(52px,4.5vw,76px);
+  --fs-hero-score-short:clamp(62px,6vw,88px);
+  --fs-bcc-score:34px;    /* the card renders only its <900px narrow form in this hero slot */
+  --fs-bcc-metric:14px;   /* cost/time/rank values */
+
+  --fw-light:300; --fw-normal:400; --fw-medium:500; --fw-semi:600; --fw-h1:650; --fw-bold:700;
+
+  --lh-tight:1;      /* single-line numerics */
+  --lh-hero-title:.9;
+  --lh-hero-score:.75;
+  --lh-snug:1.12;    /* clamped two-line labels */
+  --lh-body:1.4;
+  --lh-copy:1.45;
+  --lh-prose:1.5;
+  --lh-base:1.55;    /* body default */
+  --lh-loose:1.7;    /* the header meta strip */
+  --lh-bcc-body:1.6;
+  --lh-bcc-score:.82;
+
+  /* uppercase labels came in FOUR trackings (.08/.09/.1/.11em) for what are really two treatments.
+     Now two: the big section eyebrow, and every small inline label. */
+  --tr-caps:.11em;    /* section eyebrows (SUCCESS RATE · MODEL × TOOL) */
+  --tr-caps-sm:.09em; /* small inline labels: SHOW MODELS, judge section heads, message roles */
+  --tr-wide:.06em;   /* uppercase axis labels */
+  --tr-mono:.04em;   /* mono legends */
+  --tr-loose:.02em;  /* small meta */
+  --tr-tight:-.01em; /* large display numerals */
+  --tr-hero-header:.17em;
+  --tr-hero-card:.16em;
+  --tr-hero-title:-.075em;
+  --tr-hero-pair:-.05em;
+  --tr-hero-score:-.08em;
+  --tr-hero-unit:-.04em;
+  --tr-bcc-chrome:.1em;  /* title bar */
+  --tr-bcc-label:.2em;   /* score caption + metric labels */
+  --tr-bcc-score:-.03em;
+
+  /* ---- 4. GEOMETRY ------------------------------------------------------------------------
+     Only values that recur or that two components must agree on. */
+  --hair:1px;               /* the hairline every border is drawn with */
+  --nav-inset:clamp(22px, 3vw, 46px); /* nav's top/side inset — hero-shell padding on the report page,
+                               explorer's site-nav padding elsewhere; one value so both navs sit at the
+                               same offset from the viewport edge */
+  --bar-h:8px;              /* horizontal bar track */
+  --bar-h-sm:6px;           /* the same track, in the judge-confidence row */
+  --bar-min:2px;            /* a bar is never invisible */
+  --dot:8px;                /* legend dot */
+  --thumb-radius:5px;       /* screenshot thumbs keep their own corner: they deliberately do NOT follow
+                               the radius tweak (a photo reads as a photo, not as a themed surface) */
+  --dot-sm:6px;             /* verdict-chip dot */
+  --btn-size:44px;          /* the gear tab — big enough to read as a control, not as a stray corner pixel */
+  --btn-corner:12px;        /* ...and its ONE rounded corner (bottom-left). It sits flush in the top-right
+                               corner of the viewport, so the other three corners stay square — the two that
+                               meet the viewport edges have nothing to round against. Not the radius tweak:
+                               the tab's shape is structural, not themed. */
+  /* ONE switch, used by both the screenshots toggle and the tweaks panel. They were 30x17/knob13
+     and 32x18/knob14 — the same control drawn two subtly different sizes. Now one. */
+  --sw-w:32px; --sw-h:18px; --sw-knob-size:14px; --sw-pad:2px;
+  --sw-travel:14px;         /* = --sw-w - --sw-knob-size - 2*--sw-pad */
+  --radius-panel:10px;
+  --radius-control:10px;
+
+  /* ---- 5. ELEVATION -----------------------------------------------------------------------
+     One shadow colour, four steps. The same black was previously written four different ways:
+     #0003, rgba(0,0,0,.22), rgba(0,0,0,.32) and rgba(16,24,40,.05). */
+  --shadow-rgb:32 32 22;   /* warm, so a raised card's shadow belongs to the same neutral as the page */
+  --elev-1:0 1px 2px rgb(var(--shadow-rgb) / .2);      /* switch knob */
+  /* the gear button. NOT --tw-shadow: that is the shadows *tweak*, which is off by default, so binding
+     the button to it left the one control that opens the tweaks panel with no elevation at all — a white
+     card on a near-white page. The entry point to the menu cannot be hidden by a setting inside it. */
+  --elev-btn:0 2px 6px rgb(var(--shadow-rgb) / .1),0 1px 2px rgb(var(--shadow-rgb) / .08);
+  --elev-2:0 14px 44px rgb(var(--shadow-rgb) / .2);    /* zoomed thumbnail */
+  --elev-3:0 20px 54px rgb(var(--shadow-rgb) / .22);   /* tweaks panel */
+  --elev-4:0 24px 64px rgb(var(--shadow-rgb) / .32);   /* modal */
+  --elev-card:0 1px 2px rgb(var(--shadow-rgb) / .05),0 14px 34px rgb(var(--shadow-rgb) / .07);
+  --scrim:rgb(var(--shadow-rgb) / .55);                /* modal backdrop */
+  --fade:rgb(var(--shadow-rgb) / .13);                 /* horizontal-scroll edge affordance */
+
+  /* ---- 6. MOTION -------------------------------------------------------------------------- */
+  --dur-fast:.12s;
+  --dur:.15s;
+  --ease:ease;
+
+  /* ---- 7. LAYERS -------------------------------------------------------------------------- */
+  --z-sticky:2;      /* sticky table head */
+  --z-hero-canvas:0;
+  --z-hero-vignette:1;
+  --z-nav:3;
+  --z-zoom:9;        /* a zoomed thumbnail must clear the sticky head */
+  --z-tip:40;        /* a section's [i] explanation tooltip, above content but below the tweaks panel */
+  --z-tweaks:60;
+  --z-modal:100;
+  --z-badge:9999;    /* preview.py's live-reload badge, above everything */
+
+  /* ---- 8. TWEAKS ---------------------------------------------------------------------------
+     The tweaks menu writes these onto <html> at runtime (style.setProperty). Defaults =
+     flat / sharp / shadowless; the menu toggles the "on" values back in. These defaults are read
+     back out of the CSS by TWEAKS_JS, so they are not restated in Python or JS either. */
+  --tw-shadow:none;
+  --tw-shadow-on:var(--elev-card);
+  --tw-bw:var(--hair);               /* container border width */
+  --tw-bw-on:var(--hair);
+  --tw-radius:var(--radius-panel);    /* corner radius, rectangular elements */
+  --tw-pill-radius:999px;             /* corner radius, pill/circle elements */
+  --tw-font:var(--grotesque);
+  --tw-parent:1;                     /* hero parent-row height, x children */
+  /* Ramp endpoints are tuned for an INK scale, not a hue: ink reads far heavier per unit of tint than
+     the old blue did, so the floor drops (a 12% ink wash greyed every cell) and the ceiling rises (the
+     leaders want to land as genuinely dark slabs, which is what lets the cell's own number flip to
+     --card and read at ~10:1 instead of sitting grey-on-grey). See report.css for the flip. */
+  --tw-heat-floor:.03;               /* heatmap, linear ramp: tint of the weakest cell */
+  --tw-heat-range:.46;               /* heatmap, linear ramp: tint added at the strongest cell */
+  /* heatmap, exponential ramp (the "exponential heat" tweak, on by default): --hm is raised to
+     --tw-heat-exp before it is mixed, so the ramp is flat across the low scores and only steepens
+     near the top — most cells read as untinted and only the leaders reach full colour. Hence a floor
+     of 0 (the linear ramp's .12 would tint every cell); the range absorbs it so the strongest cell
+     still lands on the same 62% tint as the linear ramp, i.e. the tweak redistributes the scale
+     without changing its endpoints. */
+  /* The exponent went 11 -> 22 with the move to ink. A mid tint of an ink ramp is a mid grey, and mid
+     grey is the one ground where NEITHER ink nor --card reads: the old curve parked the runner-up cells
+     right in it. A steeper curve empties that band — cells are either near-paper or near-black, and only
+     the leader crosses. That is also the whole point of the redesign: one dark cell per row, not six. */
+  --tw-heat-exp:22;                  /* the exponent; higher = fewer cells light up */
+  --tw-heat-exp-floor:0;             /* tint of the weakest cell: none */
+  --tw-heat-exp-range:.82;           /* tint at the strongest cell */
+  --tw-heat-flip:.66;                /* tint at which the cell's own number starts turning to --card... */
+  --tw-heat-flip-span:.08;           /* ...and the tint added over which it finishes turning. Narrow and
+                                        late on purpose: a wide band IS the grey-on-grey it exists to fix. */
+  --tw-win-bg:7%;                    /* row leader: accent tint (ink, so half the old navy percentage) */
+  --tw-win-ring:22%;                 /* row leader: accent ring */
+}
+
+/* ============================================================================================
+   9. DASHBOARD — runner/dashboard.py
+
+   A SEPARATE PRODUCT, not a theme of the report: an operator-facing live control panel for a
+   running benchmark (queue, ETA, cost), all-monospace, dark-only, never published. The report is
+   a light-first published artifact. They collide on token NAMES (--bg, --card, --ok…) but share
+   no values, so the dashboard gets its own namespace: mapping it onto the report's semantic
+   tokens would silently repaint it.
+
+   Its raw values live here so that this file remains the only place a hex exists.
+   ============================================================================================ */
+:root{
+  --d-bg:#0b0d10; --d-card:#14181d; --d-line:#232a31;
+  --d-fg:#e6edf3; --d-dim:#8b98a5;
+  --d-ok:#3fb950; --d-warn:#d29922; --d-bad:#f85149;
+  --d-accent:#2f81f7;                /* buttons previously used a 5th, untokenised blue (#1f6feb) */
+  --d-accent-bg:rgb(47 129 247 / .13);
+  --d-accent-line:rgb(47 129 247 / .33);
+  --d-accent-hover:rgb(47 129 247 / .2);
+
+  --d-fs-1:11px; --d-fs-2:12px; --d-fs-3:13px; --d-fs-4:14px; --d-fs-5:16px; --d-fs-6:22px;
+  --d-lh:1.5; --d-tr-caps:.05em;
+  --d-radius:8px; --d-radius-btn:6px; --d-radius-input:5px; --d-radius-bar:3px; --d-radius-pill:10px;
+  --d-dot:9px; --d-bar-h:6px; --d-bar-min:90px; --d-dim-off:.4;
+}

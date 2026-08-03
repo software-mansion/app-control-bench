@@ -1,0 +1,46 @@
+{
+  "cell": "haiku_low:argent",
+  "model": "haiku_low",
+  "tool": "argent",
+  "task": "element-13",
+  "app": "element",
+  "kind": "nav",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 79.1,
+  "n_tool_calls": 13,
+  "tool_names": [
+    "skill",
+    "argent_screenshot",
+    "argent_describe",
+    "invalid",
+    "argent_gesture-tap",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-swipe",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1783611782,
+  "golden": {
+    "name": "bench-element",
+    "udid": "77F1A359-A13B-4318-B8D3-733C28AD320F"
+  },
+  "clone_udid": "2B3ABEF4-960F-4C62-A357-8C350407B9CB",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  }
+}

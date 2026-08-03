@@ -1,0 +1,45 @@
+{
+  "cell": "haiku_high:argent",
+  "model": "haiku_high",
+  "tool": "argent",
+  "task": "bsky-14",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "search",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 55.8,
+  "n_tool_calls": 12,
+  "tool_names": [
+    "skill",
+    "argent_screenshot",
+    "argent_describe",
+    "invalid",
+    "argent_gesture-tap",
+    "argent_describe",
+    "argent_gesture-tap",
+    "argent_keyboard",
+    "argent_describe",
+    "argent_keyboard",
+    "argent_describe",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1783553038,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+  },
+  "clone_udid": "D1D8CF4C-CD9B-4644-8714-9F364D847EE6",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  }
+}

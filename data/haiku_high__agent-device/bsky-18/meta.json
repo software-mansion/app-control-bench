@@ -1,0 +1,41 @@
+{
+  "cell": "haiku_high:agent-device",
+  "model": "haiku_high",
+  "tool": "agent-device",
+  "task": "bsky-18",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 29.8,
+  "n_tool_calls": 8,
+  "tool_names": [
+    "skill",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash"
+  ],
+  "stderr_tail": "",
+  "ts": 1783541435,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+  },
+  "clone_udid": "BE796ED5-13DC-4CCE-AD40-C50D0805B9F3",
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "cli",
+    "skills": true,
+    "tool": "0.17.6",
+    "tool_pinned": "0.17.6",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  }
+}

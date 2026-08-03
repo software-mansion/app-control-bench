@@ -1,0 +1,27 @@
+{
+  "name": "app-control-bench-report",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:data": "python3 ../benchmarks/runner/report_data.py --results ../data --out ../public",
+    "build": "npm run clean && npm run dev:data && vite build --config vite.config.ts && vite build --config vite.config.ssr.ts && node .vite-ssr/prerender.js ..",
+    "clean": "rm -rf ../public/assets ../public/.vite .vite-ssr ../public/report.html ../public/report-runs.html",
+    "check": "python3 ../benchmarks/runner/check_theme.py",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@webgpu/types": "^0.1.71",
+    "typescript": "^5.9.3",
+    "unplugin-typegpu": "^0.11.6",
+    "vite": "^7.3.1",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@typegpu/noise": "^0.11.0",
+    "preact": "^10.27.2",
+    "preact-render-to-string": "^6.6.2",
+    "typegpu": "^0.11.9"
+  }
+}
