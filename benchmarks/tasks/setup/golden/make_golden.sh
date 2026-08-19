@@ -23,8 +23,9 @@ set -euo pipefail
 STAGING="bench-golden-staging"
 SMOKE="bench-golden-smoketest"
 GOLDEN_RE='^bench-golden-v([0-9]+)$'
-# apps every golden must carry, provisioned + logged in (see README.md checklist)
-BUNDLES="xyz.blueskyweb.app im.vector.app com.example.IceCubesApp"
+# Apps every golden must carry, provisioned + logged in (see README.md checklist).
+# A focused benchmark refresh can narrow this without weakening the default full suite.
+BUNDLES="${BENCH_GOLDEN_BUNDLES:-xyz.blueskyweb.app im.vector.app com.example.IceCubesApp}"
 
 die() { echo "ERROR: $*" >&2; exit 1; }
 say() { echo "==> $*"; }

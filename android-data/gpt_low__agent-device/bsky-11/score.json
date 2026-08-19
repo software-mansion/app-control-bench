@@ -1,0 +1,20 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The screenshot shows the user's own Bluesky profile page with the avatar tab selected, including the bench @bench.test profile and Edit Profile button.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-11",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "In Bluesky, open your own profile by tapping the profile tab (the avatar icon at the far right of the bottom navigation bar).",
+    "solved_screen": "Your own Bluesky profile is open, reached via the rightmost (avatar) tab of the bottom navigation: the blue butterfly avatar, the display name \"bench\" with handle \"@bench.test\", the stats row \"0 followers  4 following  0 posts\", an \"Edit Profile\" button and a \"...\" button, and the profile sub-tabs (Posts, Replies, Media, Videos, Likes, Feeds) \u2014 with \"Posts\" selected by default (its 0-posts empty state below). The criterion is simply that your own bench @bench.test profile page is showing; the exact sub-tab is not constrained, but this is your own profile (with \"Edit Profile\"), NOT another account's profile and NOT the home feed.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 3
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: In Bluesky, open your own profile by tapping the profile tab (the avatar icon at the far right of the bottom navigation bar).\nANDROID SOLVED-SCREEN DESCRIPTION: Your own Bluesky profile is open, reached via the rightmost (avatar) tab of the bottom navigation: the blue butterfly avatar, the display name \"bench\" with handle \"@bench.test\", the stats row \"0 followers  4 following  0 posts\", an \"Edit Profile\" button and a \"...\" button, and the profile sub-tabs (Posts, Replies, Media, Videos, Likes, Feeds) \u2014 with \"Posts\" selected by default (its 0-posts empty state below). The criterion is simply that your own bench @bench.test profile page is showing; the exact sub-tab is not constrained, but this is your own profile (with \"Edit Profile\"), NOT another account's profile and NOT the home feed.\nDEVICE TOOL ACTIVITY: skill, bash, bash\nNUMBER OF TOOL CALLS: 3\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

@@ -99,60 +99,79 @@ function escapeHtml(s: string): string {
 
 function main(): void {
   const manifest = readJson<ViteManifest>(resolve(PUBLIC, '.vite/manifest.json'));
-  const runIndex = readJson<RunIndex>(resolve(PUBLIC, 'data/v1/run-index.json'));
-  const meta = readJson<ReportMeta>(resolve(PUBLIC, 'data/v1/report-meta.json'));
-  requireSchema('run-index.json', runIndex.schemaVersion);
-  requireSchema('report-meta.json', meta.schemaVersion);
-
-  const manifestBlock: BuildManifest = meta.manifest;
-  requireSchema('BuildManifest', manifestBlock.schemaVersion);
-
-  // ReportInitial is never written to disk as its own resource — the browser reads it from the page.
-  const initial: ReportInitial = {
-    schemaVersion: 2,
-    models: meta.models,
-    tools: meta.tools,
-    view: deriveReportView(runIndex),
-    provenance: meta.provenance,
-    methodExamples: meta.methodExamples,
-    manifest: manifestBlock,
-  };
-
   const report = assetsFor(manifest, 'index.html');
-  writeFileSync(
-    resolve(PUBLIC, 'index.html'),
-    documentHtml({
-      title: 'AppControlBench Results',
-      rootId: 'report-root',
-      markup: render(h(ReportPage, { initial })),
-      payloadId: 'acb-report-initial',
-      payload: serializeInlineJson(initial),
-      script: report.script,
-      styles: report.styles,
-    }),
-  );
-
   const explorer = assetsFor(manifest, 'index-runs.html');
-  writeFileSync(
-    resolve(PUBLIC, 'index-runs.html'),
-    documentHtml({
-      title: 'AppControlBench Results - Run explorer',
-      bodyClass: 'run-explorer-page',
-      rootId: 'explorer-root',
-      markup: render(h(ExplorerPage, { runIndex, manifest: manifestBlock, provenance: meta.provenance })),
-      payloadId: 'acb-explorer-bootstrap',
-      // RunIndex is embedded because the Explorer must render and hydrate its matrix immediately
-      // (contract line 118); BuildManifest rides along as page bootstrap (line 114) so the drawer can
-      // derive resource paths without a second round trip.
-      payload: serializeInlineJson({ runIndex, manifest: manifestBlock, provenance: meta.provenance }),
-      script: explorer.script,
-      styles: explorer.styles,
-    }),
-  );
+
+  for (const platform of ['ios', 'android'] as const) {
+    const root = resolve(PUBLIC, `data/${platform}/v1`);
+    const runIndex = readJson<RunIndex>(resolve(root, 'run-index.json'));
+    const meta = readJson<ReportMeta>(resolve(root, 'report-meta.json'));
+    requireSchema(`${platform}/run-index.json`, runIndex.schemaVersion);
+    requireSchema(`${platform}/report-meta.json`, meta.schemaVersion);
+
+    const manifestBlock: BuildManifest = meta.manifest;
+    requireSchema(`${platform}/BuildManifest`, manifestBlock.schemaVersion);
+
+    // ReportInitial is never written to disk as its own resource — the browser reads it from the page.
+    const initial: ReportInitial = {
+      schemaVersion: 2,
+      platform: manifestBlock.platform,
+      models: meta.models,
+      tools: meta.tools,
+      view: deriveReportView(runIndex),
+      provenance: meta.provenance,
+      methodExamples: meta.methodExamples,
+      manifest: manifestBlock,
+    };
+
+    const reportFile = platform === 'ios' ? 'index.html' : 'android.html';
+    const explorerFile = platform === 'ios' ? 'index-runs.html' : 'android-runs.html';
+    const label = manifestBlock.platform.label;
+
+    writeFileSync(
+      resolve(PUBLIC, reportFile),
+      documentHtml({
+        title: `AppControlBench ${label} Results`,
+        rootId: 'report-root',
+        markup: render(h(ReportPage, { initial })),
+        payloadId: 'acb-report-initial',
+        payload: serializeInlineJson(initial),
+        script: report.script,
+        styles: report.styles,
+      }),
+    );
+
+    writeFileSync(
+      resolve(PUBLIC, explorerFile),
+      documentHtml({
+        title: `AppControlBench ${label} Results - Run explorer`,
+        bodyClass: 'run-explorer-page',
+        rootId: 'explorer-root',
+        markup: render(
+          h(ExplorerPage, {
+            runIndex,
+            manifest: manifestBlock,
+            provenance: meta.provenance,
+          }),
+        ),
+        payloadId: 'acb-explorer-bootstrap',
+        // RunIndex is embedded because the Explorer must render and hydrate its matrix immediately.
+        payload: serializeInlineJson({
+          runIndex,
+          manifest: manifestBlock,
+          provenance: meta.provenance,
+        }),
+        script: explorer.script,
+        styles: explorer.styles,
+      }),
+    );
+  }
 
   const size = (name: string) => (readFileSync(resolve(PUBLIC, name)).byteLength / 1024).toFixed(1);
   console.log(`prerender -> public/index.html (${size('index.html')} KB)`);
   console.log(`prerender -> public/index-runs.html (${size('index-runs.html')} KB)`);
+  console.log(`prerender -> public/android.html (${size('android.html')} KB)`);
+  console.log(`prerender -> public/android-runs.html (${size('android-runs.html')} KB)`);
 }
 
 main();

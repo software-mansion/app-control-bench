@@ -13,7 +13,10 @@ matrix is reproducible from this repo.
 
 ## What the numbers say
 
-720 runs: 4 model configurations x 3 tool conditions x 60 tasks, one attempt each.
+The original iOS cohort contains 720 runs: 4 model configurations x 3 tool conditions x 60 tasks,
+one attempt each. The website also presents separately namespaced Android results and reviewed
+agent-device refreshes. Refreshed cells show the latest reviewed result for each task and must not be
+read as pass@1; captured per-run tool versions remain the source of truth.
 
 | Model | Tool | Completion | Cost / run | Time / run |
 | --- | --- | ---: | ---: | ---: |
@@ -89,16 +92,25 @@ Every single run gets a clean world:
   fails loudly instead of quietly interleaving.
 - **Fresh server state.** Per-app reset hooks roll back the backend the app talks to, so a post made
   in one run can't change the screen another run sees.
-- **Pinned everything.** Tool versions (argent 0.15.0, agent-device 0.17.6) and app versions are
-  pinned in `benchmarks/configs/`, checked against what's installed, and stamped into each run's
-  metadata. The runner warns on drift rather than silently producing results that don't match the
-  version they claim.
+- **Pinned everything.** Current run targets (argent 0.15.0, agent-device 0.20.10) and app versions
+  are pinned in `benchmarks/configs/`, checked against what's installed, and stamped into each run's
+  metadata. Existing published results retain their recorded historical versions until a complete,
+  comparable cohort replaces them; the runner never relabels old captures as a new release.
 
-Scoring is a separate, resumable pass. A vision model (GPT-5.4 at temperature 0) sees the final
+One-time setup follows each tool's published installation flow. `run_all.sh` preflights the selected
+tools once before the matrix; for agent-device, that includes the documented `doctor` check that a
+human runs after installation and before handing the CLI to an agent. Each agent-device cell also
+starts a daemon scoped to its disposable simulator before the model enters the safety sandbox. That
+inventory call does not launch XCTest or inspect the app. The task timer starts immediately before
+OpenCode; Argent's MCP startup and all subsequent model and tool activity are therefore timed.
+
+Scoring is a separate, resumable pass. The configured judge sees the final
 screenshot, the task the agent was given, the description of the solved screen and the list of
 actions taken, and returns success / partial / fail. The prompt is explicit that the task text is
-the authority: an agent is never marked down for skipping something it was never asked to do. Same
-judge, same prompt, every cell.
+the authority: an agent is never marked down for skipping something it was never asked to do. New
+screenshot grading defaults to GPT-5.6 Luna with xhigh reasoning through OpenCode; published results
+retain the judge recorded when they were scored. Bluesky publishing mutations additionally support
+authoritative ATProto postconditions.
 
 ## Running it yourself
 
@@ -133,9 +145,10 @@ python3 runner/doctor.py                 # health, coverage and ledger check
 ```
 
 Machine-specific paths resolve through `bench_env.py` (env override, then auto-detect, then a
-documented fallback), so there are no constants to edit before your first run. On a shared machine,
-call `bench.py` directly rather than `run_all.sh` - the latter assumes a dedicated host and uses a
-full process-kill scope.
+documented fallback), so there are no constants to edit before your first run. Wrappers use a fresh
+process-ownership registry and leave pre-existing processes alone. Each run deletes only the
+simulator clone whose exact identity it durably journaled before creation; an interrupted run is
+reaped on the next invocation, while foreign simulators and the golden are never cleanup targets.
 
 ## Repo layout
 
@@ -156,9 +169,11 @@ Pushes deploy to Vercel through `.github/workflows/deploy-vercel.yml`.
 
 ## Caveats worth knowing
 
-- **One attempt per cell.** 720 runs is one shot at each (model, tool, task). Run-to-run variance
-  is real and this matrix does not measure it, so treat small gaps between neighbouring rows as
-  noise and read the large ones.
+- **Attempt policy.** The original 720-run iOS cohort is one shot at each (model, tool, task).
+  Subsequent agent-device release refreshes may rerun selected setup-invalid, failed, or
+  latency-outlier cells; the website labels these as latest reviewed results, not pass@1. The
+  benchmark does not yet estimate run-to-run variance, so treat small gaps between neighbouring rows
+  as noise and read the large ones.
 - **Two apps.** Bluesky and Element are real, complex, unmodified apps, but they are two apps. The
   task file is built to grow, and results should be re-read as it does.
 - **Simulator, not hardware.** Everything runs on the iOS Simulator.

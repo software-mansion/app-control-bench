@@ -2,7 +2,7 @@
 // optional [i] explanation, and the site footer. Ports nav_bar (runner/report.py:660) and sec (648).
 import { Fragment } from "preact";
 
-import type { Provenance } from "../shared/contract";
+import type { Platform, Provenance } from "../shared/contract";
 import { GithubMark } from "./GithubMark";
 import swmMark from "../assets/swm-mark-outline-left-top.svg";
 
@@ -14,7 +14,21 @@ export const REPO_URL =
  * markup on both — explorer has no dark hero behind it, so `site-nav--inverted` flips the color
  * tokens (cream-on-dark -> ink-on-light) without touching sizing/layout.
  */
-export function Nav({ page }: { page: "report" | "explorer" }) {
+export function Nav({
+  page,
+  platform,
+}: {
+  page: "report" | "explorer";
+  platform: Platform;
+}) {
+  const reportHref = platform.id === "ios" ? "/" : "/android.html";
+  const explorerHref = platform.id === "ios" ? "/index-runs.html" : "/android-runs.html";
+  const platformHref = (id: Platform["id"]) => {
+    if (page === "explorer") {
+      return id === "ios" ? "/index-runs.html" : "/android-runs.html";
+    }
+    return id === "ios" ? "/" : "/android.html";
+  };
   return (
     <header
       class={
@@ -35,15 +49,27 @@ export function Nav({ page }: { page: "report" | "explorer" }) {
         </a>
       </div>
       <div class="nav-links">
+        <nav class="platform-switch" aria-label="Benchmark platform">
+          {(["ios", "android"] as const).map((id) => (
+            <a
+              key={id}
+              href={platformHref(id)}
+              class={platform.id === id ? "is-active" : undefined}
+              aria-current={platform.id === id ? "page" : undefined}
+            >
+              {id === "ios" ? "iOS" : "Android"}
+            </a>
+          ))}
+        </nav>
         <a
-          href="/"
+          href={reportHref}
           class={page === "report" ? "nav-link is-active" : "nav-link"}
           aria-current={page === "report" ? "page" : undefined}
         >
           Report
         </a>
         <a
-          href="/index-runs"
+          href={explorerHref}
           class={page === "explorer" ? "nav-link is-active" : "nav-link"}
           aria-current={page === "explorer" ? "page" : undefined}
         >
@@ -120,6 +146,9 @@ function AppVersionBit({
 }
 
 export function ReportFooter({ provenance }: { provenance: Provenance }) {
+  const releases = Object.entries(provenance.releaseToolVersions).map(
+    ([tool, version]) => `${tool} v${version}`,
+  );
   const tools = Object.entries(provenance.toolVersions).map(
     ([tool, version]) => `${tool} v${version}`,
   );
@@ -131,7 +160,16 @@ export function ReportFooter({ provenance }: { provenance: Provenance }) {
       <div class="provenance">
         <span>Generated {provenance.generatedAt}</span>
         <span>{provenance.judgeLine}</span>
-        {tools.length > 0 && <span>{tools.join(" · ")}</span>}
+        <span>{provenance.resultPolicy}</span>
+        {releases.length > 0 && <span>Benchmark release {releases.join(" · ")}</span>}
+        {tools.length > 0 && <span>Recorded runs {tools.join(" · ")}</span>}
+        {provenance.costNotice && (
+          <span>
+            <a href={provenance.costNotice.href} target="_blank" rel="noopener">
+              {provenance.costNotice.label}
+            </a>
+          </span>
+        )}
         {apps.length > 0 && (
           <span>
             {apps.map(([app, info], i) => (

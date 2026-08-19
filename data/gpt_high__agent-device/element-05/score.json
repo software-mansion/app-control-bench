@@ -1,7 +1,7 @@
 {
   "verdict": "success",
   "confidence": 0.99,
-  "reason": "The final screenshot clearly shows the Element Settings screen with the expected title, back link to All chats, Sign Out, and user settings items.",
+  "reason": "The final screenshot clearly shows the app's Settings screen with the expected title, back link to All chats, Sign Out, and user settings items.",
   "judge_model": "gpt-5.4",
   "cell": "gpt_high:agent-device",
   "task": "element-05",

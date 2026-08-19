@@ -1,0 +1,26 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The final screen shows a feed image opened full-screen in the Bluesky image viewer with the expected lightbox chrome.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "haiku_low:agent-device",
+  "task": "bsky-18",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "In the Bluesky Following feed, find a post that contains an image and tap the image to open it full-screen in the image viewer.",
+    "solved_screen": "A single image from a feed post displayed full-screen in the image lightbox: the photo (a seeded cat photo) maximized on a black background with a close (X) button, replacing the feed behind it. Whatever lightbox chrome the viewer happens to show (alt-text caption, Save/Share) is incidental \u2014 the image opened full-screen is the end state.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "read"
+    ],
+    "n_tool_calls": 9
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: In the Bluesky Following feed, find a post that contains an image and tap the image to open it full-screen in the image viewer.\nANDROID SOLVED-SCREEN DESCRIPTION: A single image from a feed post displayed full-screen in the image lightbox: the photo (a seeded cat photo) maximized on a black background with a close (X) button, replacing the feed behind it. Whatever lightbox chrome the viewer happens to show (alt-text caption, Save/Share) is incidental \u2014 the image opened full-screen is the end state.\nDEVICE TOOL ACTIVITY: skill, bash, bash, bash, bash, bash, bash, bash, read\nNUMBER OF TOOL CALLS: 9\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

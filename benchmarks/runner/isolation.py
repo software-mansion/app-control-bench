@@ -2,8 +2,8 @@
 """Run isolation: single-device lock, total process teardown, per-run proxies, process-group
 opencode execution, server-reset hooks, and the per-run env.json audit manifest.
 
-The mandate this module enforces: EVERYTHING is terminated between runs (verified, not hoped),
-and exactly ONE bench stream / ONE device exists at any moment. Teardown runs at BOTH ends of a
+The mandate this module enforces: EVERYTHING owned by this invocation is terminated between runs
+(verified, not hoped), and exactly one benchmark stream exists at any moment. Teardown runs at both ends of a
 run (pre = heal a crashed previous invocation, post = guarantee run N never leaks into N+1).
 
 Stdlib only. All processes are matched by their exact bench-specific cmdlines so an unrelated
@@ -18,6 +18,65 @@ import subprocess
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+OPENCODE_PLACEHOLDER_KEY = "bench-proxy-placeholder"
+
+
+OPENCODE_ENV_ALLOWLIST = {
+    "AGENT_DEVICE_CONFIG", "AGENT_DEVICE_STATE_DIR", "ANTHROPIC_BASE_URL",
+    "BASH_ENV", "BENCH_ANTHROPIC_UPSTREAM", "ENV", "LANG", "LC_ALL",
+    "OPENCODE_CONFIG", "OPENCODE_DISABLE_CLAUDE_CODE_SKILLS",
+    "OPENCODE_DISABLE_EXTERNAL_SKILLS", "OPENAI_BASE_URL", "PATH", "TERM", "ZDOTDIR",
+}
+
+
+def prepare_opencode_env(cwd, overrides=None):
+    """Build the untrusted OpenCode/model environment.
+
+    Provider credentials terminate at the trusted local proxies. OpenCode gets only placeholders,
+    both in its environment and in a per-run auth store, so it never falls back to the user's real
+    ~/.local/share/opencode/auth.json. The caller's other environment remains available to the
+    benchmark tools and device shims.
+    """
+    combined = {**os.environ, **(overrides or {})}
+    child_env = {
+        key: combined[key]
+        for key in OPENCODE_ENV_ALLOWLIST
+        if combined.get(key)
+    }
+    # Keep the run-owned shim and standard system tools, but never disclose user-local PATH entries.
+    path_entries = (child_env.get("PATH") or "").split(os.pathsep)
+    user_home = os.path.realpath(os.path.expanduser("~"))
+    child_env["PATH"] = os.pathsep.join(
+        entry for entry in path_entries
+        if entry and not os.path.realpath(entry).startswith(user_home + os.sep)
+    )
+    child_env["OPENAI_API_KEY"] = OPENCODE_PLACEHOLDER_KEY
+    child_env["ANTHROPIC_API_KEY"] = OPENCODE_PLACEHOLDER_KEY
+
+    isolated_home = os.path.join(cwd, ".opencode-home")
+    data_home = os.path.join(cwd, ".opencode-data")
+    temp_home = os.path.join(cwd, ".opencode-tmp")
+    os.makedirs(isolated_home, mode=0o700, exist_ok=True)
+    os.makedirs(temp_home, mode=0o700, exist_ok=True)
+    auth_dir = os.path.join(data_home, "opencode")
+    os.makedirs(auth_dir, mode=0o700, exist_ok=True)
+    auth_path = os.path.join(auth_dir, "auth.json")
+    with open(auth_path, "w") as stream:
+        json.dump(
+            {
+                "openai": {"type": "api", "key": OPENCODE_PLACEHOLDER_KEY},
+                "anthropic": {"type": "api", "key": OPENCODE_PLACEHOLDER_KEY},
+            },
+            stream,
+        )
+        stream.write("\n")
+    os.chmod(auth_path, 0o600)
+    child_env["HOME"] = isolated_home
+    child_env["TMPDIR"] = temp_home
+    child_env["USER"] = "benchmark"
+    child_env["LOGNAME"] = "benchmark"
+    child_env["XDG_DATA_HOME"] = data_home
+    return child_env
 
 # ---------------------------------------------------------------- single-device lock
 
@@ -26,7 +85,7 @@ _lock_fd = None   # kept for process lifetime; the kernel releases the flock whe
 
 
 def acquire_lock(wait=False, label=""):
-    """Take the host-wide exclusive bench lock (ONE device / ONE stream, no exceptions).
+    """Take the host-wide exclusive benchmark lock (one stream; unrelated devices may coexist).
     flock is released by the kernel on process death, so no staleness detection is needed —
     and the lock lives in /tmp (per-host), never in the rsynced results/ tree."""
     global _lock_fd
@@ -42,8 +101,8 @@ def acquire_lock(wait=False, label=""):
         except OSError:
             pass
         os.close(fd)
-        raise SystemExit(f"another bench stream holds the device lock ({holder or 'unknown'}); "
-                         f"ONE device at a time — use --wait-lock to queue")
+        raise SystemExit(f"another bench stream holds the benchmark lock ({holder or 'unknown'}); "
+                         f"one benchmark stream at a time — use --wait-lock to queue")
     os.ftruncate(fd, 0)
     os.lseek(fd, 0, os.SEEK_SET)
     os.write(fd, f"{os.getpid()} {socket.gethostname()} {time.strftime('%Y-%m-%dT%H:%M:%S')} {label}\n".encode())
@@ -239,7 +298,7 @@ def _kill_pattern(pattern, owned=None, term_wait=5.0, kill_wait=5.0):
             "remaining": _alive(targets), "strays": strays}
 
 
-def teardown_all(phase, adev=None, adev_udid=None):
+def teardown_all(phase, adev=None, adev_udid=None, adev_state_dir=None):
     """Kill every bench-owned process and VERIFY it died. phase is 'pre' (heal leftovers from a
     crashed/earlier invocation) or 'post' (reap the run that just finished — runs in finally).
     A survivor after SIGKILL raises TeardownError: continuing would violate the isolation mandate.
@@ -249,8 +308,24 @@ def teardown_all(phase, adev=None, adev_udid=None):
     # courtesy first: let agent-device close its session cleanly before we shoot the daemon
     if adev and adev_udid:
         try:
+            close_env = os.environ.copy()
+            if adev_state_dir:
+                close_env["AGENT_DEVICE_STATE_DIR"] = adev_state_dir
             subprocess.run([adev, "close", "--platform", "ios", "--udid", adev_udid],
-                           capture_output=True, timeout=15)
+                           capture_output=True, timeout=15, env=close_env)
+        except (subprocess.TimeoutExpired, OSError):
+            pass
+    # Packaged daemons intentionally outlive `close` and detach from the CLI process group. Stop
+    # the exact per-run daemon by its isolated state directory before pattern-based cleanup; this
+    # gives shared-host runs ownership proof instead of leaking an "unowned" daemon per case.
+    if adev and adev_state_dir:
+        try:
+            subprocess.run(
+                [adev, "daemon", "stop", "--state-dir", adev_state_dir],
+                capture_output=True,
+                timeout=30,
+                env={**os.environ, "AGENT_DEVICE_STATE_DIR": adev_state_dir},
+            )
         except (subprocess.TimeoutExpired, OSError):
             pass
     owned = _owned_pids() if KILL_SCOPE != "all" else None
@@ -273,7 +348,9 @@ def teardown_all(phase, adev=None, adev_udid=None):
 
 PROXY_SPECS = {   # family-prefix of MODELS[...] -> (port, script)
     "anthropic": (8788, "anthropic-thinking-proxy.js"),
-    "openai":    (8790, "openai-reasoning-proxy.js"),
+    # The credential-owning proxy handles OpenAI too. Keep the old script in KILL_PATTERNS so a
+    # process left by an older harness is still reaped before this one binds the port.
+    "openai":    (8790, "anthropic-thinking-proxy.js"),
 }
 
 
@@ -290,19 +367,67 @@ def providers_needed(model_id):
     return [p for p in PROXY_SPECS if model_id.startswith(p + "/")]
 
 
-def start_proxies(effort, logdir, node="node", providers=()):
+def _stored_opencode_key(provider):
+    try:
+        with open(os.path.expanduser("~/.local/share/opencode/auth.json")) as stream:
+            auth = json.load(stream)
+    except (FileNotFoundError, ValueError, OSError):
+        return None
+    entry = auth.get(provider) or {}
+    return entry.get("key") or entry.get("apiKey")
+
+
+def _proxy_env(provider, effort, overrides):
+    """Minimal trusted proxy environment: runtime essentials plus exactly one upstream secret."""
+    env = {
+        key: os.environ[key]
+        for key in (
+            "PATH", "TMPDIR", "LANG", "LC_ALL", "SSL_CERT_FILE", "SSL_CERT_DIR",
+            "NODE_EXTRA_CA_CERTS",
+        )
+        if os.environ.get(key)
+    }
+    env["BENCH_EFFORT_JSON"] = json.dumps(effort or {})
+    env["BENCH_PROXY_PROVIDER"] = provider
+    overrides = overrides or {}
+    if provider == "openai":
+        key = overrides.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY") \
+            or _stored_opencode_key("openai")
+        if not key:
+            raise ProxyError("OpenAI proxy needs an upstream credential")
+        env["OPENAI_API_KEY"] = key
+        return env
+
+    route = overrides.get("BENCH_ANTHROPIC_UPSTREAM")
+    if route == "vercel":
+        key = overrides.get("AI_GATEWAY_API_KEY") or os.environ.get("AI_GATEWAY_API_KEY") \
+            or _stored_opencode_key("vercel")
+        if not key:
+            raise ProxyError("Anthropic Vercel proxy needs an AI Gateway credential")
+        env["BENCH_ANTHROPIC_UPSTREAM"] = "vercel"
+        env["AI_GATEWAY_API_KEY"] = key
+    else:
+        key = overrides.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY") \
+            or _stored_opencode_key("anthropic")
+        if not key:
+            raise ProxyError("Anthropic proxy needs an upstream credential")
+        env["ANTHROPIC_API_KEY"] = key
+    return env
+
+
+def start_proxies(effort, logdir, node="node", providers=(), env_overrides=None):
     """Start FRESH effort-injection proxies for this run. Effort is fixed for the proxy's lifetime
     via BENCH_EFFORT_JSON (no shared /tmp control file, no cross-stream race); logs land in the
     run's results dir. teardown_all() killed any previous instances, so the ports must be free."""
     info = {}
-    env = {**os.environ, "BENCH_EFFORT_JSON": json.dumps(effort or {})}
     for prov in providers:
         port, script = PROXY_SPECS[prov]
         if _port_up(port):   # teardown just ran — a listener here is NOT ours
             raise TeardownError(f"port {port} still occupied after teardown — foreign {script}?")
         log = open(os.path.join(logdir, f"proxy-{prov}.log"), "w")
         p = subprocess.Popen([node, os.path.join(HERE, script), str(port)],
-                             stdout=log, stderr=subprocess.STDOUT, env=env,
+                             stdout=log, stderr=subprocess.STDOUT,
+                             env=_proxy_env(prov, effort, env_overrides),
                              start_new_session=True)
         register_pid(p.pid, f"proxy-{prov}")   # ownership proof for teardown on shared machines
         deadline = time.time() + 5
@@ -327,28 +452,40 @@ def run_opencode(cmd, cwd, timeout, stdout_file, env=None):
     `env` (if given) is overlaid on the inherited environment — used to point the CLI-first
     agent-device tool at the run's clone (AGENT_DEVICE_CONFIG) and put its shim on PATH.
     Returns (rc, stderr_tail, timed_out)."""
-    p = subprocess.Popen(cmd, cwd=cwd, stdout=stdout_file, stderr=subprocess.PIPE,
+    # Keep the result file descriptor out of the sandboxed child. OpenCode's Bun runtime calls
+    # fstat(stdout) during startup; when stdout directly names the read-denied historical-results
+    # tree that fails with EPERM before the first model turn. A pipe preserves the read boundary,
+    # and the trusted parent records the transcript after draining it.
+    p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          text=True, start_new_session=True,
-                         env=({**os.environ, **env} if env else None))
+                         env=prepare_opencode_env(cwd, env))
     register_pid(p.pid, "opencode-run")
     try:
-        _, err = p.communicate(timeout=timeout)
+        out, err = p.communicate(timeout=timeout)
+        stdout_file.write(out or "")
+        stdout_file.flush()
         return p.returncode, (err or "")[-2000:], False
     except subprocess.TimeoutExpired:
+        out = ""
+        reaped = False
         for sig, wait_s in ((signal.SIGTERM, 10), (signal.SIGKILL, 10)):
             try:
                 os.killpg(os.getpgid(p.pid), sig)
             except (ProcessLookupError, PermissionError):
                 break
             try:
-                p.communicate(timeout=wait_s)
+                out, _ = p.communicate(timeout=wait_s)
+                reaped = True
                 break
             except subprocess.TimeoutExpired:
                 continue
-        try:
-            p.communicate(timeout=1)   # reap the child + close its stderr pipe even if killpg missed
-        except (subprocess.TimeoutExpired, ValueError):
-            pass
+        if not reaped:
+            try:
+                out, _ = p.communicate(timeout=1)   # reap the child even if killpg missed
+            except (subprocess.TimeoutExpired, ValueError):
+                pass
+        stdout_file.write(out or "")
+        stdout_file.flush()
         return -1, "TIMEOUT", True
 
 

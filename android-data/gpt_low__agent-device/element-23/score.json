@@ -1,0 +1,31 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The Team Standup timeline shows an emoji reaction attached beneath Dave's message, so the task was completed.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "element-23",
+  "judge_input": {
+    "app": "element",
+    "prompt": "In the \"Team Standup\" room, add an emoji reaction (for example a thumbs-up) to one of the messages in the timeline.",
+    "solved_screen": "The Team Standup timeline shows an emoji reaction pill attached beneath one of its messages, next to the add-reaction button. Any emoji counts (a thumbs-up is only the prompt's example) and any message in the timeline counts.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "read",
+      "bash"
+    ],
+    "n_tool_calls": 14
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: element\nTASK GIVEN TO AGENT: In the \"Team Standup\" room, add an emoji reaction (for example a thumbs-up) to one of the messages in the timeline.\nANDROID SOLVED-SCREEN DESCRIPTION: The Team Standup timeline shows an emoji reaction pill attached beneath one of its messages, next to the add-reaction button. Any emoji counts (a thumbs-up is only the prompt's example) and any message in the timeline counts.\nDEVICE TOOL ACTIVITY: skill, bash, bash, bash, bash, bash, bash, bash, bash, bash, bash, bash, read, bash\nNUMBER OF TOOL CALLS: 14\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

@@ -9,7 +9,7 @@
   "needs_auth": true,
   "returncode": 0,
   "timed_out": false,
-  "wall_s": 30.2,
+  "wall_s": 68.3,
   "n_tool_calls": 9,
   "tool_names": [
     "skill",
@@ -23,20 +23,23 @@
     "bash"
   ],
   "stderr_tail": "",
-  "ts": 1783531547,
+  "ts": 1786184661,
   "golden": {
-    "name": "bench-golden-bsky",
-    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+    "name": "bench-golden-v1",
+    "udid": "8EF8AEDC-5B66-4EA8-936D-5275DFF50A96"
   },
-  "clone_udid": "009535E6-233B-4403-B680-F90BD656B51C",
+  "clone_udid": "284D4D18-2011-42F7-98FE-C8B051FCFBE3",
+  "attempts": 1,
+  "first_event_s": 3.8,
+  "sandboxed": false,
   "versions": {
     "schema": 2,
     "harness": "isolation-v3-progressive",
     "surface": "cli",
     "skills": true,
-    "tool": "0.17.6",
-    "tool_pinned": "0.17.6",
-    "app": "1.122.0",
+    "tool": "0.20.6",
+    "tool_pinned": "0.20.6",
+    "app": null,
     "app_pinned": "1.122.0"
   }
 }

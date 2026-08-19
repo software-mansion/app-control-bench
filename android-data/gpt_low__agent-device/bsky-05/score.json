@@ -1,0 +1,20 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The final screen is the Bluesky Explore tab, with the Explore header and search field visible.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-05",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "In Bluesky, open the Search / Explore tab (tap the magnifying-glass icon in the bottom navigation bar).",
+    "solved_screen": "The Search / Explore screen is open, reached via the magnifying-glass icon in the bottom navigation: the header reads \"Explore\" (hamburger menu at top-left, an \"All languages\" control at top-right) with a search input field (magnifying-glass icon and placeholder) directly below it, and the Search icon is the active/highlighted tab in the bottom navigation. Because no query has been typed, the body shows the default explore state (suggested-accounts / \"Discover new feeds\" sections, or an empty area) \u2014 the distinguishing feature is the \"Explore\" header and the search field, NOT the home screen's centered butterfly logo with the Following/Feeds tabs and \"What's up?\" composer. Any typed query is unnecessary; the empty Explore screen counts.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 3
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: In Bluesky, open the Search / Explore tab (tap the magnifying-glass icon in the bottom navigation bar).\nANDROID SOLVED-SCREEN DESCRIPTION: The Search / Explore screen is open, reached via the magnifying-glass icon in the bottom navigation: the header reads \"Explore\" (hamburger menu at top-left, an \"All languages\" control at top-right) with a search input field (magnifying-glass icon and placeholder) directly below it, and the Search icon is the active/highlighted tab in the bottom navigation. Because no query has been typed, the body shows the default explore state (suggested-accounts / \"Discover new feeds\" sections, or an empty area) \u2014 the distinguishing feature is the \"Explore\" header and the search field, NOT the home screen's centered butterfly logo with the Following/Feeds tabs and \"What's up?\" composer. Any typed query is unnecessary; the empty Explore screen counts.\nDEVICE TOOL ACTIVITY: skill, bash, bash\nNUMBER OF TOOL CALLS: 3\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

@@ -79,13 +79,17 @@ function ModelName({
 function Hero({
   view,
   lookup,
+  platform,
+  releaseVersion,
 }: {
   view: ReportView;
   lookup: Lookup;
+  platform: ReportInitial["platform"];
+  releaseVersion?: string;
 }) {
   const best = view.best;
   const lead =
-    "Compare models, tools, cost, and test runs across real iOS app-control tasks.";
+    `Compare models, tools, cost, and test runs across real ${platform.label} app-control tasks.`;
   return (
     <>
       <section
@@ -101,6 +105,9 @@ function Hero({
           />
         </p>
         <h1 id="benchmark-title">AppControlBench</h1>
+        {releaseVersion && (
+          <p class="benchmark-release">agent-device v{releaseVersion}</p>
+        )}
         <p class="hero-lead">{lead}</p>
       </section>
       <div class="winner-host">
@@ -112,7 +119,8 @@ function Hero({
 
 function BestSummary({ best, lookup }: { best: LeaderRow; lookup: Lookup }) {
   const model = lookup.model(best.modelId);
-  const version = lookup.tool(best.toolId)?.version;
+  const version =
+    best.toolVersion ?? lookup.tool(best.toolId)?.releaseVersion;
 
   return (
     <aside
@@ -132,7 +140,9 @@ function BestSummary({ best, lookup }: { best: LeaderRow; lookup: Lookup }) {
         <dl>
           <div>
             <dt>cost / run</dt>
-            <dd>{fmtPrice(best.avgPrice)}</dd>
+            <dd>
+              {fmtPrice(best.avgPrice)}
+            </dd>
           </div>
           <div>
             <dt>time / run</dt>
@@ -226,9 +236,13 @@ function OutcomeBreakdown({ row }: { row: LeaderRow }) {
 function HeroLeaderboard({
   view,
   lookup,
+  platform,
+  releaseVersion,
 }: {
   view: ReportView;
   lookup: Lookup;
+  platform: ReportInitial["platform"];
+  releaseVersion?: string;
 }) {
   const top = view.leaders.slice(0, 10);
   return (
@@ -238,8 +252,13 @@ function HeroLeaderboard({
           <HeroDither />
           <div class="benchmark-paper-fade" aria-hidden="true" />
           <div class="benchmark-vignette" aria-hidden="true" />
-          <Nav page="report" />
-          <Hero view={view} lookup={lookup} />
+          <Nav page="report" platform={platform} />
+          <Hero
+            view={view}
+            lookup={lookup}
+            platform={platform}
+            releaseVersion={releaseVersion}
+          />
         </div>
         <header class="section-intro" id="leaderboard">
           <div>
@@ -269,7 +288,8 @@ function HeroLeaderboard({
           <tbody>
             {top.map((row, i) => {
               const rank = i + 1;
-              const version = lookup.tool(row.toolId)?.version;
+              const version =
+                row.toolVersion ?? lookup.tool(row.toolId)?.releaseVersion;
               return (
                 <tr
                   key={`${row.modelId}__${row.toolId}`}
@@ -296,7 +316,9 @@ function HeroLeaderboard({
                   </td>
                   <td class="lb-completion num">{pct(row.completion)}</td>
                   <td class="lb-time num">{fmtTime(row.avgSeconds)}</td>
-                  <td class="lb-cost num">{fmtPrice(row.avgPrice)}</td>
+                  <td class="lb-cost num">
+                    {fmtPrice(row.avgPrice)}
+                  </td>
                   <td class="lb-score">
                     <OutcomeBreakdown row={row} />
                     <div class="leaderboard-mobile-metrics">
@@ -306,7 +328,9 @@ function HeroLeaderboard({
                       </span>
                       <span>
                         <small>Cost / run</small>
-                        <b>{fmtPrice(row.avgPrice)}</b>
+                        <b>
+                          {fmtPrice(row.avgPrice)}
+                        </b>
                       </span>
                     </div>
                   </td>
@@ -449,7 +473,9 @@ function MobileToolComparison({
             const label = tool?.label ?? toolId;
             return (
               <option key={toolId} value={toolId}>
-                {tool?.version ? `${label} v${tool.version}` : label}
+                {tool?.version || tool?.releaseVersion
+                  ? `${label} v${tool.version ?? tool.releaseVersion}`
+                  : label}
               </option>
             );
           })}
@@ -565,8 +591,10 @@ function ComparisonMatrix({
                   return (
                     <th key={toolId}>
                       {tool?.label ?? toolId}
-                      {tool?.version && (
-                        <span class="tvh">v{tool.version}</span>
+                      {(tool?.version || tool?.releaseVersion) && (
+                        <span class="tvh">
+                          v{tool.version ?? tool.releaseVersion}
+                        </span>
                       )}
                     </th>
                   );
@@ -674,7 +702,7 @@ function Breakdowns({
     <section class="breakdowns-section" id="breakdowns">
       <SectionHeader
         title="Breakdowns"
-        explain="Time uses successful runs only."
+        explain="Time uses successful runs only. GPT subscription costs are calculated from recorded tokens at API list rates."
       />
 
       <div id="stat-breakdowns">
@@ -843,7 +871,12 @@ export function ReportPage({ initial }: { initial: ReportInitial }) {
   return (
     <>
       <main id="top">
-        <HeroLeaderboard view={initial.view} lookup={lookup} />
+        <HeroLeaderboard
+          view={initial.view}
+          lookup={lookup}
+          platform={initial.platform}
+          releaseVersion={initial.provenance.releaseToolVersions["agent-device"]}
+        />
         <ComparisonMatrix view={initial.view} lookup={lookup} />
         <Breakdowns view={initial.view} lookup={lookup} />
         <CostEfficiencyPlot view={initial.view} tools={initial.tools} />

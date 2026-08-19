@@ -1,7 +1,7 @@
 {
-  "verdict": "partial",
-  "confidence": 0.98,
-  "reason": "The search for \"test\" is entered on the Explore screen, but the results are still on the Top tab rather than switched to People.",
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The final screenshot shows Bluesky Search with \"test\" entered and the \"People\" tab selected, displaying matching accounts.",
   "judge_model": "gpt-5.4",
   "cell": "gpt_high:agent-device",
   "task": "bsky-14",

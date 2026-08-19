@@ -1,0 +1,21 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The Bluesky Notifications tab is \u0916\u0941\u0932\u0947 with the bell icon selected in the bottom navigation.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-12",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Open the Notifications tab in Bluesky (the bell icon in the bottom navigation).",
+    "solved_screen": "The Notifications screen with \"Notifications\" header and \"All\"/\"Mentions\" sub-tabs, the \"All\" tab active. Because the test PDS has no activity, the body shows a centered bell icon with \"No notifications yet!\"; the bell is highlighted in the bottom navigation.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 4
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Open the Notifications tab in Bluesky (the bell icon in the bottom navigation).\nANDROID SOLVED-SCREEN DESCRIPTION: The Notifications screen with \"Notifications\" header and \"All\"/\"Mentions\" sub-tabs, the \"All\" tab active. Because the test PDS has no activity, the body shows a centered bell icon with \"No notifications yet!\"; the bell is highlighted in the bottom navigation.\nDEVICE TOOL ACTIVITY: skill, bash, bash, bash\nNUMBER OF TOOL CALLS: 4\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

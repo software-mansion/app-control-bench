@@ -9,22 +9,11 @@
   "needs_auth": true,
   "returncode": 0,
   "timed_out": false,
-  "wall_s": 43.4,
-  "n_tool_calls": 18,
+  "wall_s": 32.9,
+  "n_tool_calls": 7,
   "tool_names": [
+    "bash",
     "skill",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
     "bash",
     "bash",
     "bash",
@@ -32,20 +21,29 @@
     "bash"
   ],
   "stderr_tail": "",
-  "ts": 1783526801,
+  "ts": 1786989925,
   "golden": {
-    "name": "bench-golden-bsky",
-    "udid": "4EC91CF7-FD01-462B-A0C5-6A7874D7CABF"
+    "name": "bench-golden-v4",
+    "udid": "7E7D0792-FF42-4998-9B0F-206E066E9C6E"
   },
-  "clone_udid": "59A0917C-73C6-4FDB-B504-7B8DC3313FE8",
+  "clone_udid": "89384752-A1A6-480C-8D13-922472957F71",
+  "sandboxed": true,
+  "postcondition": null,
   "versions": {
     "schema": 2,
-    "harness": "isolation-v3-progressive",
+    "harness": "isolation-v4-default-set",
     "surface": "cli",
+    "state_scope": "per-run",
     "skills": true,
-    "tool": "0.17.6",
-    "tool_pinned": "0.17.6",
-    "app": "1.122.0",
-    "app_pinned": "1.122.0"
+    "skill_hashes": {
+      "agent-device": "c884a069124bd26c660f80e0fd4cabc7ea9a66269f26f7970198bd75b7889c6a",
+      "ios-simulator": "03a675a8a90cbbfa6a9ab5d5bf1c552d9be300e71b4f654950225c2c6d3e5434",
+      "android-emulator": "1c14470a6d3cd327aec99c4e5a982b90a4041f1c8dc1a0a0ba400a26fae3c585"
+    },
+    "tool": "0.20.9",
+    "tool_pinned": "0.20.9",
+    "app": null,
+    "app_pinned": "1.122.0",
+    "model_route": "direct"
   }
 }

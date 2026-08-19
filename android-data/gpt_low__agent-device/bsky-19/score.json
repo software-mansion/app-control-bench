@@ -1,0 +1,23 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The screenshot shows Bluesky\u2019s Appearance settings screen with the Color mode, Dark theme, Font, and Font size controls visible.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-19",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Open Bluesky Settings and go to the Appearance screen (color mode / theme / font).",
+    "solved_screen": "The Appearance settings screen (header \"Appearance\", back arrow) showing a \"Color mode\" toggle (System/Light/Dark), a \"Dark theme\" toggle (Dim/Dark), a \"Font\" toggle, and a \"Font size\" toggle.",
+    "tool_names": [
+      "bash",
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 6
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Open Bluesky Settings and go to the Appearance screen (color mode / theme / font).\nANDROID SOLVED-SCREEN DESCRIPTION: The Appearance settings screen (header \"Appearance\", back arrow) showing a \"Color mode\" toggle (System/Light/Dark), a \"Dark theme\" toggle (Dim/Dark), a \"Font\" toggle, and a \"Font size\" toggle.\nDEVICE TOOL ACTIVITY: bash, skill, bash, bash, bash, bash\nNUMBER OF TOOL CALLS: 6\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "_comment": "Android-specific solved-screen descriptions keyed by the shared task id. The Android judge overlays these on tasks.json so prompts stay identical across platforms while visual expectations match the Android apps under test. Descriptions were transcribed from the tracked 0.20.8 Android captures; evidence status below distinguishes observed targets from task surfaces not reached by either model.",
+  "evidence": {
+    "primary_capture_pattern": "android-data/gpt_low__agent-device/{task_id}/final.png",
+    "observed": [
+      "element-01", "element-02", "element-03", "element-04", "element-05", "element-06",
+      "element-07", "element-08", "element-09", "element-10", "element-13", "element-14",
+      "element-15", "element-16", "element-19", "element-21", "element-23", "element-24",
+      "element-25", "element-26", "element-27", "element-28", "element-29", "element-30"
+    ],
+    "context_required": ["element-12"],
+    "unsupported": ["element-11", "element-17", "element-18", "element-20", "element-22"],
+    "secondary_captures": {
+      "element-06": "android-data/haiku_low__agent-device/element-06/final.png",
+      "element-11": "android-data/haiku_low__agent-device/element-11/final.png",
+      "element-12": "android-data/haiku_low__agent-device/element-12/final.png",
+      "element-17": "android-data/haiku_low__agent-device/element-17/final.png",
+      "element-18": "android-data/haiku_low__agent-device/element-18/final.png",
+      "element-20": "android-data/haiku_low__agent-device/element-20/final.png",
+      "element-22": "android-data/haiku_low__agent-device/element-22/final.png"
+    }
+  },
+  "solved_screens": {
+    "element-01": "The Android Element X Team Standup timeline is open, with Team Standup in the header, its seeded messages visible, and the message composer at the bottom.",
+    "element-02": "The Android Element X direct-message timeline with Bob is open, with Bob in the header and the message composer at the bottom.",
+    "element-03": "The Weekend Plans timeline is open and shows Alice's newly sent message reading exactly benchmark test.",
+    "element-04": "The Android Element X room search field contains Book and the filtered room list shows Book Club as a matching result.",
+    "element-05": "The Android Element X Settings screen is open, showing Alice / @alice:localhost and settings rows such as Notifications, Screen lock, Encryption, Advanced settings, Labs, and About.",
+    "element-06": "Element X's Android Start chat screen is open, showing the actions New room, Room directory, Invite people, and Join room.",
+    "element-07": "The Android room-details screen for Project Phoenix is open, with Project Phoenix in the header and room actions such as Mute, Video, Invite, Share, People, Roles & permissions, and Notifications visible.",
+    "element-08": "The Team Standup timeline is open and shows Alice's newly sent message reading exactly good morning.",
+    "element-09": "The Book Club timeline is open with Book Club in the header and its seeded conversation messages visible.",
+    "element-10": "The Android Element X Advanced settings screen is open with its Appearance preference visible; Appearance shows the current theme such as System.",
+    "element-11": "The Android Threads view belonging to Team Standup is open, with a Threads heading or other unambiguous indication that Team Standup's threaded conversations are being shown rather than the ordinary room timeline or call screen.",
+    "element-12": "The Android room-specific Notifications screen for Book Club is open, showing Allow custom setting and notification choices such as Default setting and All messages. Because the Android page does not display the room name, the recorded tool activity must establish that it was opened from Book Club.",
+    "element-13": "A profile for a member of Team Standup is open in Android Element X, showing the member's display name and Matrix user ID, such as Bob / @bob:localhost, plus member actions.",
+    "element-14": "The Android room-details screen for Team Standup is open, showing Team Standup, topic Daily standup sync, and room actions including People, Roles & permissions, and Notifications.",
+    "element-15": "The Project Phoenix People screen is open and lists the seeded room members Alice, Bob, Carol, and Dave.",
+    "element-16": "Element X's Android in-app Notifications settings page is open, showing notification controls such as Enable notifications on this device, Notify me for, Group chats, Direct chats, Mentions, and Sound.",
+    "element-17": "Android Element X's own security and privacy controls are visible in-app. In this build those controls are split across Settings rows such as Screen lock and Encryption; either relevant settings screen counts, but the Android system Settings app does not.",
+    "element-18": "An in-app Android Element X screen listing or managing the logged-in session/device is open. A Screen lock PIN setup page or the general Settings list alone does not count.",
+    "element-19": "The Android Element X About screen is open, showing About content such as Copyright, Acceptable use policy, Privacy policy, and Open source licenses.",
+    "element-20": "An account/user action menu opened from the Android chat-list avatar is visible. The general Settings screen by itself does not count as an open menu.",
+    "element-21": "The Android Element X Spaces screen is open and shows the joined space list, including Benchmark HQ.",
+    "element-22": "Team Standup's in-room message search is open with update entered and matching message results visible. The room timeline or room-details page alone does not count.",
+    "element-23": "The Team Standup timeline shows an emoji reaction pill attached beneath one of its messages; any emoji and any message count.",
+    "element-24": "The Book Club timeline shows Alice's newly sent reply reading exactly sounds good, visually attached as a reply to an existing message.",
+    "element-25": "The Weekend Plans timeline is open and Android's composer attachment chooser is expanded, showing actions such as Take photo, Record video, Photo & Video Library, Attachment, Poll, or Text Formatting.",
+    "element-26": "The Android context menu for Book Club is open over the room list, showing Book Club and actions such as Mark as read, Favorite, Settings, and Leave room.",
+    "element-27": "The Android Invite people screen opened from Team Standup is visible, with an Invite people header and Search for someone field.",
+    "element-28": "The Project Phoenix timeline is open and shows Alice's newly sent message reading exactly status update.",
+    "element-29": "The Bob direct-message timeline is open and shows Alice's newly sent message reading exactly hi bob.",
+    "element-30": "The Book Club timeline is open and shows Alice's newly sent message reading exactly great read."
+  }
+}

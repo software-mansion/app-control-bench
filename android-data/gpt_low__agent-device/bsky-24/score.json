@@ -1,0 +1,28 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The Whiskers profile is open and the top-right button reads \"Follow,\" indicating the account was unfollowed.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-24",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "In Bluesky, open the profile of whiskers.test (the author of the first Following-feed post) and unfollow that account - its button currently reads \"Following\"; tap it to unfollow.",
+    "solved_screen": "The profile of whiskers @whiskers.test is open with its top-right action button now reading \"Follow\" (the filled blue \"Follow\" button) instead of \"Following\", confirming the account has been unfollowed. The button MUST read \"Follow\": a button still reading \"Following\" means the account is still followed and does NOT count, and any other account's profile does NOT count.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 11
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: In Bluesky, open the profile of whiskers.test (the author of the first Following-feed post) and unfollow that account - its button currently reads \"Following\"; tap it to unfollow.\nANDROID SOLVED-SCREEN DESCRIPTION: The profile of whiskers @whiskers.test is open with its top-right action button now reading \"Follow\" (the filled blue \"Follow\" button) instead of \"Following\", confirming the account has been unfollowed. The button MUST read \"Follow\": a button still reading \"Following\" means the account is still followed and does NOT count, and any other account's profile does NOT count.\nDEVICE TOOL ACTIVITY: skill, bash, bash, bash, bash, bash, bash, bash, bash, bash, bash\nNUMBER OF TOOL CALLS: 11\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

@@ -69,7 +69,7 @@ def regen_plan(tasks_by_id):
             t = tasks_by_id.get(tid)
             if not t or t["app"] not in bench.APPS or t.get("annulled"):
                 continue
-            if ledger.is_polluted(bench.RESULTS, model, tool, tid, bench.HARNESS):
+            if ledger.is_polluted(bench.RESULTS, model, tool, tid, bench.harness_for(tool)):
                 by_cell.setdefault((tool, model), []).append(tid)
     return [(tool, model, tids) for (tool, model), tids in by_cell.items()]
 
@@ -106,7 +106,10 @@ def main():
         # v1, or the always-inject v2) is RErun so the current pass overwrites the pollution in place,
         # instead of skipping it forever.
         pending = [tasks_by_id[tid] for tid in tids
-                   if tid in tasks_by_id and ledger.needs_run(bench.RESULTS, key, tool, tid, bench.HARNESS)]
+                   if tid in tasks_by_id and ledger.needs_run(
+                       bench.RESULTS, key, tool, tid, bench.harness_for(tool),
+                       {**bench.run_versions(tool, tasks_by_id[tid]["app"]),
+                        "model_route": bench.model_route(key)})]
         if not pending:
             continue
         print(f"=== {tool} / {key}  effort={bench.EFFORT.get(key) or 'none'}  "
@@ -116,7 +119,7 @@ def main():
                 bench.run_one(key, tool, t)   # (bluesky session refresh happens inside, per-run)
             except (isolation.TeardownError, isolation.ResetError, sim_device.DeviceError):
                 # isolation can no longer be guaranteed (unkillable procs / failed server reset /
-                # bad golden / foreign booted sim) — continuing would produce polluted results.
+                # bad golden) — continuing would produce polluted results.
                 raise
             except Exception as e:
                 print(f"  {key}:{tool}/{t['id']} ERROR {e}", flush=True)

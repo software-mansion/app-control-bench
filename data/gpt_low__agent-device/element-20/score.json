@@ -1,7 +1,7 @@
 {
   "verdict": "success",
   "confidence": 0.99,
-  "reason": "The chat list is visible with the account menu open under the top-left avatar showing User settings, Invite friends, Feedback, and Sign Out.",
+  "reason": "The account menu is open beneath the top-left avatar and shows User settings, Invite friends, Feedback, and Sign Out.",
   "judge_model": "gpt-5.4",
   "cell": "gpt_low:agent-device",
   "task": "element-20",

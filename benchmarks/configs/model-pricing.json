@@ -1,0 +1,7 @@
+{
+  "_comment": "Standard API list prices in USD per 1M tokens. Used to calculate API-equivalent cost when a subscription-backed run records zero billed cost but preserves token usage. Cache writes fall back to the uncached-input rate when a model has no separate cache-write rate. Source checked 2026-08-19: https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+  "gpt_none": { "input": 0.75, "cached_input": 0.075, "output": 4.5 },
+  "gpt_low": { "input": 0.75, "cached_input": 0.075, "output": 4.5 },
+  "gpt": { "input": 0.75, "cached_input": 0.075, "output": 4.5 },
+  "gpt_high": { "input": 0.75, "cached_input": 0.075, "output": 4.5 }
+}

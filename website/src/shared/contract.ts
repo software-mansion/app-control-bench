@@ -9,6 +9,7 @@ export type Verdict = 'success' | 'partial' | 'fail' | 'error';
 /** The verdicts that carry a score. `error` is a judge failure, not an agent failure. */
 export type GradedVerdict = 'success' | 'partial' | 'fail';
 export type Lifecycle = 'pending' | 'completed' | 'judged' | 'stale';
+export type CostBasis = 'recorded' | 'token-calculated';
 
 export type RunCell = {
   modelId: string;
@@ -18,6 +19,9 @@ export type RunCell = {
   verdict: Verdict | null;
   wallSeconds: number | null;
   costUsd: number | null;
+  costBasis: CostBasis | null;
+  /** Version recorded by this run; catalog-level tool versions are absent when a refresh is mixed. */
+  toolVersion: string | null;
 };
 
 export type Model = {
@@ -35,7 +39,10 @@ export type Model = {
 export type Tool = {
   id: string;
   label: string;
+  /** A single exact version only when every exported run agrees. */
   version: string | null;
+  /** Version selected for the benchmark refresh, even when valid retained runs are mixed. */
+  releaseVersion: string | null;
 };
 
 export type Task = {
@@ -85,6 +92,7 @@ export type RunDetail = {
     judgeModel: string | null;
     wallSeconds: number | null;
     costUsd: number | null;
+    costBasis: CostBasis | null;
     timedOut: boolean;
     toolCallCount: number;
     toolNames: string[];
@@ -135,12 +143,24 @@ export type BuildManifest = {
   buildId: string;
   dataRoot: string;
   artifactRoot: string;
+  platform: Platform;
+};
+
+export type Platform = {
+  id: 'ios' | 'android';
+  label: 'iOS' | 'Android';
 };
 
 export type Provenance = {
   generatedAt: string;
   judgeLine: string;
+  /** Release selected for this benchmark refresh, distinct from retained run provenance. */
+  releaseToolVersions: Record<string, string>;
+  /** Exact versions observed in the exported runs; mixed tool columns are intentionally absent. */
   toolVersions: Record<string, string>;
+  costNotice: { label: string; href: string } | null;
+  /** Headline cells may contain reviewed targeted reruns; this prevents them being read as pass@1. */
+  resultPolicy: string;
   appVersions: Record<string, { version?: string; commit?: string; repo?: string }>;
 };
 
@@ -180,6 +200,7 @@ export type ReportMeta = {
 
 export type ReportInitial = {
   schemaVersion: 2;
+  platform: Platform;
   models: Model[];
   tools: Tool[];
   view: ReportView;
@@ -205,7 +226,10 @@ export type LeaderRow = {
   completion: number;
   avgSeconds: number | null;
   avgPrice: number | null;
+  costBasis: CostBasis | null;
   n: number;
+  /** The single version shared by this model/tool configuration, when recorded consistently. */
+  toolVersion: string | null;
   /**
    * Graded-verdict counts behind `completion`, for the leaderboard's composition bar
    * (`report.py:2196-2205`). Graded only — `error` has no segment, exactly as the bar is drawn today.

@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 """Facts-only exporter for the report front end.
 
-Reads `results/` + `tasks/tasks.json` and writes the static JSON the Vite/Preact pages consume, plus the
-run screenshots. The output contract is `web/src/shared/contract.ts` — field names and shapes here are
+Reads a platform result tree + `tasks/tasks.json` and writes the static JSON the Vite/Preact pages
+consume, plus the run screenshots. The output contract is `website/src/shared/contract.ts` — field names and shapes here are
 that file, not this file's own invention.
 
-    python3 runner/report_data.py --results results --out public
+    python3 runner/report_data.py --platform ios --results ../data --out ../public
+    python3 runner/report_data.py --platform android --results ../android-data --out ../public
 
 Emits, under --out:
 
-    data/v1/run-index.json                       RunIndex: catalog + one RunCell per model x tool x task
-    data/v1/runs/<model>__<tool>__<task>.json    RunDetail, one per run that exists on disk
-    data/v1/transcripts/<key>.json               RunTranscript, only where the run recorded events
-    data/v1/report-meta.json                     ReportMeta
-    data/v1/inventory.json                       {"paths": [...]}, every path this export owns
-    artifacts/<model>__<tool>__<task>.webp        final screenshots (naming as docs/reporting.md)
+    data/<platform>/v1/run-index.json                       RunIndex: one RunCell per model x tool x task
+    data/<platform>/v1/runs/<model>__<tool>__<task>.json    RunDetail, one per run that exists on disk
+    data/<platform>/v1/transcripts/<key>.json               RunTranscript, only for recorded events
+    data/<platform>/v1/report-meta.json                     ReportMeta
+    data/<platform>/v1/inventory.json                       every path this export owns
+    artifacts/<platform>/<model>__<tool>__<task>.webp       final screenshots
 
 NO AGGREGATES. Every number the report renders is derived by deriveReportView() in TypeScript; a second
 aggregation implementation living here is the exact thing this migration exists to delete.
@@ -46,13 +47,8 @@ import json
 import os
 from typing import NamedTuple
 
-from PIL import Image
-
 from bench_models import MODELS, LABELS, INTERNAL_MODELS   # roster (branch-specific)
-try:
-    from bench import HARNESS as CURRENT_HARNESS           # the current faithful harness stamp
-except Exception:
-    CURRENT_HARNESS = "isolation-v3-progressive"           # keep in sync with bench.HARNESS
+from bench_platforms import ANDROID, IOS, PLATFORMS, BenchmarkPlatform
 try:
     from judge import JUDGE_MODEL                          # fallback only: the judge recorded on disk wins
 except Exception:
@@ -62,7 +58,6 @@ SCHEMA_VERSION = 2
 
 # ---- roster helpers (lifted from report.py:49-97, semantics unchanged) ---------------------------
 PUBLIC = os.environ.get("BENCH_PUBLIC") == "1"    # public view: hide internal models entirely
-TOOLS = ["argent", "agent-device", "none"]
 TLABEL = {"none": "no tool"}                      # display label for a tool key (else the key itself)
 BASELINE_TOOL = "none"                            # the no-tool baseline: "does the tool help at all?"
 SCORE = {"success": 1.0, "partial": 0.5, "fail": 0.0, "error": 0.0, None: 0.0}
@@ -129,18 +124,7 @@ def _load_versions(fname):   # small versions manifest under configs/ (drops _co
 
 TOOL_VERSIONS = _load_versions("tool-versions.json")   # {tool: version} — the agents driving the apps
 APP_VERSIONS = _load_versions("app-versions.json")     # {app: {version, commit, repo}} — target surfaces
-
-# ---- output layout ------------------------------------------------------------------------------
-# Root-absolute hrefs: both pages live at the site root ("/" and "/index-runs"), so a root-absolute
-# path resolves identically from either, with or without cleanUrls rewriting.
-DATA_DIR = "data/v1"
-ARTIFACT_DIR = "artifacts"
-DATA_ROOT = "/" + DATA_DIR
-ARTIFACT_ROOT = "/" + ARTIFACT_DIR
-INVENTORY_REL = DATA_DIR + "/inventory.json"
-# The two trees this exporter owns outright and therefore prunes. `assets` and `.vite` belong to Vite
-# and are cleared by the build script; nothing else under --out is ours to delete.
-PRUNE_ROOTS = ("data", ARTIFACT_DIR)
+MODEL_PRICING = _load_versions("model-pricing.json")   # USD / 1M tokens for token-calculated costs
 
 # ---- field whitelist ----------------------------------------------------------------------------
 # The ONLY keys this exporter reads out of a run's meta.json / score.json. Deliberately absent, and
@@ -172,51 +156,84 @@ def redact(text):
 
 
 # ---- reading ------------------------------------------------------------------------------------
-def load_tasks():
-    d = json.load(open(os.path.join(ROOT, "tasks", "tasks.json")))
-    return d["tasks"], {t["id"]: t for t in d["tasks"]}
+def load_tasks(platform=IOS):
+    with open(os.path.join(ROOT, "tasks", "tasks.json")) as stream:
+        d = json.load(stream)
+    tasks = d["tasks"]
+    if platform.id == ANDROID.id:
+        with open(os.path.join(ROOT, "tasks", "android-solved-screens.json")) as f:
+            unsupported = set(json.load(f).get("evidence", {}).get("unsupported", []))
+        tasks = [{**task, "annulled": task["id"] in unsupported} for task in tasks]
+    return tasks, {t["id"]: t for t in tasks}
 
 
 def parse_chat(path):
     """Compact chat from a run's transcript.jsonl: assistant text, reasoning, and tool calls (name /
     input / truncated output / status). Base64 screenshot attachments are dropped (huge). Also returns
     the run's total cost in USD (sum of step_finish costs; 0.0 for local/free models, None if the run
-    produced no transcript / no cost fields at all)."""
+    produced no transcript / no cost fields at all), plus provider-normalized token buckets."""
     out = []
     cost = None
+    usage = {"input": 0, "cached_input": 0, "cache_write": 0,
+             "output": 0, "reasoning": 0}
     try:
-        for line in open(path):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                ev = json.loads(line)
-            except Exception:
-                continue
-            typ = ev.get("type"); part = ev.get("part", {}) or {}
-            if typ == "text":
-                x = (part.get("text") or "").strip()
-                if x:
-                    out.append({"k": "t", "x": x, "ts": ev.get("timestamp")})
-            elif typ == "reasoning":
-                x = (part.get("text") or "").strip()
-                if x:
-                    out.append({"k": "r", "x": x, "ts": ev.get("timestamp")})
-            elif typ == "tool_use":
-                st = part.get("state", {}) or {}
-                out.append({"k": "u", "n": part.get("tool") or "", "i": st.get("input") or {},
-                            "o": str(st.get("output") or "")[:320], "s": st.get("status") or "",
-                            "ts": ev.get("timestamp")})
-            elif typ == "step_finish":
-                c = part.get("cost")
-                if c is not None:
-                    cost = (cost or 0.0) + c
+        with open(path) as stream:
+            for line in stream:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    ev = json.loads(line)
+                except Exception:
+                    continue
+                typ = ev.get("type"); part = ev.get("part", {}) or {}
+                if typ == "text":
+                    x = (part.get("text") or "").strip()
+                    if x:
+                        out.append({"k": "t", "x": x, "ts": ev.get("timestamp")})
+                elif typ == "reasoning":
+                    x = (part.get("text") or "").strip()
+                    if x:
+                        out.append({"k": "r", "x": x, "ts": ev.get("timestamp")})
+                elif typ == "tool_use":
+                    st = part.get("state", {}) or {}
+                    out.append({"k": "u", "n": part.get("tool") or "", "i": st.get("input") or {},
+                                "o": str(st.get("output") or "")[:320], "s": st.get("status") or "",
+                                "ts": ev.get("timestamp")})
+                elif typ == "step_finish":
+                    c = part.get("cost")
+                    if c is not None:
+                        cost = (cost or 0.0) + c
+                    tokens = part.get("tokens") or {}
+                    cache = tokens.get("cache") or {}
+                    usage["input"] += int(tokens.get("input") or 0)
+                    usage["cached_input"] += int(cache.get("read") or 0)
+                    usage["cache_write"] += int(cache.get("write") or 0)
+                    usage["output"] += int(tokens.get("output") or 0)
+                    usage["reasoning"] += int(tokens.get("reasoning") or 0)
     except FileNotFoundError:
         pass
-    return out, cost
+    return out, cost, usage
 
 
-def collect(results_dir):
+def published_cost(meta, cost, usage):
+    """Return (USD, basis), calculating list-price API cost for zero-cost subscription telemetry."""
+    if cost == 0 and provider_of(meta.get("model")):
+        pricing = MODEL_PRICING.get(meta.get("model"))
+        if pricing and sum(usage.values()) > 0:
+            calculated = (
+                usage["input"] * float(pricing["input"])
+                + usage["cached_input"] * float(pricing["cached_input"])
+                + usage["cache_write"] * float(pricing.get("cache_write", pricing["input"]))
+                + usage["output"] * float(pricing["output"])
+                + usage["reasoning"] * float(pricing["output"])
+            ) / 1_000_000
+            return calculated, "token-calculated"
+        return None, None
+    return cost, "recorded" if cost is not None else None
+
+
+def collect(results_dir, platform=IOS):
     """{(model, tool, task): row} over every run on disk. meta/score are projected through the field
     whitelist here, which is the only place either file is opened."""
     rows = {}
@@ -231,13 +248,22 @@ def collect(results_dir):
             mp = os.path.join(rdir, "meta.json")
             if not os.path.exists(mp):
                 continue
-            meta = _pick(json.load(open(mp)), META_FIELDS)
+            with open(mp) as stream:
+                meta = _pick(json.load(stream), META_FIELDS)
             sp = os.path.join(rdir, "score.json")
-            raw_score = json.load(open(sp)) if (os.path.exists(sp) and os.path.getsize(sp)) else {}
+            if os.path.exists(sp) and os.path.getsize(sp):
+                with open(sp) as stream:
+                    raw_score = json.load(stream)
+            else:
+                raw_score = {}
             score = _pick(raw_score, SCORE_FIELDS)
             png = os.path.join(rdir, "final.png")
-            chat, cost = parse_chat(os.path.join(rdir, "transcript.jsonl"))
-            polluted = (meta.get("versions") or {}).get("harness") != CURRENT_HARNESS
+            chat, cost, usage = parse_chat(os.path.join(rdir, "transcript.jsonl"))
+            cost, cost_basis = published_cost(meta, cost, usage)
+            polluted = (
+                (meta.get("versions") or {}).get("harness")
+                != platform.published_harness(meta["tool"])
+            )
             ji = score.get("judge_input")   # judge telemetry: EXACTLY what the judge was shown. Absent
             ji = _pick(ji, JUDGE_INPUT_FIELDS) if isinstance(ji, dict) else None   # on every score.json
             rows[(meta["model"], meta["tool"], tid)] = {   # written before judge.py started recording it
@@ -246,7 +272,7 @@ def collect(results_dir):
                 "reason": score.get("reason", ""), "conf": score.get("confidence"),
                 "judge_input": ji,
                 "png": png if os.path.exists(png) else None,
-                "chat": chat, "cost": cost,
+                "chat": chat, "cost": cost, "cost_basis": cost_basis,
                 # A result produced by an older/polluted harness: shown, but slated to be overwritten
                 # as soon as the current-harness queue is drained.
                 "polluted": polluted}
@@ -289,18 +315,19 @@ class Dataset(NamedTuple):
     models: list
     rows: dict
     annulled: frozenset
+    platform: BenchmarkPlatform = IOS
 
 
-def gather(results_dir):
+def gather(results_dir, platform=IOS):
     """Read the dataset and apply every eligibility rule, in report.py's order. Nothing is written."""
-    tasks, tmap = load_tasks()
+    tasks, tmap = load_tasks(platform)
     # Optional app filter (env): REPORT_APPS=element restricts the whole export to those apps.
     apps_env = os.environ.get("REPORT_APPS")
     if apps_env:
         keep_apps = set(apps_env.split(","))
         tasks = [t for t in tasks if t["app"] in keep_apps]
         tmap = {t["id"]: t for t in tasks}
-    rows = collect(results_dir)
+    rows = collect(results_dir, platform)
     # Orphan result dirs (a task id no longer in tasks.json) have no cell and no catalog entry, so they
     # would be unreachable files. Drop them here rather than emitting dead weight.
     rows = {k: v for k, v in rows.items() if k[2] in tmap}
@@ -321,7 +348,8 @@ def gather(results_dir):
         models = [m for m in keep if m in models] or keep   # preserve requested order
     rows = {k: v for k, v in rows.items() if k[0] in set(models)}
     return Dataset(tasks=tasks, tmap=tmap, models=models, rows=rows,
-                   annulled=frozenset(t["id"] for t in tasks if t.get("annulled")))
+                   annulled=frozenset(t["id"] for t in tasks if t.get("annulled")),
+                   platform=platform)
 
 
 # ---- resource construction ----------------------------------------------------------------------
@@ -400,11 +428,35 @@ def model_entry(m):
             "effort": think_level(m) or None, "effortRank": eff_rank(mlabel(m))}
 
 
-def tool_entry(tl):
-    return {"id": tl, "label": tl_label(tl), "version": TOOL_VERSIONS.get(tl)}
+def observed_tool_versions(ds):
+    """Use captured versions for existing rows; only an entirely absent tool uses its run pin."""
+    observed = {tool: set() for tool in ds.platform.tools}
+    present = {tool: False for tool in ds.platform.tools}
+    for (_model, tool, task_id), row in ds.rows.items():
+        if task_id in ds.annulled or tool not in observed:
+            continue
+        present[tool] = True
+        version = ((row.get("meta") or {}).get("versions") or {}).get("tool")
+        if version:
+            observed[tool].add(str(version))
+    versions = {}
+    for tool, captured in observed.items():
+        if captured:
+            versions[tool] = " / ".join(sorted(captured))
+        elif present[tool]:
+            versions[tool] = None
+        else:
+            versions[tool] = TOOL_VERSIONS.get(tool)
+    return versions
+
+
+def tool_entry(tl, versions):
+    return {"id": tl, "label": tl_label(tl), "version": versions.get(tl),
+            "releaseVersion": TOOL_VERSIONS.get(tl)}
 
 
 def build_run_index(ds):
+    tool_versions = observed_tool_versions(ds)
     return {
         "schemaVersion": SCHEMA_VERSION,
         "scoring": {"weights": {v: SCORE[v] for v in GRADED},
@@ -412,7 +464,7 @@ def build_run_index(ds):
                     "baselineToolId": BASELINE_TOOL},
         "catalog": {
             "models": [model_entry(m) for m in ds.models],
-            "tools": [tool_entry(tl) for tl in TOOLS],
+            "tools": [tool_entry(tl, tool_versions) for tl in ds.platform.tools],
             "tasks": [{"id": t["id"], "app": t.get("app") or "", "kind": t.get("kind") or "",
                        "prompt": t.get("prompt") or "", "annulled": bool(t.get("annulled"))}
                       for t in ds.tasks],
@@ -421,8 +473,11 @@ def build_run_index(ds):
                    "lifecycle": unit_state(ds.rows, m, tl, t["id"]),
                    "verdict": (ds.rows.get((m, tl, t["id"])) or {}).get("verdict") or None,
                    "wallSeconds": ((ds.rows.get((m, tl, t["id"])) or {}).get("meta") or {}).get("wall_s"),
-                   "costUsd": (ds.rows.get((m, tl, t["id"])) or {}).get("cost")}
-                  for m in ds.models for tl in TOOLS for t in ds.tasks],
+                   "costUsd": (ds.rows.get((m, tl, t["id"])) or {}).get("cost"),
+                   "costBasis": (ds.rows.get((m, tl, t["id"])) or {}).get("cost_basis"),
+                   "toolVersion": ((((ds.rows.get((m, tl, t["id"])) or {}).get("meta") or {})
+                                    .get("versions") or {}).get("tool"))}
+                  for m in ds.models for tl in ds.platform.tools for t in ds.tasks],
     }
 
 
@@ -441,15 +496,16 @@ def build_run_detail(ds, m, tl, tid):
             "judgeModel": row["judge"] or None,
             "wallSeconds": meta.get("wall_s"),
             "costUsd": row["cost"],
+            "costBasis": row.get("cost_basis"),
             "timedOut": bool(meta.get("timed_out")),
             "toolCallCount": int(meta.get("n_tool_calls") or 0),
             "toolNames": list(meta.get("tool_names") or []),
-            "screenshotHref": f"{ARTIFACT_ROOT}/{key}.webp" if row["png"] else None,
+            "screenshotHref": f"{ds.platform.artifact_root}/{key}.webp" if row["png"] else None,
         },
         "judgeInput": judge_input_of(row, ds.tmap.get(tid) or {}),
         "steps": steps_of(events),
         # No events -> no file and href null, so "No transcript recorded" never costs a 404.
-        "transcript": {"href": f"{DATA_ROOT}/transcripts/{key}.json" if events else None,
+        "transcript": {"href": f"{ds.platform.data_root}/transcripts/{key}.json" if events else None,
                        "eventCount": len(events)},
     }
 
@@ -483,7 +539,7 @@ def build_method_examples(ds):
             "verdict": row["verdict"], "reason": row["reason"] or "",
             "wallSeconds": meta.get("wall_s"),
             "toolCallCount": int(meta.get("n_tool_calls") or 0),
-            "screenshotHref": f"{ARTIFACT_ROOT}/{run_key(m, tl, tid)}.webp",
+            "screenshotHref": f"{ds.platform.artifact_root}/{run_key(m, tl, tid)}.webp",
         })
     return examples
 
@@ -495,26 +551,42 @@ def build_provenance(ds, now):
                      if row["judge"] and row["verdict"] and k[2] not in ds.annulled})
     judge_str = " / ".join(judges) or JUDGE_MODEL
     apps = sorted({t["app"] for t in ds.tasks})
+    tool_versions = observed_tool_versions(ds)
     return {
         "generatedAt": now,
-        "judgeLine": f"judge {judge_str} vision · iOS Simulator" if judge_str else "iOS Simulator",
-        "toolVersions": {tl: TOOL_VERSIONS[tl] for tl in TOOLS if TOOL_VERSIONS.get(tl)},
+        "judgeLine": (f"judge {judge_str} vision · {ds.platform.device}"
+                      if judge_str else ds.platform.device),
+        "releaseToolVersions": {tl: TOOL_VERSIONS[tl] for tl in ds.platform.tools
+                                if TOOL_VERSIONS.get(tl)},
+        "toolVersions": {tl: tool_versions[tl] for tl in ds.platform.tools
+                         if tool_versions.get(tl)},
+        "costNotice": (
+            {"label": "GPT costs calculated from recorded tokens at API list rates",
+             "href": "https://developers.openai.com/api/docs/models/gpt-5.4-mini"}
+            if any(row.get("cost_basis") == "token-calculated" for row in ds.rows.values())
+            else None
+        ),
+        "resultPolicy": "Latest reviewed result per task; targeted reruns are not pass@1.",
         # only the surfaces THIS export covers — the manifest also pins apps that are frozen but not run
         "appVersions": {a: APP_VERSIONS[a] for a in apps
                         if a in APP_VERSIONS
+                        and not (ds.platform.id == ANDROID.id and a == "element")
                         and (APP_VERSIONS[a].get("version") or APP_VERSIONS[a].get("commit"))},
     }
 
 
 def build_report_meta(ds, now, build_id):
+    tool_versions = observed_tool_versions(ds)
     return {
         "schemaVersion": SCHEMA_VERSION,
         "models": [model_entry(m) for m in ds.models],
-        "tools": [tool_entry(tl) for tl in TOOLS],
+        "tools": [tool_entry(tl, tool_versions) for tl in ds.platform.tools],
         "provenance": build_provenance(ds, now),
         "methodExamples": build_method_examples(ds),
         "manifest": {"schemaVersion": SCHEMA_VERSION, "buildId": build_id,
-                     "dataRoot": DATA_ROOT, "artifactRoot": ARTIFACT_ROOT},
+                     "dataRoot": ds.platform.data_root,
+                     "artifactRoot": ds.platform.artifact_root,
+                     "platform": {"id": ds.platform.id, "label": ds.platform.label}},
         # Deliberately no `view`: Node derives it from RunIndex, avoiding a second aggregation
         # implementation in Python.
     }
@@ -522,17 +594,18 @@ def build_report_meta(ds, now, build_id):
 
 def build_resources(ds, now, build_id):
     """(relpath -> JSON payload, [(source png, relpath)]). Pure: reads a Dataset, touches no disk."""
-    resources = {f"{DATA_DIR}/run-index.json": build_run_index(ds),
-                 f"{DATA_DIR}/report-meta.json": build_report_meta(ds, now, build_id)}
+    data_dir = ds.platform.data_dir
+    resources = {f"{data_dir}/run-index.json": build_run_index(ds),
+                 f"{data_dir}/report-meta.json": build_report_meta(ds, now, build_id)}
     screenshots = []
     for (m, tl, tid), row in sorted(ds.rows.items()):
         key = run_key(m, tl, tid)
-        resources[f"{DATA_DIR}/runs/{key}.json"] = build_run_detail(ds, m, tl, tid)
+        resources[f"{data_dir}/runs/{key}.json"] = build_run_detail(ds, m, tl, tid)
         if row["chat"]:
-            resources[f"{DATA_DIR}/transcripts/{key}.json"] = {"schemaVersion": SCHEMA_VERSION,
+            resources[f"{data_dir}/transcripts/{key}.json"] = {"schemaVersion": SCHEMA_VERSION,
                                                                "events": row["chat"]}
         if row["png"]:
-            screenshots.append((row["png"], f"{ARTIFACT_DIR}/{key}.webp"))
+            screenshots.append((row["png"], f"{ds.platform.artifact_dir}/{key}.webp"))
     return resources, screenshots
 
 
@@ -549,13 +622,13 @@ def _assert_gated(paths, models):
                 raise SystemExit(f"gate violation: {rel} names non-exported model {owner!r}")
 
 
-def prune(out_dir, owned):
+def prune(out_dir, owned, roots):
     """Delete every file under the exporter-owned trees that this export does not own, then drop the
     directories that empties. report.py only ever copied artifacts in, which is why public/artifacts
     accumulated screenshots for models long gone from the roster. Pruning rather than rm -rf keeps the
     artifacts copy incremental locally; CI starts from an empty public/ and converges to the same set."""
     removed = 0
-    for root_name in PRUNE_ROOTS:
+    for root_name in roots:
         base = os.path.join(out_dir, root_name)
         if not os.path.isdir(base):
             continue
@@ -586,6 +659,8 @@ def copy_screenshot(out_dir, src, rel):
     re-encoded lossy WebP (~90% smaller than the source PNG), so dst size never matches src size — the
     incremental check compares src mtime against dst mtime instead, and os.utime stamps dst with src's
     mtime after encoding so that comparison stays meaningful on the next run."""
+    from PIL import Image
+
     dst = os.path.join(out_dir, rel)
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     s = os.stat(src)
@@ -604,11 +679,12 @@ def export(ds, out_dir, now, build_id):
     """The only function that writes. It takes a Dataset and nothing else, so the gate applied in
     gather() is the gate applied to every byte on disk."""
     resources, screenshots = build_resources(ds, now, build_id)
-    paths = sorted(set(resources) | {rel for _src, rel in screenshots} | {INVENTORY_REL})
+    inventory_rel = ds.platform.inventory_rel
+    paths = sorted(set(resources) | {rel for _src, rel in screenshots} | {inventory_rel})
     _assert_gated(paths, ds.models)
-    resources[INVENTORY_REL] = {"paths": paths}
+    resources[inventory_rel] = {"paths": paths}
 
-    removed = prune(out_dir, set(paths))
+    removed = prune(out_dir, set(paths), (ds.platform.data_dir, ds.platform.artifact_dir))
     for rel, payload in resources.items():
         write_json(out_dir, rel, payload)
     copied = sum(1 for src, rel in screenshots if copy_screenshot(out_dir, src, rel))
@@ -620,16 +696,17 @@ def main():
     ap = argparse.ArgumentParser(description="Export the report's static JSON + screenshots.")
     ap.add_argument("--results", default=os.path.join(os.path.dirname(ROOT), "data"))
     ap.add_argument("--out", default=os.path.join(os.path.dirname(ROOT), "public"))
+    ap.add_argument("--platform", choices=tuple(PLATFORMS), default=IOS.id)
     a = ap.parse_args()
 
-    ds = gather(a.results)            # every eligibility rule, before a single byte is written
+    ds = gather(a.results, PLATFORMS[a.platform])
     now = datetime.datetime.now()
     stats = export(ds, a.out, now.strftime("%Y-%m-%d %H:%M"), now.strftime("%Y%m%dT%H%M%S"))
 
-    cells = len(ds.models) * len(TOOLS) * len(ds.tasks)
+    cells = len(ds.models) * len(ds.platform.tools) * len(ds.tasks)
     transcripts = sum(1 for r in ds.rows.values() if r["chat"])
     print(f"export -> {a.out}")
-    print(f"  {len(ds.models)} models x {len(TOOLS)} tools x {len(ds.tasks)} tasks = {cells} cells"
+    print(f"  {len(ds.models)} models x {len(ds.platform.tools)} tools x {len(ds.tasks)} tasks = {cells} cells"
           f" ({len(ds.annulled)} annulled)")
     print(f"  {len(ds.rows)} runs, {transcripts} transcripts, {stats['screenshots']} screenshots"
           f" ({stats['copied']} copied)")

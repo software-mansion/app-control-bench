@@ -23,6 +23,7 @@
 import type {
   BarItem,
   BreakdownPanel,
+  CostBasis,
   GradedVerdict,
   LeaderRow,
   MatrixCell,
@@ -119,6 +120,21 @@ function avgPrice(cells: readonly RunCell[], policy: Policy): Stat {
   return stat(sum, n);
 }
 
+function aggregateCostBasis(cells: readonly RunCell[], policy: Policy): CostBasis | null {
+  let sawRecorded = false;
+  for (const cell of cells) {
+    if (!eligible(cell, policy) || !isGraded(cell.verdict, policy) || cell.costUsd === null) continue;
+    if (cell.costBasis === 'token-calculated') return 'token-calculated';
+    if (cell.costBasis === 'recorded') sawRecorded = true;
+  }
+  return sawRecorded ? 'recorded' : null;
+}
+
+function uniformToolVersion(cells: readonly RunCell[]): string | null {
+  const versions = new Set(cells.map((cell) => cell.toolVersion).filter((version) => version !== null));
+  return versions.size === 1 ? [...versions][0] : null;
+}
+
 /** `[base, members]` in first-appearance order. `report.py:69`, but grouping on the exporter's `base`. */
 export function modelGroups(models: readonly Model[]): Array<[string, Model[]]> {
   const groups: Array<[string, Model[]]> = [];
@@ -202,7 +218,9 @@ export function deriveReportView(runIndex: RunIndex): ReportView {
         completion: completion.value,
         avgSeconds: avgTimeSuccess(pair, policy).value,
         avgPrice: avgPrice(pair, policy).value,
+        costBasis: aggregateCostBasis(pair, policy),
         n: completion.n,
+        toolVersion: uniformToolVersion(pair),
         distribution: {
           success: pairDistribution.success,
           partial: pairDistribution.partial,

@@ -1,0 +1,22 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The first post in Following is liked, with the heart filled pink/red and a count of 1 visible.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-22",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Like the first post in the Bluesky Following feed (tap its heart icon).",
+    "solved_screen": "In the Following feed, the first post (whiskers \"Mochi napping in a sunbeam #caturday\") shows its heart/like icon filled red/pink with a like count of 1 beside it.",
+    "tool_names": [
+      "skill",
+      "glob",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 5
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Like the first post in the Bluesky Following feed (tap its heart icon).\nANDROID SOLVED-SCREEN DESCRIPTION: In the Following feed, the first post (whiskers \"Mochi napping in a sunbeam #caturday\") shows its heart/like icon filled red/pink with a like count of 1 beside it.\nDEVICE TOOL ACTIVITY: skill, glob, bash, bash, bash\nNUMBER OF TOOL CALLS: 5\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

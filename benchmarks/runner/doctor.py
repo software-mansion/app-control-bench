@@ -47,7 +47,7 @@ def auth_keys():
     return set(), None
 
 
-def preflight(need_providers):
+def preflight(need_providers, tools):
     fails = 0
     print("== ENVIRONMENT ==")
     r = bench_env.resolve()
@@ -74,11 +74,11 @@ def preflight(need_providers):
         devs = sim_device._devices()
         stale = [d["name"] for d in devs if d["name"].startswith(sim_device.CLONE_PREFIX)]
         booted = [d["name"] for d in devs if d["state"] == "Booted"]
-        print(" ", (warn if stale else ok)(f"stale bench-run-* clones: {stale or 'none'}"
-                                           + (" (reaped automatically at next run)" if stale else "")))
+        print(" ", (warn if stale else ok)(
+            f"leftover clones matching {sim_device.CLONE_PREFIX}*: {stale or 'none'}"
+            + (" (from an interrupted/older invocation; current runs delete their own clones)" if stale else "")))
         if booted:
-            print(" ", bad(f"booted sim(s) present: {booted} — everything must be shut down between runs"))
-            fails += 1
+            print(" ", warn(f"booted sim(s) present: {booted} — allowed; timings include shared host load"))
         else:
             print(" ", ok("no booted simulators (correct resting state)"))
     except sim_device.DeviceError as e:
@@ -96,9 +96,34 @@ def preflight(need_providers):
         print(" ", bad("no opencode auth.json found")); fails += 1
     else:
         for prov in sorted(need_providers):
-            present = prov in keys
+            present = bool(bench_env.vercel_ai_gateway_key()) if prov == "vercel" else prov in keys
             print(" ", (ok if present else bad)(f"{prov} key {'present' if present else 'MISSING'} ({src})"))
             fails += 0 if present else 1
+    if "agent-device" in tools:
+        print("== AGENT-DEVICE SURFACE ==")
+        want = bench.pinned_tool_versions().get("agent-device")
+        got = bench.detect_tool_version("agent-device")
+        exact = bool(want) and got == want
+        print(" ", (ok if exact else bad)(f"version installed={got or '?'} pinned={want or '?'}"))
+        fails += 0 if exact else 1
+        skills = bench_env.agent_device_skill_dirs()
+        names = [os.path.basename(p) for p in skills]
+        expected = set(bench_env.AGENT_DEVICE_SKILL_NAMES)
+        complete = set(names) == expected
+        print(" ", (ok if complete else bad)(f"installed skills: {', '.join(names) or 'none'}"))
+        fails += 0 if complete else 1
+        try:
+            # Mirrors the documented operator setup: doctor runs once before the matrix, not per task.
+            import subprocess
+            proc = subprocess.run([r["agent_device"], "doctor", "--platform", "ios", "--json"],
+                                  capture_output=True, text=True, timeout=120)
+            report = json.loads(proc.stdout or "{}")
+            passed = proc.returncode == 0 and report.get("success") is True
+            summary = ((report.get("data") or {}).get("summary") or proc.stderr.strip() or "no summary")
+            print(" ", (ok if passed else bad)(f"agent-device doctor: {summary}"))
+            fails += 0 if passed else 1
+        except Exception as e:
+            print(" ", bad(f"agent-device doctor failed: {type(e).__name__}: {e}")); fails += 1
     return fails
 
 
@@ -142,7 +167,10 @@ def coverage(models, tools, tasks, do_heal, heal_force=False):
     for tl in tools:
         for m in models:
             cell = f"{m}__{tl}"
-            done = sum(1 for t in tids if ledger.has_run(bench.RESULTS, m, tl, t))
+            done = sum(1 for t in tids if not ledger.needs_run(
+                bench.RESULTS, m, tl, t, bench.harness_for(tl),
+                {**bench.run_versions(tl, next(x["app"] for x in tasks if x["id"] == t)),
+                 "model_route": bench.model_route(m)}))
             pend = len(tids) - done
             if done == 0 and pend == len(tids) and not os.path.isdir(os.path.join(bench.RESULTS, cell)):
                 continue  # never-touched cell: skip to keep the table readable
@@ -192,9 +220,10 @@ def main():
     need = set()
     for m in models:
         mid = bench.MODELS.get(m, "")
-        if mid.startswith("anthropic/"): need.add("anthropic")
+        if m.startswith("haiku"): need.add("vercel")
+        elif mid.startswith("anthropic/"): need.add("anthropic")
         elif mid.startswith("openai/"):  need.add("openai")
-    fails = preflight(need)
+    fails = preflight(need, tools)
     fails += preflight_hooks(set(apps) & set(bench.APPS))
     if a.preflight:
         sys.exit(1 if fails else 0)

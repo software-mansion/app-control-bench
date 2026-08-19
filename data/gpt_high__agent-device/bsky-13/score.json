@@ -1,7 +1,7 @@
 {
   "verdict": "success",
   "confidence": 0.99,
-  "reason": "The final screenshot shows the Bluesky Chats screen with the expected 'Whoops! could not resolve iss did' error and Retry button, indicating Messages was opened.",
+  "reason": "The final screenshot clearly shows Bluesky's Chats screen with the expected error message and the chat/messages tab active, so the direct messages section was opened successfully.",
   "judge_model": "gpt-5.4",
   "cell": "gpt_high:agent-device",
   "task": "bsky-13",

@@ -1,0 +1,38 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The screenshot shows Bluesky Explore with the search query \"test\" entered and the People tab selected, matching the task.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-14",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "In Bluesky Search, search for \"test\" and then switch the results to the \"People\" tab.",
+    "solved_screen": "The Explore search screen with \"test\" in the search box, result tabs Top/Latest/People/Feeds with \"People\" selected/underlined, and a list of matching accounts (e.g. loudspammer, newfriend, buddy, rex, mittens, whiskers, bench) each with a Follow/Following button.",
+    "tool_names": [
+      "glob",
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "read",
+      "grep",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 21
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: In Bluesky Search, search for \"test\" and then switch the results to the \"People\" tab.\nANDROID SOLVED-SCREEN DESCRIPTION: The Explore search screen with \"test\" in the search box, result tabs Top/Latest/People/Feeds with \"People\" selected/underlined, and a list of matching accounts (e.g. loudspammer, newfriend, buddy, rex, mittens, whiskers, bench) each with a Follow/Following button.\nDEVICE TOOL ACTIVITY: glob, skill, bash, bash, bash, bash, bash, bash, bash, read, grep, bash, bash, bash, bash, bash, bash, bash, bash, bash, bash\nNUMBER OF TOOL CALLS: 21\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

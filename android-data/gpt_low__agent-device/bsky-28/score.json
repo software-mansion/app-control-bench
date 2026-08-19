@@ -1,0 +1,27 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The screenshot shows a published Bluesky post from bench @bench.test at the top of the feed with the exact text \"hello from the benchmark\".",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-28",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Compose and publish a new Bluesky post with the exact text \"hello from the benchmark\".",
+    "solved_screen": "The Following feed with the newly published post from bench @bench.test reading \"hello from the benchmark\" at the top of the feed. The post must actually be sent \u2014 a composer still holding the text does NOT count; the \"Your post was sent\" toast is transient and need not be visible. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+    "tool_names": [
+      "glob",
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 10
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Compose and publish a new Bluesky post with the exact text \"hello from the benchmark\".\nANDROID SOLVED-SCREEN DESCRIPTION: The Following feed with the newly published post from bench @bench.test reading \"hello from the benchmark\" at the top of the feed. The post must actually be sent \u2014 a composer still holding the text does NOT count; the \"Your post was sent\" toast is transient and need not be visible. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.\nDEVICE TOOL ACTIVITY: glob, skill, bash, bash, bash, bash, bash, bash, bash, bash\nNUMBER OF TOOL CALLS: 10\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

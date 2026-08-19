@@ -13,13 +13,19 @@ Creates the scenario the tasks assume:
   - unread messages (last event by a non-alice) -> Unreads filter (element-13)
 
 Idempotent: purges all existing rooms first, recreates the exact set. Users persist.
-Run on radoniusz:  python3 element_seed.py
+Run directly with Python; user registration uses Synapse's shared-secret registration API.
 """
-import json, subprocess, sys, time, urllib.request, urllib.error
+import hashlib
+import hmac
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.request
 
-HS = "http://localhost:8008"
+HS = os.environ.get("BENCH_SYNAPSE_URL", "http://localhost:8008").rstrip("/")
 DOMAIN = "localhost"
-REG_BIN = "/Users/radoniusz/synapse-venv/bin/register_new_matrix_user"
 SHARED_SECRET = "Ly1FF_AboYQJ30J:T63ULxx@&GnN02W2iO@s&whk5wCR9jt~Y,"
 
 # passwords (known, used for app login + API)
@@ -59,16 +65,30 @@ def api(method, path, token=None, body=None, _tries=6):
             return code, res
 
 def register(user, admin=False):
-    cmd = [REG_BIN, "-u", user, "-p", PW[user],
-           ("-a" if admin else "--no-admin"), "-k", SHARED_SECRET, HS]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    out = (r.stdout + r.stderr).strip()
-    if r.returncode == 0:
+    st, challenge = api("GET", "/_synapse/admin/v1/register")
+    nonce = challenge.get("nonce")
+    if st != 200 or not isinstance(nonce, str):
+        sys.exit(f"registration challenge failed: {st} {challenge}")
+
+    payload = b"\x00".join(
+        value.encode()
+        for value in (nonce, user, PW[user], "admin" if admin else "notadmin")
+    )
+    mac = hmac.new(SHARED_SECRET.encode(), payload, hashlib.sha1)
+
+    st, result = api("POST", "/_synapse/admin/v1/register", body={
+        "nonce": nonce,
+        "username": user,
+        "password": PW[user],
+        "admin": admin,
+        "mac": mac.hexdigest(),
+    })
+    if st == 200:
         print(f"  + registered {user}{' (admin)' if admin else ''}")
-    elif "taken" in out.lower() or "already" in out.lower():
+    elif result.get("errcode") == "M_USER_IN_USE":
         print(f"  = {user} already exists")
     else:
-        print(f"  ! register {user} FAILED: {out[:200]}")
+        print(f"  ! register {user} FAILED: {st} {result}")
 
 def login(user):
     st, res = api("POST", "/_matrix/client/v3/login", body={

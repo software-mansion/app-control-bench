@@ -1,0 +1,45 @@
+{
+  "task": "bsky-17",
+  "app": "bluesky",
+  "model": "gpt_low",
+  "tool": "agent-device",
+  "harness": "android-refresh-v2",
+  "golden_snapshot": {
+    "loaded": true,
+    "snapshot": "app-control-bench-golden"
+  },
+  "reset_pre": {
+    "phase": "pre",
+    "duration_s": 0.1,
+    "body": "{\"reset\":true}"
+  },
+  "proxies": {
+    "openai": {
+      "port": 8790,
+      "pid": 58159,
+      "log": "proxy-openai.log"
+    }
+  },
+  "cell": "gpt_low:agent-device",
+  "kind": "nav",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 30.4,
+  "n_tool_calls": 6,
+  "tool_names": [
+    "skill",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash"
+  ],
+  "stderr_tail": "",
+  "ts": 1786569960,
+  "versions": {
+    "harness": "android-refresh-v2",
+    "tool": "0.20.8",
+    "app": "1.122.0"
+  }
+}

@@ -10,7 +10,7 @@ import { deriveReportView } from './metrics';
 import { fetchJson } from './resources';
 
 /** Where the dev server finds the exporter's output. Matches BuildManifest.dataRoot. */
-const DEV_DATA_ROOT = '/data/v1';
+const DEV_DATA_ROOT = '/data/ios/v1';
 
 export function readEmbedded<T>(id: string): T | null {
   const el = document.getElementById(id);
@@ -31,6 +31,7 @@ export async function buildReportInitial(): Promise<ReportInitial> {
   const { runIndex, meta } = await loadMeta();
   return {
     schemaVersion: 2,
+    platform: meta.manifest.platform,
     models: meta.models,
     tools: meta.tools,
     view: deriveReportView(runIndex),
@@ -61,7 +62,7 @@ export function renderBootstrapError(root: HTMLElement, error: unknown): void {
   title.textContent = 'No exported data found.';
   const hint = document.createElement('p');
   hint.textContent =
-    'The dev server reads public/data/v1, which the Python exporter writes. Run: npm run dev:data';
+    'The dev server reads public/data/ios/v1, which the Python exporter writes. Run: npm run generate:data';
   const detail = document.createElement('pre');
   detail.textContent = String(error instanceof Error ? error.message : error);
   box.append(title, hint, detail);

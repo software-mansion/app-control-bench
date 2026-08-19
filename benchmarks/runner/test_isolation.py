@@ -6,11 +6,17 @@ bespoke cmdline markers (KILL_PATTERNS is monkeypatched), never against the real
     python3 runner/test_isolation.py
 """
 import json
+import http.server
 import os
+import socket
 import subprocess
 import sys
 import tempfile
+import threading
 import time
+import urllib.error
+import urllib.request
+from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import isolation
@@ -48,7 +54,7 @@ def test_lock():
          "isolation.acquire_lock(label='contender')"],
         capture_output=True, text=True)
     check("lock: second stream refused", r.returncode != 0)
-    check("lock: refusal names the holder", "holder" in r.stderr and "ONE device at a time" in r.stderr,
+    check("lock: refusal names the holder", "holder" in r.stderr and "one benchmark stream" in r.stderr,
           r.stderr[-200:])
     # lock_holder() sees it
     old = isolation.LOCK_PATH
@@ -113,6 +119,197 @@ def test_run_opencode_timeout():
     check("run_opencode: returned promptly", time.time() - t0 < 20, f"{time.time() - t0:.1f}s")
 
 
+def test_run_opencode_stdout_is_pipe_backed():
+    # OpenCode's Bun runtime fstats stdout during startup. The benchmark denies the sandboxed agent
+    # read access to the result tree, so handing the child the transcript file descriptor makes
+    # startup fail with EPERM before the first model turn. The child must see a pipe while the parent
+    # remains responsible for recording its transcript.
+    with tempfile.TemporaryFile(mode="w+") as tf:
+        rc, err, timed_out = isolation.run_opencode(
+            [sys.executable, "-c",
+             "import os, stat, sys; sys.exit(2) if not stat.S_ISFIFO(os.fstat(1).st_mode) "
+             "else print('transcript-event')"],
+            cwd="/tmp", timeout=10, stdout_file=tf)
+        tf.seek(0)
+        recorded = tf.read()
+    check("run_opencode: child stdout is pipe-backed", rc == 0 and not timed_out, f"{rc} {err}")
+    check("run_opencode: parent records stdout", recorded == "transcript-event\n", repr(recorded))
+
+
+def test_run_opencode_stages_placeholder_credentials_only():
+    secrets = {
+        "AI_GATEWAY_API_KEY": "real-vercel-secret",
+        "OPENAI_API_KEY": "real-openai-secret",
+        "GITHUB_TOKEN": "real-unrelated-secret",
+        # The current Vercel caller also aliases its real Gateway key through this variable.
+        "ANTHROPIC_API_KEY": "real-vercel-secret",
+    }
+    with tempfile.TemporaryDirectory(prefix="acb-test-opencode-env-") as run_dir, \
+         tempfile.TemporaryFile(mode="w+") as transcript:
+        old_pids_path = isolation.PIDS_PATH
+        isolation.PIDS_PATH = os.path.join(run_dir, "pids.json")
+        try:
+            with mock.patch.dict(os.environ, secrets, clear=False), \
+                 mock.patch.object(isolation, "register_pid"):
+                rc, err, timed_out = isolation.run_opencode(
+                    [
+                        sys.executable,
+                        "-c",
+                        "import json, os; "
+                        "xdg=os.environ.get('XDG_DATA_HOME'); "
+                        "auth_path=os.path.join(xdg, 'opencode', 'auth.json') if xdg else None; "
+                        "print(json.dumps({'env': {k: os.environ.get(k) for k in "
+                        "['AI_GATEWAY_API_KEY', 'OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'GITHUB_TOKEN']}, "
+                        "'auth': json.load(open(auth_path)) if auth_path and os.path.exists(auth_path) "
+                        "else None, 'auth_path': auth_path}))",
+                    ],
+                    cwd=run_dir,
+                    timeout=10,
+                    stdout_file=transcript,
+                    env=secrets,
+                )
+        finally:
+            isolation.PIDS_PATH = old_pids_path
+        transcript.seek(0)
+        observed = json.loads(transcript.read())
+
+    serialized = json.dumps(observed, sort_keys=True)
+    check("run_opencode: credential-isolated child succeeds", rc == 0 and not timed_out, f"{rc} {err}")
+    check(
+        "run_opencode: real provider secrets never reach child env or auth",
+        "real-vercel-secret" not in serialized and "real-openai-secret" not in serialized,
+        serialized,
+    )
+    check(
+        "run_opencode: OpenCode receives provider placeholders",
+        observed["env"] == {
+            "AI_GATEWAY_API_KEY": None,
+            "OPENAI_API_KEY": "bench-proxy-placeholder",
+            "ANTHROPIC_API_KEY": "bench-proxy-placeholder",
+            "GITHUB_TOKEN": None,
+        },
+        serialized,
+    )
+    check(
+        "run_opencode: staged auth contains placeholders only",
+        observed["auth"] == {
+            "openai": {"type": "api", "key": "bench-proxy-placeholder"},
+            "anthropic": {"type": "api", "key": "bench-proxy-placeholder"},
+        }
+        and os.path.commonpath([run_dir, observed["auth_path"]]) == run_dir,
+        serialized,
+    )
+
+
+def test_openai_proxy_owns_upstream_credential():
+    captured = {}
+
+    class Upstream(http.server.BaseHTTPRequestHandler):
+        def do_POST(self):
+            body = self.rfile.read(int(self.headers.get("content-length", "0")))
+            captured.update(
+                headers={key.lower(): value for key, value in self.headers.items()},
+                body=json.loads(body),
+            )
+            response = b'{"ok":true}'
+            self.send_response(200)
+            self.send_header("content-type", "application/json")
+            self.send_header("content-length", str(len(response)))
+            self.end_headers()
+            self.wfile.write(response)
+
+        def log_message(self, *_args):
+            pass
+
+    upstream = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Upstream)
+    upstream_thread = threading.Thread(target=upstream.serve_forever, daemon=True)
+    upstream_thread.start()
+    with socket.socket() as reservation:
+        reservation.bind(("127.0.0.1", 0))
+        proxy_port = reservation.getsockname()[1]
+    proxy = subprocess.Popen(
+        ["node", os.path.join(os.path.dirname(__file__), "anthropic-thinking-proxy.js"), str(proxy_port)],
+        env={
+            "PATH": os.environ.get("PATH", ""),
+            "BENCH_PROXY_PROVIDER": "openai",
+            "BENCH_PROXY_UPSTREAM": f"http://127.0.0.1:{upstream.server_port}",
+            "BENCH_EFFORT_JSON": '{"gpt54":"low"}',
+            "OPENAI_API_KEY": "real-openai-secret",
+        },
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    try:
+        deadline = time.time() + 5
+        while time.time() < deadline and not isolation._port_up(proxy_port):
+            time.sleep(0.05)
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{proxy_port}/v1/chat/completions",
+            data=json.dumps({"model": "gpt-5.4-mini", "messages": []}).encode(),
+            headers={
+                "Authorization": "Bearer bench-proxy-placeholder",
+                "Content-Type": "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=5) as response:
+                response.read()
+        except (urllib.error.URLError, TimeoutError):
+            pass
+    finally:
+        proxy.terminate()
+        proxy.wait(timeout=5)
+        upstream.shutdown()
+        upstream.server_close()
+        upstream_thread.join(timeout=5)
+
+    check(
+        "proxy: OpenAI upstream receives proxy-owned credential",
+        captured.get("headers", {}).get("authorization") == "Bearer real-openai-secret",
+        json.dumps(captured, sort_keys=True),
+    )
+    check(
+        "proxy: OpenAI request keeps configured effort",
+        captured.get("body", {}).get("reasoning_effort") == "low",
+        json.dumps(captured, sort_keys=True),
+    )
+
+
+def test_start_proxies_scopes_credentials_to_provider_proxy():
+    fake_process = mock.Mock(pid=1234)
+    ambient = {
+        "OPENAI_API_KEY": "real-openai-secret",
+        "AI_GATEWAY_API_KEY": "unrelated-vercel-secret",
+        "BENCH_PROXY_UPSTREAM": "http://attacker.invalid",
+    }
+    with tempfile.TemporaryDirectory(prefix="acb-test-proxy-env-") as logdir, \
+         mock.patch.dict(os.environ, ambient, clear=False), \
+         mock.patch.object(isolation, "_port_up", side_effect=[False, True, True]), \
+         mock.patch.object(isolation, "register_pid"), \
+         mock.patch.object(isolation.subprocess, "Popen", return_value=fake_process) as popen:
+        isolation.start_proxies(
+            {"gpt54": "low"},
+            logdir,
+            providers=["openai"],
+        )
+
+    command = popen.call_args.args[0]
+    proxy_env = popen.call_args.kwargs["env"]
+    check(
+        "start_proxies: OpenAI uses credential-owning proxy",
+        command[1].endswith("anthropic-thinking-proxy.js")
+        and proxy_env.get("BENCH_PROXY_PROVIDER") == "openai",
+        f"command={command} provider={proxy_env.get('BENCH_PROXY_PROVIDER')}",
+    )
+    check(
+        "start_proxies: each proxy receives only its own upstream credential",
+        proxy_env.get("OPENAI_API_KEY") == "real-openai-secret"
+        and "AI_GATEWAY_API_KEY" not in proxy_env
+        and "BENCH_PROXY_UPSTREAM" not in proxy_env,
+        f"keys={sorted(proxy_env)}",
+    )
+
+
 def test_reset_hook():
     outdir = tempfile.mkdtemp(prefix="acb-test-hook-")
     rep = isolation.run_reset_hook(["bash", "-c", "echo seeded"], outdir, timeout=10, label="ok-hook")
@@ -148,6 +345,10 @@ if __name__ == "__main__":
     test_lock()
     test_teardown_dummies()
     test_run_opencode_timeout()
+    test_run_opencode_stdout_is_pipe_backed()
+    test_run_opencode_stages_placeholder_credentials_only()
+    test_openai_proxy_owns_upstream_credential()
+    test_start_proxies_scopes_credentials_to_provider_proxy()
     test_reset_hook()
     test_env_manifest()
     test_providers_needed()

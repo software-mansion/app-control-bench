@@ -1,0 +1,25 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The final screen shows the whiskers @whiskers.test profile opened from Bluesky search, matching the task.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "haiku_low:agent-device",
+  "task": "bsky-08",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Use Bluesky Search to look up the handle \"whiskers.test\" and open its profile.",
+    "solved_screen": "The profile page of whiskers @whiskers.test, reached by searching the handle \"whiskers.test\": blue butterfly avatar, the whiskers display name/handle, follower/following/post counts, a Follow/Following button, and sub-tabs Posts (active)/Replies/Media/Videos showing that account's cat/#caturday posts.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 8
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Use Bluesky Search to look up the handle \"whiskers.test\" and open its profile.\nANDROID SOLVED-SCREEN DESCRIPTION: The profile page of whiskers @whiskers.test, reached by searching the handle \"whiskers.test\": blue butterfly avatar, the whiskers display name/handle, follower/following/post counts, a Follow/Following button, and sub-tabs Posts (active)/Replies/Media/Videos showing that account's cat/#caturday posts.\nDEVICE TOOL ACTIVITY: skill, bash, bash, bash, bash, bash, bash, bash\nNUMBER OF TOOL CALLS: 8\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

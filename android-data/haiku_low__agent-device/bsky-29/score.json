@@ -1,0 +1,34 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The screenshot shows a newly published post by bench @bench.test with the exact text \"testing hashtags #silverbench\" in the Following feed.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "haiku_low:agent-device",
+  "task": "bsky-29",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Compose and publish a new Bluesky post with the exact text \"testing hashtags #silverbench\".",
+    "solved_screen": "The Following feed with the newly published post from bench @bench.test reading \"testing hashtags #silverbench\", with \"#silverbench\" rendered as a blue hashtag link. The post must actually be sent \u2014 a composer still holding the text does NOT count; the \"Your post was sent\" toast is transient and need not be visible. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "read",
+      "bash",
+      "bash",
+      "read",
+      "bash",
+      "bash",
+      "bash",
+      "read",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "read"
+    ],
+    "n_tool_calls": 17
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Compose and publish a new Bluesky post with the exact text \"testing hashtags #silverbench\".\nANDROID SOLVED-SCREEN DESCRIPTION: The Following feed with the newly published post from bench @bench.test reading \"testing hashtags #silverbench\", with \"#silverbench\" rendered as a blue hashtag link. The post must actually be sent \u2014 a composer still holding the text does NOT count; the \"Your post was sent\" toast is transient and need not be visible. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.\nDEVICE TOOL ACTIVITY: skill, bash, bash, read, bash, bash, read, bash, bash, bash, read, bash, bash, bash, bash, bash, read\nNUMBER OF TOOL CALLS: 17\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

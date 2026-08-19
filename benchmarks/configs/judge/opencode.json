@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": "deny",
+  "mcp": {
+    "radon": {
+      "enabled": false
+    },
+    "linear": {
+      "enabled": false
+    }
+  },
+  "provider": {
+    "openai": {
+      "options": {}
+    }
+  }
+}

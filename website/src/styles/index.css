@@ -31,10 +31,66 @@
   --grotesque: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
 }
 
+.platform-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: var(--hair) solid currentColor;
+  border-radius: var(--radius-control);
+  color: var(--hero-header-muted);
+}
+
+.platform-switch a {
+  min-width: 58px;
+  padding: 6px 10px;
+  border-radius: calc(var(--radius-control) - 2px);
+  color: inherit;
+  font-size: var(--fs-9);
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+}
+
+.platform-switch a:hover {
+  color: var(--hero-fg);
+  text-decoration: none;
+}
+
+.platform-switch a.is-active {
+  background: var(--hero-fg);
+  color: var(--hero-bg);
+}
+
+.site-nav--inverted .platform-switch {
+  color: var(--mut);
+}
+
+.site-nav--inverted .platform-switch a:hover {
+  color: var(--ink);
+}
+
+.site-nav--inverted .platform-switch a.is-active {
+  background: var(--ink);
+  color: var(--bg);
+}
+
 /* Hero title only — web app gets the pixel font, standalone report.py keeps --hero-font
  * (that file must stay zero-external-request, see the import comment above). */
 #benchmark-title {
   font-family: 'VT323', var(--hero-font);
+}
+
+.benchmark-copy > .benchmark-release {
+  display: inline-flex;
+  width: fit-content;
+  margin: 14px 0 0;
+  padding: 5px 9px;
+  border: var(--hair) solid var(--hero-header-muted);
+  border-radius: var(--radius-control);
+  color: var(--hero-copy-fg);
+  font-size: var(--fs-10);
+  line-height: 1;
+  letter-spacing: var(--tr-wide);
 }
 
 /* Cost-efficiency filters are inline controls in the web report. The standalone Python report
@@ -149,5 +205,21 @@
 
   .efficiency-section #stat-scatter > .panel {
     grid-row: 3;
+  }
+}
+
+@media (max-width: 700px) {
+  .site-nav--benchmark {
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px 16px;
+  }
+
+  .platform-switch {
+    order: -1;
   }
 }

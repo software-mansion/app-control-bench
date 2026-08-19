@@ -9,14 +9,10 @@
   "needs_auth": true,
   "returncode": 0,
   "timed_out": false,
-  "wall_s": 75.2,
-  "n_tool_calls": 22,
+  "wall_s": 91.3,
+  "n_tool_calls": 18,
   "tool_names": [
     "skill",
-    "bash",
-    "bash",
-    "bash",
-    "bash",
     "bash",
     "bash",
     "bash",
@@ -36,20 +32,28 @@
     "bash"
   ],
   "stderr_tail": "",
-  "ts": 1783479572,
+  "ts": 1786586328,
   "golden": {
-    "name": "bench-element",
-    "udid": "19BEA461-4975-4124-A4E7-9B2AF4821FCB"
+    "name": "bench-golden-v4",
+    "udid": "D4F2E0B1-1AC7-48D0-8B38-91B0C1C4E5AD"
   },
-  "clone_udid": "6A6FC2BF-29B2-4E16-A7D8-16741011F925",
+  "clone_udid": "2A78AB02-EB25-4085-A20F-D155A9144FA3",
+  "sandboxed": true,
   "versions": {
     "schema": 2,
-    "harness": "isolation-v3-progressive",
+    "harness": "isolation-v4-default-set",
     "surface": "cli",
+    "state_scope": "per-run",
     "skills": true,
-    "tool": "0.17.6",
-    "tool_pinned": "0.17.6",
+    "skill_hashes": {
+      "agent-device": "c884a069124bd26c660f80e0fd4cabc7ea9a66269f26f7970198bd75b7889c6a",
+      "ios-simulator": "03a675a8a90cbbfa6a9ab5d5bf1c552d9be300e71b4f654950225c2c6d3e5434",
+      "android-emulator": "1c14470a6d3cd327aec99c4e5a982b90a4041f1c8dc1a0a0ba400a26fae3c585"
+    },
+    "tool": "0.20.8",
+    "tool_pinned": "0.20.8",
     "app": null,
-    "app_pinned": null
+    "app_pinned": "1.11.40",
+    "model_route": "vercel-ai-gateway"
   }
 }

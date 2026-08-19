@@ -1,0 +1,21 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The app is on the Chats/Messages screen with the chat tab selected, which matches the task.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "gpt_low:agent-device",
+  "task": "bsky-13",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Open the Chat / Messages (direct messages) section of Bluesky.",
+    "solved_screen": "The Chats screen with \"Chats\" as the header. Because the self-hosted test PDS has no chat service, the body shows an info (i) icon with heading \"Whoops!\", the text \"could not resolve iss did\", and a dark \"Retry\" button; the chat-bubble icon is active in the bottom navigation. (Reaching this Chats screen is the correct end state \u2014 the error is a backend limitation, not an agent failure.)",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "bash"
+    ],
+    "n_tool_calls": 4
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Open the Chat / Messages (direct messages) section of Bluesky.\nANDROID SOLVED-SCREEN DESCRIPTION: The Chats screen with \"Chats\" as the header. Because the self-hosted test PDS has no chat service, the body shows an info (i) icon with heading \"Whoops!\", the text \"could not resolve iss did\", and a dark \"Retry\" button; the chat-bubble icon is active in the bottom navigation. (Reaching this Chats screen is the correct end state \u2014 the error is a backend limitation, not an agent failure.)\nDEVICE TOOL ACTIVITY: skill, bash, bash, bash\nNUMBER OF TOOL CALLS: 4\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

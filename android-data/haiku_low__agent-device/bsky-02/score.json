@@ -1,0 +1,27 @@
+{
+  "verdict": "success",
+  "confidence": 0.99,
+  "reason": "The Bluesky left navigation drawer is open and shows the expected side menu items over the dimmed feed.",
+  "judge_model": "openai/gpt-5.4-mini",
+  "cell": "haiku_low:agent-device",
+  "task": "bsky-02",
+  "judge_input": {
+    "app": "bluesky",
+    "prompt": "Open the navigation drawer / side menu in Bluesky (the menu button at the top-left).",
+    "solved_screen": "The left navigation drawer is slid open over the dimmed home feed. It shows the account header \"bench / @bench.test\" at top, followed by menu items Explore, Home (active), Chat, Notifications, Feeds, Lists, Saved, Profile, Settings, plus Terms of Service / Privacy Policy / Feedback at the bottom.",
+    "tool_names": [
+      "skill",
+      "bash",
+      "bash",
+      "read",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "bash",
+      "read"
+    ],
+    "n_tool_calls": 10
+  },
+  "judge_prompt": "You are an impartial grader for an Android mobile-app agent benchmark. Judge ONLY whether the agent accomplished the task it was given, based on the attached FINAL screenshot and the recorded device-tool activity.\n\nAPP: bluesky\nTASK GIVEN TO AGENT: Open the navigation drawer / side menu in Bluesky (the menu button at the top-left).\nANDROID SOLVED-SCREEN DESCRIPTION: The left navigation drawer is slid open over the dimmed home feed. It shows the account header \"bench / @bench.test\" at top, followed by menu items Explore, Home (active), Chat, Notifications, Feeds, Lists, Saved, Profile, Settings, plus Terms of Service / Privacy Policy / Feedback at the bottom.\nDEVICE TOOL ACTIVITY: skill, bash, bash, read, bash, bash, bash, bash, bash, read\nNUMBER OF TOOL CALLS: 10\n\nThe TASK GIVEN TO AGENT is authoritative and defines the goal. The solved-screen description is a visual aid for that same goal; do not require extra actions or UI that the task did not ask for. Android status-bar and navigation-bar chrome are incidental. When a task asks for exact text, automatic keyboard capitalization and trailing punctuation are acceptable, but extra, missing, or changed words are not.\n\nReply with ONLY one JSON object on one line:\n{\"verdict\":\"success|partial|fail\",\"confidence\":0.0-1.0,\"reason\":\"one concise sentence\"}"
+}

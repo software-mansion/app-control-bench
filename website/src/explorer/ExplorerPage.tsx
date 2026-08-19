@@ -373,7 +373,7 @@ export function ExplorerPage({
 
   return (
     <>
-      <Nav page="explorer" />
+      <Nav page="explorer" platform={manifest.platform} />
       <main id="top">
         <section class="runs-section" id="runs">
           <header class="rx-page-head">
