@@ -94,6 +94,12 @@ Every single run gets a clean world:
   metadata. The runner warns on drift rather than silently producing results that don't match the
   version they claim.
 
+`run_all.sh` includes each selected tool's documented installation setup before timing any task.
+Argent needs no extra command because `argent init` installs its prebuilt runtime. Agent-device runs
+`doctor` in a temporary daemon state directory and waits only for its shared XCTest build artifact;
+the temporary state is then discarded. Per-task MCP/daemon startup, device sessions and interaction
+backends remain cold and inside the task timer for both tools.
+
 Scoring is a separate, resumable pass. A vision model (GPT-5.4 at temperature 0) sees the final
 screenshot, the task the agent was given, the description of the solved screen and the list of
 actions taken, and returns success / partial / fail. The prompt is explicit that the task text is

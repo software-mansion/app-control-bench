@@ -11,7 +11,7 @@ after (confirm full coverage, no masked gaps).
 
 Exit code 0 iff healthy AND (no phantoms, or they were healed). Non-zero otherwise — scriptable.
 """
-import os, sys, json, socket, argparse
+import argparse, json, os, socket, subprocess, sys, tempfile, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bench, bench_env, ledger, isolation, sim_device
@@ -21,6 +21,12 @@ import bench, bench_env, ledger, isolation, sim_device
 # ledger was seeded from another host (cross-machine harvest) — those units live elsewhere, so mass-resetting
 # them would wastefully re-run everything. Above this many, heal refuses without an explicit force.
 HEAL_AUTO_MAX = 10
+
+TOOL_SETUP = {
+    "argent": {"command": None, "note": "argent init installs its prebuilt runtime"},
+    "agent-device": {"command": "doctor", "note": "doctor prepares the shared XCTest artifact"},
+    "none": {"command": None, "note": "no tool to install"},
+}
 
 G = "\033[32m"; R = "\033[31m"; Y = "\033[33m"; X = "\033[0m"
 def ok(s):   return f"{G}OK{X}  {s}"
@@ -47,12 +53,91 @@ def auth_keys():
     return set(), None
 
 
-def preflight(need_providers):
+def _run_agent_device_doctor(binary, state_dir, timeout):
+    env = {**os.environ, "AGENT_DEVICE_STATE_DIR": state_dir}
+    result = subprocess.run(
+        [binary, "doctor", "--platform", "ios", "--json"],
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        env=env,
+    )
+    try:
+        payload = json.loads(result.stdout)
+    except ValueError:
+        payload = {}
+    return result, payload
+
+
+def _stop_agent_device_setup_daemon(binary, state_dir):
+    subprocess.run(
+        [binary, "daemon", "stop", "--state-dir", state_dir],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        env={**os.environ, "AGENT_DEVICE_STATE_DIR": state_dir},
+    )
+
+
+def setup_tools(tools, resolved, timeout=300):
+    """Run documented installation setup only; task daemons and device sessions stay cold."""
+    print("== DOCUMENTED TOOL SETUP ==")
+    failures = 0
+    for tool in tools:
+        policy = TOOL_SETUP[tool]
+        if policy["command"] is None:
+            print(" ", ok(f"{tool}: no extra command ({policy['note']})"))
+            continue
+
+        binary = resolved["agent_device"]
+        deadline = time.monotonic() + timeout
+        with tempfile.TemporaryDirectory(prefix="app-control-bench-doctor-") as state_dir:
+            try:
+                while True:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        print(" ", bad(f"{tool}: doctor did not finish XCTest artifact setup in {timeout}s"))
+                        failures += 1
+                        break
+                    result, payload = _run_agent_device_doctor(
+                        binary, state_dir, min(60, max(1, int(remaining)))
+                    )
+                    if result.returncode != 0 or not payload.get("success"):
+                        detail = result.stderr.strip() or result.stdout.strip() or f"exit {result.returncode}"
+                        print(" ", bad(f"{tool}: doctor failed: {detail[:200]}"))
+                        failures += 1
+                        break
+                    checks = (payload.get("data") or {}).get("checks") or []
+                    cache = next((check for check in checks if check.get("id") == "ios-runner-cache"), None)
+                    if cache is None or (cache.get("status") == "pass" and not cache.get("hint")):
+                        state = "doctor passed" if cache is None else "shared XCTest artifact ready"
+                        print(" ", ok(f"{tool}: {state}; per-task runtime remains cold"))
+                        break
+                    if cache.get("status") != "pass":
+                        print(" ", bad(f"{tool}: {cache.get('summary') or 'XCTest artifact setup failed'}"))
+                        failures += 1
+                        break
+                    time.sleep(2)
+            except (OSError, subprocess.SubprocessError) as error:
+                print(" ", bad(f"{tool}: doctor failed: {error}"))
+                failures += 1
+            try:
+                _stop_agent_device_setup_daemon(binary, state_dir)
+            except (OSError, subprocess.SubprocessError):
+                pass
+    return failures
+
+
+def preflight(need_providers, tools, run_setup=False):
     fails = 0
     print("== ENVIRONMENT ==")
     r = bench_env.resolve()
-    for label, path in (("node", r["node"]), ("opencode", r["opencode"]),
-                        ("agent-device", r["agent_device"]), ("argent", r["argent"])):
+    binaries = [("node", r["node"]), ("opencode", r["opencode"])]
+    if "agent-device" in tools:
+        binaries.append(("agent-device", r["agent_device"]))
+    if "argent" in tools:
+        binaries.append(("argent", r["argent"]))
+    for label, path in binaries:
         # argent/node may be bare names resolved on PATH; treat a bare name as present
         present = os.path.exists(path) or (os.sep not in path)
         print(" ", (ok if present else bad)(f"{label}: {path}"))
@@ -99,6 +184,8 @@ def preflight(need_providers):
             present = prov in keys
             print(" ", (ok if present else bad)(f"{prov} key {'present' if present else 'MISSING'} ({src})"))
             fails += 0 if present else 1
+    if run_setup:
+        fails += setup_tools(tools, r)
     return fails
 
 
@@ -181,6 +268,8 @@ def main():
     ap.add_argument("--heal", action="store_true", help="reset phantom-masked units to pending (refuses a mass-heal)")
     ap.add_argument("--heal-force", action="store_true", help="heal even a large phantom set (cross-host ledgers)")
     ap.add_argument("--preflight", action="store_true", help="only run surface health checks")
+    ap.add_argument("--setup-tools", action="store_true",
+                    help="run documented post-install setup before the matrix")
     a = ap.parse_args()
 
     tools = a.tools.split(",")
@@ -194,7 +283,7 @@ def main():
         mid = bench.MODELS.get(m, "")
         if mid.startswith("anthropic/"): need.add("anthropic")
         elif mid.startswith("openai/"):  need.add("openai")
-    fails = preflight(need)
+    fails = preflight(need, tools, a.setup_tools)
     fails += preflight_hooks(set(apps) & set(bench.APPS))
     if a.preflight:
         sys.exit(1 if fails else 0)

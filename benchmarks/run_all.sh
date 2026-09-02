@@ -27,8 +27,9 @@ export BENCH_KILL_SCOPE="${BENCH_KILL_SCOPE:-all}"
 # 1. Preflight: fail before burning API spend if the surface is broken (unless FORCE=1). Covers the
 #    device lock, the golden sim (present + Shutdown), binaries and API keys.
 MODELS_ARG=(); [ -n "${ONLY:-}" ] && MODELS_ARG=(--models "$ONLY")
+TOOLS_ARG=();  [ -n "${TOOLS:-}" ] && TOOLS_ARG=(--tools "$TOOLS")
 APPS_ARG=();   [ -n "${APPS:-}" ] && APPS_ARG=(--apps "$APPS")
-if ! python3 runner/doctor.py --preflight "${MODELS_ARG[@]}" "${APPS_ARG[@]}"; then
+if ! python3 runner/doctor.py --preflight --setup-tools "${MODELS_ARG[@]}" "${TOOLS_ARG[@]}" "${APPS_ARG[@]}"; then
   if [ "${FORCE:-0}" != "1" ]; then
     echo ">> preflight failed; fix the surface or re-run with FORCE=1 to proceed anyway." >&2
     exit 1
@@ -37,7 +38,7 @@ if ! python3 runner/doctor.py --preflight "${MODELS_ARG[@]}" "${APPS_ARG[@]}"; t
 fi
 
 # 2. Self-heal: reset any phantom-masked ledger entries so nothing missing is silently skipped.
-python3 runner/doctor.py --heal "${MODELS_ARG[@]}" "${APPS_ARG[@]}" || true
+python3 runner/doctor.py --heal "${MODELS_ARG[@]}" "${TOOLS_ARG[@]}" "${APPS_ARG[@]}" || true
 
 # 3. Run every pending unit (resumable; fresh clone + fresh proxies + verified teardown per run).
 echo ">> running the matrix..."
@@ -51,5 +52,5 @@ fi
 
 # 5. Final coverage report — must show 0 pending and 0 masked gaps for a clean matrix.
 echo ">> final coverage:"
-python3 runner/doctor.py "${MODELS_ARG[@]}" "${APPS_ARG[@]}" || true
+python3 runner/doctor.py "${MODELS_ARG[@]}" "${TOOLS_ARG[@]}" "${APPS_ARG[@]}" || true
 echo ">> done."
