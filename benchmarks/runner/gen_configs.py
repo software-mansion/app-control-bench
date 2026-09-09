@@ -8,7 +8,7 @@ The tracked configs/<tool>/opencode.json is a TEMPLATE: write_run_config(tool, u
 with the run's clone udid baked in to a temp dir, which is used as opencode's cwd and deleted
 with the run. Nothing shared, nothing stale — the udid in the tracked file is never trusted.
 """
-import os, sys, json, tempfile, shutil
+import hashlib, json, os, shutil, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bench_env
@@ -25,6 +25,34 @@ def _dump(p, d):
     with open(p, "w") as f:
         json.dump(d, f, indent=2)
         f.write("\n")
+
+
+def _hash_path(path, digest):
+    if not path or not os.path.exists(path):
+        return
+    if os.path.isfile(path):
+        digest.update(os.path.basename(path).encode())
+        with open(path, "rb") as stream:
+            digest.update(stream.read())
+        return
+    for root, dirs, files in os.walk(path):
+        dirs.sort()
+        for name in sorted(files):
+            file_path = os.path.join(root, name)
+            digest.update(os.path.relpath(file_path, path).encode())
+            with open(file_path, "rb") as stream:
+                digest.update(stream.read())
+
+
+def skill_manifest(tool):
+    """Hash every shipped guidance surface for every tool; the no-tool control is explicitly empty."""
+    skills_dir, rule_file, agents_dir = _skill_sources(tool)
+    digest = hashlib.sha256()
+    _hash_path(skills_dir, digest)
+    _hash_path(rule_file, digest)
+    _hash_path(agents_dir, digest)
+    has_guidance = any(path and os.path.exists(path) for path in (skills_dir, rule_file, agents_dir))
+    return {"sha256": digest.hexdigest() if has_guidance else None, "present": has_guidance}
 
 
 # Where each tool's REAL shipped skills/rule/agents live, so the benchmark stages exactly what

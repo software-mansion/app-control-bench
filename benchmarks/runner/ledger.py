@@ -127,18 +127,32 @@ def run_harness(results_dir, model, tool, task):
     return (meta.get("versions") or {}).get("harness")
 
 
+def run_versions(results_dir, model, tool, task):
+    meta = _read_json(os.path.join(result_dir(results_dir, model, tool, task), "meta.json")) or {}
+    return meta.get("versions") or {}
+
+
 def is_polluted(results_dir, model, tool, task, harness):
     """A completed/judged unit whose result was produced by a DIFFERENT (older/polluted) harness — kept
     for display but slated to be overwritten. False for unrun units and for current-harness results."""
     return has_run(results_dir, model, tool, task) and run_harness(results_dir, model, tool, task) != harness
 
 
-def needs_run(results_dir, model, tool, task, harness):
+def needs_run(results_dir, model, tool, task, harness, expected_versions=None):
     """The runner should (re)run this unit: either it has NO valid result, or its only result is from a
     stale/polluted harness (regenerate over it). This is what makes the current pass overwrite pre-skill
     and always-inject pollution rather than skip it forever."""
-    return (not has_run(results_dir, model, tool, task)) or \
-           run_harness(results_dir, model, tool, task) != harness
+    if (not has_run(results_dir, model, tool, task)) or run_harness(results_dir, model, tool, task) != harness:
+        return True
+    actual = run_versions(results_dir, model, tool, task)
+    return any(actual.get(key) != value for key, value in (expected_versions or {}).items())
+
+
+def reset(results_dir, model, tool, task):
+    """Forget persisted progress immediately before intentionally replacing a stale disk result."""
+    data = load(results_dir)
+    data.get("units", {}).pop(unit_id(model, tool, task), None)
+    save(results_dir, data)
 
 
 def summary(active_units):

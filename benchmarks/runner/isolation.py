@@ -99,7 +99,7 @@ KILL_PATTERNS = [
 # per-host registry file; "owned" = registered pid (start-time-verified against pid reuse) OR a
 # member of a registered process group OR a live descendant of one. In the default "owned" scope
 # only those are killed; pattern matches beyond them are loudly REPORTED as strays, never killed.
-# On the dedicated bench host set BENCH_KILL_SCOPE=all (run_all.sh does) to reap ANY match —
+# On a dedicated bench host set BENCH_KILL_SCOPE=all to reap ANY match —
 # needed for full orphan-reaping guarantees (opencode's detached double-fork setsids out of every
 # ownership signal), and safe there because nothing else runs.
 KILL_SCOPE = os.environ.get("BENCH_KILL_SCOPE", "owned")   # "owned" | "all"
@@ -239,7 +239,7 @@ def _kill_pattern(pattern, owned=None, term_wait=5.0, kill_wait=5.0):
             "remaining": _alive(targets), "strays": strays}
 
 
-def teardown_all(phase, adev=None, adev_udid=None):
+def teardown_all(phase, adev=None, adev_udid=None, adev_state_dir=None):
     """Kill every bench-owned process and VERIFY it died. phase is 'pre' (heal leftovers from a
     crashed/earlier invocation) or 'post' (reap the run that just finished — runs in finally).
     A survivor after SIGKILL raises TeardownError: continuing would violate the isolation mandate.
@@ -249,8 +249,24 @@ def teardown_all(phase, adev=None, adev_udid=None):
     # courtesy first: let agent-device close its session cleanly before we shoot the daemon
     if adev and adev_udid:
         try:
+            close_env = os.environ.copy()
+            if adev_state_dir:
+                close_env["AGENT_DEVICE_STATE_DIR"] = adev_state_dir
             subprocess.run([adev, "close", "--platform", "ios", "--udid", adev_udid],
-                           capture_output=True, timeout=15)
+                           capture_output=True, timeout=15, env=close_env)
+        except (subprocess.TimeoutExpired, OSError):
+            pass
+    # agent-device is the only current surface with a detached daemon. TOOL_RUNTIME in bench.py
+    # carries explicit None placeholders for Argent and the no-tool control; their processes remain
+    # children of OpenCode and are handled by the common process-group cleanup below.
+    if adev and adev_state_dir:
+        try:
+            subprocess.run(
+                [adev, "daemon", "stop", "--state-dir", adev_state_dir, "--clean"],
+                capture_output=True,
+                timeout=30,
+                env={**os.environ, "AGENT_DEVICE_STATE_DIR": adev_state_dir},
+            )
         except (subprocess.TimeoutExpired, OSError):
             pass
     owned = _owned_pids() if KILL_SCOPE != "all" else None

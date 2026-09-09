@@ -14,12 +14,27 @@ Env overrides:
   BENCH_AGENT_DEVICE_DIR     agent-device repo dir  (else parent-of-parent of the .mjs)
   BENCH_ARGENT               argent binary          (else `which argent`)
   BENCH_DEVICE_SET           CoreSimulator device-set dir (else the default user path)
+  BENCH_SIMULATOR_STATE_DIR  durable clone-ownership journal directory
 """
-import os, re, shutil, subprocess, shlex, json
+import hashlib, json, os, re, shutil, shlex, subprocess
 
 SANDBOX_EXEC = "/usr/bin/sandbox-exec"
 
 DEFAULT_DEVICE_SET = os.path.expanduser("~/Library/Developer/CoreSimulator/Devices")
+
+
+def simulator_state_dir():
+    return os.path.realpath(
+        os.environ.get(
+            "BENCH_SIMULATOR_STATE_DIR",
+            os.path.expanduser("~/.cache/app-control-bench/simulators"),
+        )
+    )
+
+
+def simulator_ownership_file():
+    device_set_key = hashlib.sha256(os.path.realpath(device_set()).encode()).hexdigest()[:12]
+    return os.path.join(simulator_state_dir(), f"owned-clones-{device_set_key}.json")
 
 
 def _which(*names):
@@ -53,7 +68,21 @@ def agent_device():
 
 
 def agent_device_dir():
-    return os.environ.get("BENCH_AGENT_DEVICE_DIR") or os.path.dirname(os.path.dirname(agent_device()))
+    env = os.environ.get("BENCH_AGENT_DEVICE_DIR")
+    if env:
+        return env
+    directory = os.path.dirname(os.path.realpath(agent_device()))
+    while directory and directory != "/":
+        package_json = os.path.join(directory, "package.json")
+        try:
+            if os.path.exists(package_json):
+                with open(package_json) as stream:
+                    if json.load(stream).get("name") == "agent-device":
+                        return directory
+        except (OSError, ValueError):
+            pass
+        directory = os.path.dirname(directory)
+    return os.path.dirname(os.path.dirname(os.path.realpath(agent_device())))
 
 
 def agent_device_shim_dir():
@@ -241,8 +270,12 @@ def device_set():
 def booted_udids():
     """UDIDs of currently-booted simulators (empty on failure)."""
     try:
-        r = subprocess.run("xcrun simctl list devices booted", shell=True,
-                           capture_output=True, text=True, timeout=20)
+        r = subprocess.run(
+            ["xcrun", "simctl", "--set", device_set(), "list", "devices", "booted"],
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
     except Exception:
         return []
     return re.findall(r"\(([0-9A-Fa-f-]{36})\)\s*\(Booted\)", r.stdout)

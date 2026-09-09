@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Golden-template simulator lifecycle: every run gets a byte-identical fresh CLONE of a
-permanently-shutdown 'golden' sim (apps installed + logged in + agent-device XCTest runner
-pre-installed), and the clone NEVER outlives its run.
+permanently-shutdown 'golden' sim (apps installed + logged in + device-tool prerequisites).
+Creation intent is durably journaled before cloning, so cleanup is authorized by exact identity,
+never by a shared name prefix.
 
 Why clone (not erase/reinstall): `simctl clone` copies app bundles, data containers and the
 keychain, so the manually-established logins (real bsky.social account, Element alice, IceCubes)
@@ -16,17 +17,22 @@ Stdlib + xcrun simctl only.
 import json
 import os
 import subprocess
+import tempfile
 import time
+import uuid
+
+import bench_env
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GOLDEN_MANIFEST = os.path.join(ROOT, "configs", "golden.json")
 GOLDEN_STATE = os.path.join(ROOT, "configs", "golden-state.json")   # per-host, gitignored: mutable stamps
-CLONE_PREFIX = "bench-run-"          # reaping key: anything with this name prefix is ours to delete
+CLONE_PREFIX = os.environ.get("BENCH_CLONE_PREFIX", "bench-run-")
 BOOT_TIMEOUT = 240
 CLONE_TIMEOUT = 120
 SHUTDOWN_TIMEOUT = 60
 BSKY_BUNDLE = "xyz.blueskyweb.app"
 SESSION_REFRESH_MAX_AGE = int(os.environ.get("BENCH_GOLDEN_REFRESH_S", "3600"))
+OWNERSHIP_FILE = bench_env.simulator_ownership_file()
 
 
 class DeviceError(RuntimeError):
@@ -34,11 +40,82 @@ class DeviceError(RuntimeError):
     path (the unit stays pending); golden/reap failures propagate and abort the matrix."""
 
 
+def _load_owned_clones():
+    try:
+        with open(OWNERSHIP_FILE) as stream:
+            document = json.load(stream)
+    except FileNotFoundError:
+        return {}
+    except (OSError, ValueError) as error:
+        raise DeviceError(f"simulator ownership journal is unreadable: {error}") from error
+    if not isinstance(document, dict) or document.get("schema") != 1 \
+            or not isinstance(document.get("clones"), dict):
+        raise DeviceError("simulator ownership journal has an unsupported schema")
+    clones = document["clones"]
+    if any(
+        not isinstance(name, str)
+        or not isinstance(record, dict)
+        or record.get("name") != name
+        or (record.get("udid") is not None and not isinstance(record.get("udid"), str))
+        for name, record in clones.items()
+    ):
+        raise DeviceError("simulator ownership journal contains an invalid clone record")
+    return clones
+
+
+def _save_owned_clones(clones):
+    directory = os.path.dirname(OWNERSHIP_FILE)
+    os.makedirs(directory, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix="owned-clones-", suffix=".json", dir=directory)
+    try:
+        with os.fdopen(fd, "w") as stream:
+            json.dump({"schema": 1, "clones": clones}, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, OWNERSHIP_FILE)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def _record_clone(name, udid=None):
+    clones = _load_owned_clones()
+    clones[name] = {
+        "name": name,
+        "udid": udid,
+        "created_ts": clones.get(name, {}).get("created_ts", int(time.time())),
+    }
+    _save_owned_clones(clones)
+
+
+def _forget_clone(name):
+    clones = _load_owned_clones()
+    if clones.pop(name, None) is not None:
+        _save_owned_clones(clones)
+
+
+def _resolve_recorded_clone(name):
+    matches = [device for device in _devices() if device["name"] == name]
+    if len(matches) > 1:
+        raise DeviceError(f"journaled clone name '{name}' is ambiguous; refusing cleanup")
+    if not matches:
+        return None
+    udid = matches[0]["udid"]
+    _record_clone(name, udid)
+    return udid
+
+
 def _simctl(*args, timeout=60):
     """One simctl call. A hang is converted to DeviceError so every caller's error path stays in
     the module's single exception type (a raw TimeoutExpired would bypass SURFACE_ERROR handling)."""
     try:
-        return subprocess.run(["xcrun", "simctl", *args], capture_output=True, text=True, timeout=timeout)
+        return subprocess.run(
+            ["xcrun", "simctl", "--set", bench_env.device_set(), *args],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
     except subprocess.TimeoutExpired:
         raise DeviceError(f"simctl {args[0]} timed out after {timeout}s ({' '.join(args[:3])})")
 
@@ -86,9 +163,11 @@ def save_state(**updates):
 def golden_info():
     """The golden device record (by manifest name) or DeviceError if missing."""
     name = load_manifest()["name"]
-    for d in _devices():
-        if d["name"] == name:
-            return d
+    matches = [device for device in _devices() if device["name"] == name]
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        raise DeviceError(f"golden simulator name '{name}' is ambiguous; refusing to select one")
     raise DeviceError(f"golden simulator '{name}' not found on this machine — build it per "
                       f"docs/surfaces/golden-simulator.md")
 
@@ -103,43 +182,40 @@ def check_golden():
     return g
 
 
-def reap_stale_clones():
-    """Delete any bench-run-* clones left by a crashed invocation, and enforce ONE-device-at-a-
-    time: abort if a sim we don't own is Booted (never kill foreign devices — on a shared machine
-    they belong to someone else; override with BENCH_IGNORE_FOREIGN_SIMS=1). A clone that survives
-    destroy() is FATAL, same standard as an unkillable process — otherwise a wedged Booted clone
-    would silently coexist with every later run's device, forever."""
-    reaped, stuck, foreign = [], [], []
-    for d in _devices():
-        if d["name"].startswith(CLONE_PREFIX):
-            (reaped if destroy(d["udid"]) else stuck).append(d["name"])
-        elif d["state"] == "Booted":
-            foreign.append(f"{d['name']} ({d['udid']})")
-    if stuck:
-        raise DeviceError(f"stale clone(s) survived shutdown+delete: {stuck} — CoreSimulator is "
-                          f"wedged; fix it (killall -9 com.apple.CoreSimulator.CoreSimulatorService) "
-                          f"before running")
-    if foreign and os.environ.get("BENCH_IGNORE_FOREIGN_SIMS") != "1":
-        raise DeviceError("foreign booted simulator(s) present — ONE device at a time: "
-                          + ", ".join(foreign) + "  (shut them down, or BENCH_IGNORE_FOREIGN_SIMS=1)")
-    return reaped
+def check_device_conflicts():
+    """Observe other booted simulators without mutating them or changing benchmark semantics."""
+    return [
+        f"{device['name']} ({device['udid']})"
+        for device in _devices()
+        if device["state"] == "Booted"
+    ]
 
 
 def clone_golden(task_id):
     """Clone the golden -> bench-run-<ts>-<task_id>. Same device set (same APFS volume -> CoW).
     Returns the clone's udid."""
     g = check_golden()
-    name = f"{CLONE_PREFIX}{int(time.time())}-{task_id}"
-    r = _simctl("clone", g["udid"], name, timeout=CLONE_TIMEOUT)
+    name = f"{CLONE_PREFIX}{int(time.time())}-{task_id}-{uuid.uuid4().hex}"
+    _record_clone(name)
+    try:
+        r = _simctl("clone", g["udid"], name, timeout=CLONE_TIMEOUT)
+    except DeviceError as error:
+        created_udid = _resolve_recorded_clone(name)
+        if created_udid is not None and not destroy(created_udid):
+            raise DeviceError(f"timed-out clone '{name}' could not be retired") from error
+        raise
     if r.returncode != 0:
+        created_udid = _resolve_recorded_clone(name)
+        if created_udid is not None and not destroy(created_udid):
+            raise DeviceError(f"failed clone '{name}' could not be retired")
         raise DeviceError(f"clone of '{g['name']}' failed: {r.stderr.strip()[:200]}")
     lines = r.stdout.strip().splitlines()
     udid = lines[-1].strip() if lines else ""
     if len(udid) != 36:   # simctl prints the new udid on stdout; be defensive (incl. empty stdout)
-        found = [d for d in _devices() if d["name"] == name]
-        if not found:
+        udid = _resolve_recorded_clone(name)
+        if udid is None:
             raise DeviceError(f"clone '{name}' created but udid not resolvable")
-        udid = found[0]["udid"]
+    _record_clone(name, udid)
     return udid
 
 
@@ -154,8 +230,23 @@ def boot(udid):
 
 
 def destroy(udid):
-    """Shutdown + delete a clone. Best-effort with retries; runs in finally — logs, NEVER raises
-    (the caller decides whether a survivor is fatal). Returns True iff the device is gone."""
+    """Retire one exactly journaled clone; refuse caller-supplied or foreign devices."""
+    records = [record for record in _load_owned_clones().values() if record.get("udid") == udid]
+    if len(records) != 1:
+        print(f"  !! refusing to retire unowned simulator {udid}", flush=True)
+        return False
+    record = records[0]
+    current = next((device for device in _devices() if device["udid"] == udid), None)
+    if current is None:
+        _forget_clone(record["name"])
+        return True
+    try:
+        golden_udid = golden_info()["udid"]
+    except DeviceError:
+        golden_udid = None
+    if current["name"] != record["name"] or golden_udid == udid:
+        print(f"  !! refusing to retire simulator {udid}: ownership mismatch", flush=True)
+        return False
     try:
         for _ in range(2):
             try:
@@ -169,7 +260,9 @@ def destroy(udid):
             try:
                 r = _simctl("delete", udid, timeout=SHUTDOWN_TIMEOUT)
                 if r.returncode == 0:
-                    return True
+                    if not any(device["udid"] == udid for device in _devices()):
+                        _forget_clone(record["name"])
+                        return True
             except DeviceError:
                 pass
             time.sleep(2)
@@ -179,7 +272,30 @@ def destroy(udid):
     if not gone:
         print(f"  !! clone {udid} could not be deleted — the next run's reap treats this as fatal",
               flush=True)
+    else:
+        _forget_clone(record["name"])
     return gone
+
+
+def reap_owned_clones():
+    """Retire only clones recorded by an interrupted benchmark invocation."""
+    reaped = []
+    for name, record in list(_load_owned_clones().items()):
+        udid = record.get("udid")
+        if not udid:
+            deadline = record.get("created_ts", 0) + CLONE_TIMEOUT + 5
+            while udid is None and time.time() < deadline:
+                udid = _resolve_recorded_clone(name)
+                if udid is None:
+                    time.sleep(1)
+        if udid is None:
+            raise DeviceError(
+                f"journaled clone intent '{name}' is unresolved; refusing to create another clone"
+            )
+        if not destroy(udid):
+            raise DeviceError(f"journaled clone {name} ({udid}) could not be retired")
+        reaped.append(name)
+    return reaped
 
 
 def refresh_golden_sessions(force=False):

@@ -33,6 +33,21 @@ NODE = bench_env.node()
 ARGENT_BIN = bench_env.argent()
 
 
+# Every matrix condition has an explicit lifecycle cell. A value of None is deliberate: Argent's
+# MCP server belongs to OpenCode's process group, while agent-device owns a detached daemon and must
+# receive a per-run state directory plus an exact clean-stop command. Neither distinction moves work
+# outside the task timer or changes the model's permissions.
+TOOL_RUNTIME = {
+    "argent": {"state_env": None, "detached_cleanup": None, "operator_health": None},
+    "agent-device": {
+        "state_env": "AGENT_DEVICE_STATE_DIR",
+        "detached_cleanup": "agent-device-daemon",
+        "operator_health": None,
+    },
+    "none": {"state_env": None, "detached_cleanup": None, "operator_health": None},
+}
+
+
 def pinned_tool_versions():
     """Pinned agent-tool versions the results should correspond to (configs/tool-versions.json)."""
     try:
@@ -54,6 +69,35 @@ def detect_tool_version(tool):
     except Exception:
         return None
     return None
+
+
+def detect_tool_revision(tool):
+    if tool == "argent":
+        package_dir = bench_env.argent_pkg_dir()
+    elif tool == "agent-device":
+        package_dir = ADEV_DIR
+    else:
+        package_dir = None
+    if not package_dir:
+        return None
+    try:
+        commit = subprocess.run(
+            ["git", "-C", package_dir, "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if commit.returncode != 0:
+            return None
+        dirty = subprocess.run(
+            ["git", "-C", package_dir, "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return {"commit": commit.stdout.strip(), "dirty": bool(dirty.stdout.strip())}
+    except (OSError, subprocess.SubprocessError):
+        return None
 
 
 def check_tool_versions():
@@ -119,7 +163,7 @@ def check_app_versions():
 # to full per-run isolation). Combined with the tool/app versions below it tells you, per result,
 # WHICH runs are stale and should be overwritten (e.g. every argent 0.14.0 run once 0.15.0 ships).
 SCHEMA_VERSION = 2       # 1 = pre-isolation legacy runs (no `versions` block at all); 2 = isolated harness
-HARNESS = "isolation-v3-progressive"   # v1 = isolated but NO tool skills / agent-device over MCP.
+HARNESS = "isolation-v4-owned-lifecycle"   # v1 = isolated but NO tool skills / agent-device over MCP.
                                   # v2 = skills loaded, but WRONG: the full skill text was always-injected
                                   # via `instructions`, AND the machine's ambient ~/.agents/~/.claude skills
                                   # (pptx, runpodctl, ...) leaked into every run. Both v1 & v2 are polluted.
@@ -127,6 +171,8 @@ HARNESS = "isolation-v3-progressive"   # v1 = isolated but NO tool skills / agen
                                   # and PROGRESSIVELY disclosed (index + on-demand `skill` load, exactly as a
                                   # real agent has them); ambient skills suppressed; always-on rule only for
                                   # the tool's alwaysApply rule (argent). See gen_configs._stage_skills.
+                                  # v4 = exact clone ownership, per-run detached-runtime state, and complete
+                                  # tool/app/guidance provenance used by freshness checks.
 
 # How each tool is actually used in the wild — and thus how the benchmark drives it. Stamped into
 # every run so a faithful (skills) run is never confused with a pre-skills one.
@@ -152,12 +198,27 @@ def run_versions(tool, app):
             "harness": HARNESS,
             "surface": SURFACE.get(tool),               # "mcp" (argent) | "cli" (agent-device) | "shell" (none)
             "skills": tool != "none",                   # the tool's skill/rule bundle was loaded (none ships none)
+            "skill_manifest": gen_configs.skill_manifest(tool),
             "tool": detect_tool_version(tool),          # actual installed argent / agent-device version
             "tool_pinned": pinned_tool_versions().get(tool),
+            "tool_revision": detect_tool_revision(tool),
             "app": detect_app_version(app),             # target-app version (Bluesky checkout, etc.)
             "app_pinned": (pinned_app_versions().get(app) or {}).get("version"),
+            "runtime": TOOL_RUNTIME[tool],
         }
     return _versions_cache[key]
+
+
+def expected_versions(tool, app):
+    """Comparable provenance fields, applied identically to every tool condition."""
+    versions = run_versions(tool, app)
+    return {
+        key: versions.get(key)
+        for key in (
+            "schema", "harness", "surface", "skill_manifest", "tool", "tool_pinned",
+            "tool_revision", "app", "app_pinned", "runtime",
+        )
+    }
 
 # FOCUS (2026-07-08): the ONLY SoTA cells we run/regenerate for now are gpt_low, gpt_high, haiku_low,
 # haiku_high (gpt-5.4-mini + haiku-4.5, high/low effort). Do NOT run any other SoTA model. The rest stay
@@ -374,7 +435,15 @@ def run_one(model_key, tool, task, force=False):
     # harness. A never-run / surface-errored unit is still 'pending', and a completed/judged unit from
     # an OLDER (polluted) harness needs_run=True so this pass REGENERATES over it — otherwise a judged
     # v1/v2 result would be skipped forever and never faithfully re-run.
-    if (not force) and not ledger.needs_run(RESULTS, model_key, tool, task["id"], HARNESS):
+    stale = ledger.needs_run(
+        RESULTS,
+        model_key,
+        tool,
+        task["id"],
+        HARNESS,
+        expected_versions(tool, task["app"]),
+    )
+    if (not force) and not stale:
         print(f"  SKIP {cell}/{task['id']} ({ledger.state_of(RESULTS, model_key, tool, task['id'])} @ current harness)")
         return json.load(open(meta_path))
     # remote-endpoint resilience: if this is an ollama model the active endpoint isn't serving right
@@ -383,6 +452,7 @@ def run_one(model_key, tool, task, force=False):
     if not model_runnable(model_key, ollama_served_cached()):
         print(f"  DEFER {cell}/{task['id']} (endpoint not serving {MODELS.get(model_key)})")
         return None
+    ledger.reset(RESULTS, model_key, tool, task["id"])
     os.makedirs(outdir, exist_ok=True)
     # a stale score.json from an earlier judged-then-purged/surface-errored/forced attempt would
     # otherwise auto-promote THIS fresh run straight to 'judged' with the old verdict (disk_state
@@ -394,17 +464,18 @@ def run_one(model_key, tool, task, force=False):
     effort = EFFORT.get(model_key, {})
     t0 = time.time()
     env = {"ts_start": int(t0), "effort": effort, "golden": None, "clone_udid": None,
+           "concurrent_booted_simulators": [], "reaped_owned_clones": [],
            "proxies": None, "reset_pre": None, "reset_post": None,
            "teardown_pre": None, "teardown_post": None}
     udid = cfg_dir = None
     meta = None
     agent_ran = False
     try:
-        # ---- clean slate: kill anything a crashed earlier invocation leaked (incl. proxies),
-        # delete stale bench-run-* clones, and enforce one-device-at-a-time (foreign booted sim
-        # -> DeviceError -> fatal). A bad golden (missing/booted) is fatal too: check_golden().
+        # ---- clean slate: kill run-owned processes, retire exactly journaled clones from an
+        # interrupted run, and record foreign simulator load without mutating foreign devices.
         env["teardown_pre"] = isolation.teardown_all("pre")
-        sim_device.reap_stale_clones()
+        env["reaped_owned_clones"] = sim_device.reap_owned_clones()
+        env["concurrent_booted_simulators"] = sim_device.check_device_conflicts()
         env["golden"] = {k: sim_device.check_golden()[k] for k in ("name", "udid")}
         # ---- server-side state reset BEFORE the fresh clone's app first syncs (and before the
         # session-refresh boot, so a misconfigured hook fails before any device work)
@@ -425,6 +496,7 @@ def run_one(model_key, tool, task, force=False):
         # progressive disclosure; argent's always-on rule as instructions; argent MCP pointed at THIS
         # clone, or — for the CLI-first agent-device — no MCP + a CLI target config.
         cfg_dir = gen_configs.write_run_config(tool, udid)
+        runtime_state_dir = os.path.join(cfg_dir, "tool-runtime-state")
         # Ambient-skill suppression: expose ONLY this tool's staged skills, never the machine's globally
         # installed ~/.agents / ~/.claude skills (pptx, runpodctl, personal skills...). Both flags zero
         # those out; the native staged .opencode/skills set survives. Applied to EVERY run.
@@ -434,6 +506,7 @@ def run_one(model_key, tool, task, force=False):
         # CLI default target, so the agent's bare `agent-device ...` commands hit the run's device.
         if tool == "agent-device":
             run_env["AGENT_DEVICE_CONFIG"] = os.path.join(cfg_dir, "agent-device-cli.json")
+            run_env[TOOL_RUNTIME[tool]["state_env"]] = runtime_state_dir
             run_env["PATH"] = bench_env.agent_device_shim_dir() + os.pathsep + os.environ.get("PATH", "")
         elif tool == "none":
             # Block host-GUI automation (osascript & friends): the baseline must act on the device via
@@ -483,7 +556,12 @@ def run_one(model_key, tool, task, force=False):
             if n_tools > 0 or timed_out or attempt == 2:
                 break
             print(f"  retry {cell}/{task['id']}: 0 tool calls (MCP not ready?) attempt {attempt+1}", flush=True)
-            isolation.teardown_all("retry", adev=ADEV, adev_udid=udid)   # kill the half-started MCP
+            isolation.teardown_all(
+                "retry",
+                adev=ADEV if TOOL_RUNTIME[tool]["detached_cleanup"] else None,
+                adev_udid=udid,
+                adev_state_dir=runtime_state_dir if TOOL_RUNTIME[tool]["state_env"] else None,
+            )
             env["proxies"] = isolation.start_proxies(effort, outdir, node=node,   # teardown killed them
                                                      providers=isolation.providers_needed(MODELS[model_key]))
         wall = round(time.time() - t_run, 1)
@@ -511,12 +589,16 @@ def run_one(model_key, tool, task, force=False):
             except BaseException as e:          # ResetError, KeyboardInterrupt, OSError, ...
                 post_err = e
         try:
-            env["teardown_post"] = isolation.teardown_all("post", adev=ADEV, adev_udid=udid)
+            env["teardown_post"] = isolation.teardown_all(
+                "post",
+                adev=ADEV if tool and TOOL_RUNTIME[tool]["detached_cleanup"] else None,
+                adev_udid=udid,
+                adev_state_dir=(runtime_state_dir if cfg_dir and TOOL_RUNTIME[tool]["state_env"] else None),
+            )
         except BaseException as e:               # TeardownError, KeyboardInterrupt mid-teardown, ...
             post_err = post_err or e
         if udid and not sim_device.destroy(udid):
-            # a clone that survives destroy is as fatal as an unkillable process — but the next
-            # run's reap_stale_clones also hard-fails on it, so prefer the earlier error if any
+            # A clone that survives exact-identity cleanup is fatal; no prefix authorizes deletion.
             post_err = post_err or isolation.TeardownError(
                 f"clone {udid} survived shutdown+delete — CoreSimulator wedged")
         if cfg_dir:
@@ -573,8 +655,8 @@ def model_runnable(model_key, served):
 def verify_golden():
     """One throwaway clone: boot, launch every enabled app, screenshot each to /tmp, destroy. Run
     before big passes to eyeball that the golden's sessions are still logged in."""
-    isolation.teardown_all("pre", adev=ADEV)
-    sim_device.reap_stale_clones()
+    isolation.teardown_all("pre")
+    sim_device.reap_owned_clones()
     g = sim_device.check_golden()
     print(f"golden: {g['name']} ({g['udid']}) Shutdown ok")
     udid = sim_device.clone_golden("verify")

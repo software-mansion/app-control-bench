@@ -83,16 +83,23 @@ drive a phone - which is what a real agent would have.
 Every single run gets a clean world:
 
 - **A fresh device.** Each run clones a golden simulator, uses the clone, and deletes it. No run
-  ever inherits another run's device state.
-- **A fresh process tree.** All bench processes are killed and *verified* dead at both ends of every
-  run, and a host-wide lock means exactly one bench stream exists at a time. A second invocation
-  fails loudly instead of quietly interleaving.
+  ever inherits another run's device state. Clone cleanup uses an exact, device-set-scoped ownership
+  journal; unrelated simulators are recorded as timing context but never shut down or deleted.
+- **A fresh process tree.** Processes proven to belong to the benchmark are killed and *verified*
+  dead at both ends of every run; unrelated matches are reported and preserved. A host-wide lock
+  means exactly one bench stream exists at a time.
 - **Fresh server state.** Per-app reset hooks roll back the backend the app talks to, so a post made
   in one run can't change the screen another run sees.
 - **Pinned everything.** Tool versions (argent 0.15.0, agent-device 0.17.6) and app versions are
   pinned in `benchmarks/configs/`, checked against what's installed, and stamped into each run's
   metadata. The runner warns on drift rather than silently producing results that don't match the
   version they claim.
+
+Every selected tool gets the same version, guidance-manifest and source-revision provenance checks.
+Lifecycle differences are capability-based and explicit: Argent runs inside OpenCode's process
+group, while agent-device's detached daemon gets a per-run state directory and exact stop command.
+Argent and the no-tool control retain explicit empty lifecycle entries; these differences do not
+change task timing or model permissions.
 
 Scoring is a separate, resumable pass. A vision model (GPT-5.4 at temperature 0) sees the final
 screenshot, the task the agent was given, the description of the solved screen and the list of

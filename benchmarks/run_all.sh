@@ -4,9 +4,10 @@
 # with env). Resumable + self-healing: it resets phantom-masked ledger entries first, so a purged
 # result can never be silently skipped.
 #
-# FULLY ISOLATED: each run clones the golden simulator (configs/golden.json — build it once with
+# ISOLATED: each run clones the golden simulator (configs/golden.json — build it once with
 # tasks/setup/golden/make_golden.sh), and a host-wide lock allows exactly ONE stream at a time; a
 # second invocation fails loudly. There is no UDID knob any more — the device is a per-run clone.
+# Cleanup is limited to exact simulator and process identities owned by this invocation.
 #
 #   ./run_all.sh                          # everything pending, all effort variants, both tools, bluesky
 #   ONLY=gpt,gpt_high ./run_all.sh         # restrict models
@@ -18,17 +19,16 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 export PYTHONPATH="runner:${PYTHONPATH:-}"
-# run_all.sh is the DEDICATED-bench-host entrypoint: full kill scope, so teardown reaps ANY
-# leaked opencode/MCP/proxy process (even orphans that escaped every ownership signal). On a
-# shared dev machine run bench.py directly instead — its default "owned" scope only kills
-# processes this harness spawned and loudly reports the rest.
-export BENCH_KILL_SCOPE="${BENCH_KILL_SCOPE:-all}"
+# Shared-host safety is the default. An operator may still choose BENCH_KILL_SCOPE=all on a host
+# dedicated exclusively to this benchmark.
+export BENCH_KILL_SCOPE="${BENCH_KILL_SCOPE:-owned}"
 
 # 1. Preflight: fail before burning API spend if the surface is broken (unless FORCE=1). Covers the
 #    device lock, the golden sim (present + Shutdown), binaries and API keys.
 MODELS_ARG=(); [ -n "${ONLY:-}" ] && MODELS_ARG=(--models "$ONLY")
+TOOLS_ARG=();  [ -n "${TOOLS:-}" ] && TOOLS_ARG=(--tools "$TOOLS")
 APPS_ARG=();   [ -n "${APPS:-}" ] && APPS_ARG=(--apps "$APPS")
-if ! python3 runner/doctor.py --preflight "${MODELS_ARG[@]}" "${APPS_ARG[@]}"; then
+if ! python3 runner/doctor.py --preflight "${MODELS_ARG[@]}" "${TOOLS_ARG[@]}" "${APPS_ARG[@]}"; then
   if [ "${FORCE:-0}" != "1" ]; then
     echo ">> preflight failed; fix the surface or re-run with FORCE=1 to proceed anyway." >&2
     exit 1
@@ -37,7 +37,7 @@ if ! python3 runner/doctor.py --preflight "${MODELS_ARG[@]}" "${APPS_ARG[@]}"; t
 fi
 
 # 2. Self-heal: reset any phantom-masked ledger entries so nothing missing is silently skipped.
-python3 runner/doctor.py --heal "${MODELS_ARG[@]}" "${APPS_ARG[@]}" || true
+python3 runner/doctor.py --heal "${MODELS_ARG[@]}" "${TOOLS_ARG[@]}" "${APPS_ARG[@]}" || true
 
 # 3. Run every pending unit (resumable; fresh clone + fresh proxies + verified teardown per run).
 echo ">> running the matrix..."
@@ -51,5 +51,5 @@ fi
 
 # 5. Final coverage report — must show 0 pending and 0 masked gaps for a clean matrix.
 echo ">> final coverage:"
-python3 runner/doctor.py "${MODELS_ARG[@]}" "${APPS_ARG[@]}" || true
+python3 runner/doctor.py "${MODELS_ARG[@]}" "${TOOLS_ARG[@]}" "${APPS_ARG[@]}" || true
 echo ">> done."
