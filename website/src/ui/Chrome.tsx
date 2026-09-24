@@ -142,6 +142,17 @@ export function ReportFooter({ provenance }: { provenance: Provenance }) {
             ))}
           </span>
         )}
+        <span>
+          Read about our{" "}
+          <a
+            class="footer-privacy"
+            href="https://swmansion.com/privacy/policy"
+            target="_blank"
+            rel="noopener"
+          >
+            Privacy policy
+          </a>
+        </span>
       </div>
     </footer>
   );

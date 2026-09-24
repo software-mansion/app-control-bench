@@ -3622,6 +3622,14 @@ body {
   height: 1em;
   fill: currentColor;
 }
+.footer-privacy {
+  color: var(--mut);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-privacy:hover {
+  color: var(--ink);
+}
 
 .tw-btn {
   top: 18px;
