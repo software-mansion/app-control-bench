@@ -150,7 +150,7 @@ export function ReportFooter({ provenance }: { provenance: Provenance }) {
             target="_blank"
             rel="noopener"
           >
-            Privacy policy
+            privacy policy
           </a>
         </span>
       </div>
