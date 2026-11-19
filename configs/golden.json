@@ -1,0 +1,15 @@
+{
+  "_comment": "Golden-simulator manifest (see docs/surfaces/golden-simulator.md). The golden is resolved by NAME (udids differ per machine) and must always be Shutdown. Mutable stamps (session_refreshed_ts) live in the gitignored configs/golden-state.json, written by sim_device.refresh_golden_sessions(). bsky_at_rest_ts = unix ts when the bluesky account was verified at-rest during golden creation; the pre-run sweep deletes bench-account records newer than it. Bump name to bench-golden-v<N+1> on every re-golden and record what changed in notes.",
+  "name": "bench-golden-v1",
+  "device_type": "iPhone 16",
+  "runtime": "iOS 18.5",
+  "created_ts": 0,
+  "bsky_at_rest_ts": 0,
+  "apps": {
+    "bluesky": "",
+    "element": "",
+    "mastodon-icecubes": ""
+  },
+  "agent_device_runner": "",
+  "notes": "NOT BUILT YET - create on the bench host with tasks/setup/golden/make_golden.sh (from-existing <logged-in sim> is the fast path), then fill created_ts/apps/runner versions."
+}

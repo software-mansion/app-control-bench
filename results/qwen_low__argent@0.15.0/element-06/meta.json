@@ -1,0 +1,38 @@
+{
+  "cell": "qwen_low:argent",
+  "model": "qwen_low",
+  "tool": "argent",
+  "task": "element-06",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "menu-drawer",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 39.6,
+  "n_tool_calls": 3,
+  "tool_names": [
+    "skill",
+    "argent_describe",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1786070822,
+  "golden": {
+    "name": "bench-element",
+    "udid": "53CBD69C-E05C-4DAC-9A2C-2504C42CB57F"
+  },
+  "clone_udid": "20759232-80B1-4AD2-8227-9D842C1B1A1F",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": null,
+    "app_pinned": null
+  },
+  "effort_injected": 3
+}

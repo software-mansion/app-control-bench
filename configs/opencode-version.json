@@ -1,0 +1,4 @@
+{
+  "_comment": "Pinned version of OpenCode, the agent harness every cell runs in. The harness needs 2.x: bench.py refuses anything older, warns on drift from this pin, and stamps the installed version into every run (meta.json versions.opencode). See docs/harness.md#opencode-2.",
+  "opencode": "2.3.0"
+}

@@ -1,0 +1,47 @@
+{
+  "cell": "qwen_high:agent-device",
+  "model": "qwen_high",
+  "tool": "agent-device",
+  "task": "element-20",
+  "app": "element",
+  "kind": "nav",
+  "nav_category": "menu-drawer",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 47.6,
+  "n_tool_calls": 12,
+  "tool_names": [
+    "skill",
+    "unknown",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "unknown"
+  ],
+  "stderr_tail": "",
+  "ts": 1786080697,
+  "golden": {
+    "name": "bench-element",
+    "udid": "53CBD69C-E05C-4DAC-9A2C-2504C42CB57F"
+  },
+  "clone_udid": "BF11037F-D234-40FB-B36E-4DCDA9541744",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "cli",
+    "skills": true,
+    "tool": "0.17.6",
+    "tool_pinned": "0.17.6",
+    "app": null,
+    "app_pinned": null
+  },
+  "effort_injected": 11
+}

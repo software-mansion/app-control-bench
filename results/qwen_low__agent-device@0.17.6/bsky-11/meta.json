@@ -1,0 +1,53 @@
+{
+  "cell": "qwen_low:agent-device",
+  "model": "qwen_low",
+  "tool": "agent-device",
+  "task": "bsky-11",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "tab-switch",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 376.9,
+  "n_tool_calls": 18,
+  "tool_names": [
+    "skill",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "bash",
+    "unknown",
+    "bash",
+    "read"
+  ],
+  "stderr_tail": "",
+  "ts": 1785979465,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "BD1DCA41-5F4A-4EAF-A7F9-A641D2384C2B"
+  },
+  "clone_udid": "1B79EEEB-391B-4A1B-81E5-F933B9A6BEA8",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "cli",
+    "skills": true,
+    "tool": "0.17.6",
+    "tool_pinned": "0.17.6",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  },
+  "effort_injected": 18
+}

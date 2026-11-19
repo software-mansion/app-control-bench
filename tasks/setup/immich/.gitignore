@@ -1,0 +1,8 @@
+# Generated / deployed artifacts — the scripts are the source of truth, not these.
+seed/.venv/
+seed/assets/
+seed/assets.manifest.json
+library/
+postgres/
+.env
+*.log

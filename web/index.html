@@ -1,0 +1,21 @@
+<!doctype html>
+<!-- data-tw-heatmap / data-tw-heat-curve are load-bearing: runner/report.css:104-126 keys the entire
+     hero-matrix heatmap off these two attributes. Remove them and the heatmap silently disappears.
+     data-tw-explain is deliberately absent — its absence is what keeps the [i] tooltips rather than
+     inline section captions. -->
+<html lang="en" data-tw-heatmap="on" data-tw-heat-curve="exp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!-- Title only. The canonical/description/OG/X block is emitted by scripts/prerender.mts, which
+         overwrites this page's built output — duplicating those tags here would only let the two
+         copies drift. This head is what `vite dev` serves, nothing more. -->
+    <title>AppControlBench - Results</title>
+    <!-- Mirrors the tag prerender.mts emits; served in dev by the /favicon.svg branch in vite.config.ts. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div class="wrap" id="report-root"></div>
+    <script type="module" src="/src/report/main.tsx"></script>
+  </body>
+</html>

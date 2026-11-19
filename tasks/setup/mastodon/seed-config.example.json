@@ -1,0 +1,7 @@
+{
+  "_comment": "Copy to seed-config.json (gitignored) and fill in real tokens. Tokens come from the local Mastodon instance: Settings > Development > New application (scopes: read write follow) for each account, or `bin/tootctl` on the server. bench = the account IceCubes is logged in as; author = the fixture-content account.",
+  "base_url": "http://localhost:3000",
+  "bench_token": "REPLACE-WITH-BENCH-ACCOUNT-ACCESS-TOKEN",
+  "author_token": "REPLACE-WITH-AUTHOR-ACCOUNT-ACCESS-TOKEN",
+  "bench_display_name": "Bench User"
+}

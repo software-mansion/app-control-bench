@@ -1,0 +1,39 @@
+{
+  "cell": "qwen_high:argent",
+  "model": "qwen_high",
+  "tool": "argent",
+  "task": "bsky-05",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "tab-switch",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 37.6,
+  "n_tool_calls": 4,
+  "tool_names": [
+    "skill",
+    "unknown",
+    "argent_describe",
+    "argent_gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1785959839,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "BD1DCA41-5F4A-4EAF-A7F9-A641D2384C2B"
+  },
+  "clone_udid": "90D48399-CB71-463E-986B-A19842CC22E8",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "mcp",
+    "skills": true,
+    "tool": "0.15.0",
+    "tool_pinned": "0.15.0",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  },
+  "effort_injected": 4
+}

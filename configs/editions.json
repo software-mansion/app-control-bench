@@ -1,0 +1,31 @@
+{
+  "_comment": "Benchmark editions. An edition is one frozen setup - harness generation, OpenCode version, model roster, judge - and everything recorded in it is comparable; nothing is compared across editions. `current` is the edition new runs are written to and stamped with (meta.json versions.edition); its `results` directory is bench.RESULTS. An edition whose `results` is the bare `results` tree predates this file: its runs are told apart by their harness stamp, and the one with `harness: null` takes whatever no other edition claims (runs from before harness stamps existed), which stay browsable but are never ranked. `models` is the roster a current edition runs and shows before any result exists; a past edition shows the models it has runs for. Start a new edition, rather than editing one, whenever the harness, OpenCode, the model roster or the judge changes: see docs/editions.md.",
+  "current": "2026-11",
+  "editions": [
+    {
+      "id": "2026-11",
+      "label": "November 2026",
+      "results": "results/editions/2026-11",
+      "harness": "isolation-v5",
+      "opencode": "2.3.0",
+      "judge": "gpt-6.1-sol",
+      "models": ["haiku55_low", "haiku55_high", "gpt6luna_low", "gpt6luna_high"]
+    },
+    {
+      "id": "2026-08",
+      "label": "August 2026",
+      "results": "results",
+      "harness": "isolation-v3-progressive",
+      "opencode": "1.4.3",
+      "judge": "gpt-5.4"
+    },
+    {
+      "id": "2026-06",
+      "label": "June 2026",
+      "results": "results",
+      "harness": null,
+      "opencode": "1.4.3",
+      "judge": "gpt-5.4"
+    }
+  ]
+}

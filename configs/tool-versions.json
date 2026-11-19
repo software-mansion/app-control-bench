@@ -1,0 +1,6 @@
+{
+  "_comment": "Pinned versions of the benchmarked agent tools: what new runs should be produced with. argent 0.33.0, agent-device 0.21.38 and mobile-mcp 1.0.17 are the releases current on 2026-11-17, pinned for the 2026-11 edition (configs/editions.json); the 2026-08 edition ran argent 0.13.0 / 0.15.0 / 0.21.0 and agent-device 0.17.6 / 0.20.10. bench.py checks installed tools against these and warns on drift; the installed version, not this pin, names the results directory (docs/tool-versions.md), so a bump starts a fresh cell beside the old one. agent-device's host preload (runner/preload-agent-device.mjs) is verified for exactly the version pinned here and refuses any other, so bump the two together. Bump these when the tools are upgraded AND a fresh run follows.",
+  "argent": "0.33.0",
+  "agent-device": "0.21.38",
+  "mobile-mcp": "1.0.17"
+}

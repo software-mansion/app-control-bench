@@ -1,0 +1,50 @@
+{
+  "cell": "qwen_low:none",
+  "model": "qwen_low",
+  "tool": "none",
+  "task": "bsky-08",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "search",
+  "needs_auth": true,
+  "returncode": -1,
+  "timed_out": true,
+  "wall_s": 900.1,
+  "n_tool_calls": 15,
+  "tool_names": [
+    "bash",
+    "read",
+    "bash",
+    "bash",
+    "read",
+    "unknown",
+    "bash",
+    "read",
+    "unknown",
+    "bash",
+    "invalid",
+    "bash",
+    "todowrite",
+    "bash",
+    "unknown"
+  ],
+  "stderr_tail": "TIMEOUT",
+  "ts": 1786018561,
+  "golden": {
+    "name": "bench-golden-bsky",
+    "udid": "BD1DCA41-5F4A-4EAF-A7F9-A641D2384C2B"
+  },
+  "clone_udid": "8D1A97D7-6E0F-46A8-84DA-FADDEE6E7302",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "harness": "isolation-v3-progressive",
+    "surface": "shell",
+    "skills": false,
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.122.0",
+    "app_pinned": "1.122.0"
+  },
+  "effort_injected": 12
+}

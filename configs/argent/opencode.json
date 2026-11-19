@@ -1,0 +1,43 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": "allow",
+  "plugins": ["-*", "opencode.*", "-opencode.config.compatibility"],
+  "websearch": false,
+  "mcp": {
+    "radon": {
+      "type": "local",
+      "command": ["true"],
+      "enabled": false
+    },
+    "linear": {
+      "type": "local",
+      "command": ["true"],
+      "enabled": false
+    },
+    "argent": {
+      "type": "local",
+      "command": [
+        "argent",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://localhost:8788/v1"
+      }
+    },
+    "openai": {
+      "options": {
+        "baseURL": "http://localhost:8790/v1"
+      }
+    },
+    "openrouter": {
+      "options": {
+        "baseURL": "http://localhost:8792/api/v1"
+      }
+    }
+  }
+}
