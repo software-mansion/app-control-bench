@@ -27,12 +27,12 @@ any number exists.
 | --- | --- | --- |
 | Agent harness | [OpenCode](https://opencode.ai) 2.3.0, MCP tools loaded on demand ("code mode") | OpenCode 1.4.3, every MCP tool schema in every request |
 | Models | `claude-haiku-5-5` and `gpt-6-luna`, each at low and high reasoning effort | haiku-4.5 and gpt-5.4-mini, low and high |
-| Tools | argent 0.33.0, agent-device 0.21.40, Mobile MCP 1.0.17, and a no-tool control | argent 0.15.0, agent-device 0.17.6, no-tool control |
+| Tools | argent 0.34.0, agent-device 0.21.40, Mobile MCP 1.0.18, and a no-tool control | argent 0.15.0, agent-device 0.17.6, no-tool control |
 | Judge | GPT-6.1 Sol, vision, temperature 0 | GPT-5.4, vision, temperature 0 |
 | Tasks | 60: Bluesky 1.122.0 (30) and Element iOS 1.11.40 (30) | the same 60 |
 | Matrix | 4 models x 4 tools x 60 tasks = 960 runs, one attempt each | 720 runs |
 
-argent and Mobile MCP are pinned at the releases current on 2026-11-17. agent-device is at 0.21.40, released on 2026-11-19, at its maintainers' request. If a newer release of your tool should be the one
+All three are the releases current on 2026-11-19. If a newer release of your tool should be the one
 measured, say so and we will pin that.
 
 ### How each tool is set up
@@ -46,7 +46,7 @@ what the tool itself ships.
 
 | | [argent](https://github.com/software-mansion/argent) | [agent-device](https://github.com/callstack/agent-device) | [Mobile MCP](https://github.com/mobile-next/mobile-mcp) | no tool |
 | --- | --- | --- | --- | --- |
-| Version | 0.33.0 | 0.21.40 | 1.0.17 (mobilecli 1.0.23) | - |
+| Version | 0.34.0 | 0.21.40 | 1.0.18 (mobilecli 1.0.24) | - |
 | Surface | MCP stdio server (`argent mcp`) | CLI, run as shell commands | MCP stdio server (`mcp-server-mobile`) | stock shell, Xcode CLI tools, `xcrun simctl` |
 | Installed from | npm `@swmansion/argent` | npm `agent-device`, plus the `skills/` directory of the repo at tag `v0.21.40` | npm `@mobilenext/mobile-mcp` | - |
 | Guidance staged for the agent | every skill the package ships, and its `rules/argent.md` | every skill in the tag's `skills/` | none: it ships no skills or rules, so the agent gets its tool descriptions and the server's own MCP instructions | none |

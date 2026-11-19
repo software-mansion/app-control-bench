@@ -45,7 +45,7 @@ same job. XcodeBuildMCP has more downloads (72k) but is a build tool first, and 
 is an E2E test framework.
 
 - Driven as an **MCP stdio server** (`mcp-server-mobile`), the way it ships, with its tools loaded on demand
-  like argent's ([harness.md](harness.md#tool-loading-code-mode)). 34 tools, all named `mobile_*`.
+  like argent's ([harness.md](harness.md#tool-loading-code-mode)). 35 tools, all named `mobile_*`.
 - It ships **no skills and no rule**, so none are staged: the tool descriptions and the server's own MCP
   instructions are all the agent gets. The preamble tells the agent the simulator's udid is the device id,
   because every tool takes one and there is no default device.
@@ -102,17 +102,17 @@ the expected, correct result** - that gap *is* the measurement.
 
 | Tool | Pinned |
 | --- | --- |
-| argent | **0.33.0** |
+| argent | **0.34.0** |
 | agent-device | **0.21.40** |
-| mobile-mcp | **1.0.17** (with mobilecli 1.0.23) |
+| mobile-mcp | **1.0.18** (with mobilecli 1.0.24) |
 
 These are the versions the 2026-11 [edition](editions.md) records. The 2026-08 edition ran argent 0.13.0,
 0.15.0 and 0.21.0, and agent-device 0.17.6 and 0.20.10.
 
 Installing them on the bench host:
 
-- **argent** - `npm install -g @swmansion/argent@0.33.0`. Its skills and rule ship in the package.
-- **mobile-mcp** - `npm install -g @mobilenext/mobile-mcp@1.0.17`, which also installs mobilecli. Then add
+- **argent** - `npm install -g @swmansion/argent@0.34.0`. Its skills and rule ship in the package.
+- **mobile-mcp** - `npm install -g @mobilenext/mobile-mcp@1.0.18`, which also installs mobilecli. Then add
   its agent to the golden: `mobilecli agent install --device <golden udid>` while the golden is booted for
   maintenance.
 - **agent-device** - `npm install agent-device@0.21.40`, plus the `skills/` directory of
