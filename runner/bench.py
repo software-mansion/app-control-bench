@@ -551,6 +551,35 @@ def parse_transcript(path):
     return n_tools, names
 
 
+def provider_retries(path):
+    """(number of provider retries, seconds they cost) for a run's transcript.
+
+    When a model provider answers a request with an error (overloaded, rate limited), opencode waits
+    and asks again, and records a `retry` event each time. That waiting is the provider's, not the
+    tool's or the model's work, and it lands on whichever runs happen to be made during an outage. A
+    step's cost is the time from its `step_start`, when the first attempt was sent, to the moment the
+    last retry was due (`nextRetryAt`), when the attempt that succeeded was sent."""
+    n, lost, step_start, step_lost = 0, 0.0, None, 0.0
+    try:
+        for line in open(path):
+            try:
+                ev = json.loads(line)
+            except Exception:
+                continue
+            kind, ts = ev.get("type"), ev.get("timestamp")
+            if kind == "step_start":
+                lost, step_start, step_lost = lost + step_lost, ts, 0.0
+            elif kind == "retry":
+                n += 1
+                start = step_start if step_start is not None else ts
+                due = ev.get("nextRetryAt") or ts
+                if start is not None and due is not None:
+                    step_lost = max(step_lost, (due - start) / 1000.0)
+    except FileNotFoundError:
+        pass
+    return n, round(max(lost + step_lost, 0.0), 1)
+
+
 def direct_mcp_calls(tool, names):
     """How many of a run's calls went to the tool's MCP server as DIRECT tools (`argent_describe`)
     rather than through code mode (`argent.describe`). Non-zero means code mode was off and every
@@ -744,18 +773,24 @@ def run_one(model_key, tool, task, force=False):
             env["proxies"] = isolation.start_proxies(effort, outdir, node=node,   # teardown killed them
                                                      providers=isolation.providers_needed(MODELS[model_key]))
         wall = round(time.time() - t_run, 1)
+        retries, retry_s = provider_retries(transcript)
+        retry_s = min(retry_s, wall)          # a run cut off mid-wait was not waiting past its own end
         injected = count_injections(outdir, env["proxies"])
         screenshot(udid, os.path.join(outdir, "final.png"))
         meta = {"cell": f"{model_key}:{tool}", "model": model_key, "tool": tool, "task": task["id"], "app": task["app"],
                 "kind": task["kind"], "nav_category": task.get("nav_category", task["kind"]),
                 "needs_auth": task["needs_auth"], "returncode": rc, "timed_out": timed_out,
-                "wall_s": wall, "n_tool_calls": n_tools, "tool_names": names, "stderr_tail": err,
+                "wall_s": wall, "provider_retries": retries, "provider_retry_s": retry_s,
+                "n_tool_calls": n_tools, "tool_names": names, "stderr_tail": err,
                 "ts": int(t_run), "golden": env["golden"], "clone_udid": udid,
                 "sandboxed": sandboxed, "versions": run_versions(tool, task["app"], preloaded),
                 "effort_injected": injected, "mcp_direct_calls": direct_mcp_calls(tool, names)}
         json.dump(meta, open(meta_path, "w"), indent=2)
         ledger.mark(RESULTS, model_key, variant, task["id"])  # advance pending -> completed (monotonic)
         print(f"  RAN  {label}/{task['id']}  {wall}s  tools={n_tools} rc={rc}{' TIMEOUT' if timed_out else ''}")
+        if retries:
+            note = " - it TIMED OUT with provider retries in it: re-run it" if timed_out else ""
+            print(f"  provider retries: {retries}, {retry_s}s of the {wall}s{note}", flush=True)
         if effort and not injected:
             print(f"  !! {label}/{task['id']}: EFFORT NOT INJECTED — the model answered at its default "
                   f"effort, so this result does not belong to {effort}. The run reached the API without "

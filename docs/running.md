@@ -107,6 +107,15 @@ Two behaviours worth knowing:
 - `RUN_TIMEOUT` (default **900 s**) is a per-run wall cap. A run that hits it is recorded as `timed_out`.
 - If the agent makes **0 tool calls** and didn't time out, OpenCode is retried up to **3 times** - that's an
   MCP-not-ready flake, not a model result.
+- **Provider retries are recorded, not subtracted.** When a model provider refuses a request (overloaded,
+  rate limited), OpenCode waits and asks again, and that waiting falls on whichever runs are made during
+  the outage. `meta.json` records `provider_retries` and `provider_retry_s`: for each step, the time from
+  its first attempt to the moment its last retry was due. The site still reports the raw `wall_s`. Taking
+  the retries out would hide only the visible half of the problem, since a provider that is simply
+  answering slowly leaves no trace, and a cleaner-looking number would invite more trust in the time
+  column than it deserves. The fields are there to show when a cell was run through a rough patch. A run
+  that **timed out** with retries in it prints a line saying so and should be re-run: there the waiting
+  can turn into a failure, not just a slower time.
 - A surface error (the app or the clone failed to come up) writes `returncode: -2` and a
   `SURFACE_ERROR:` stderr tail, which keeps the unit **pending** so it gets retried rather than scored as a
   failure.

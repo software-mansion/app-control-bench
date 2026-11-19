@@ -192,6 +192,34 @@ def test_run_one_old_opencode_leaves_unit_pending():
         check("the unit stays pending", ledger.needs_run(results, "gpt_low", "none", "bsky-01", bench.HARNESS))
 
 
+def retry(ts, due):
+    return json.dumps({"type": "retry", "timestamp": ts, "nextRetryAt": due, "attempt": 2}) + "\n"
+
+
+def step(ts):
+    return json.dumps({"type": "step_start", "timestamp": ts}) + "\n"
+
+
+def retries_of(*lines):
+    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as f:
+        f.write("".join(lines))
+    try:
+        return bench.provider_retries(f.name)
+    finally:
+        os.unlink(f.name)
+
+
+def test_provider_retries():
+    check("a run with no retries lost nothing", retries_of(step(0), tool_use("shell"), step(5000)) == (0, 0.0))
+    got = retries_of(step(1000), retry(1000, 3000), retry(4000, 9000), tool_use("shell"), step(20000))
+    check("a step's retries cost the time from its start to the last retry being due", got == (2, 8.0), got)
+    got = retries_of(step(0), retry(100, 2000), step(10000), tool_use("shell"), step(20000), retry(20500, 26000))
+    check("steps add up, a trailing one included", got == (2, 8.0), got)
+    got = retries_of(retry(500, 1500), "not json\n")
+    check("a retry before any step counts from its own time", got == (1, 1.0), got)
+    check("a missing transcript lost nothing", bench.provider_retries("/nonexistent/t.jsonl") == (0, 0.0))
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_") and callable(fn):

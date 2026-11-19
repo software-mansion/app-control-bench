@@ -66,6 +66,8 @@ What is the same for every cell:
 - **Reasoning effort.** Set per request by a local proxy in front of each provider, so the model and
   the effort are exactly what the cell name says.
 - **The clock.** It starts when the agent starts and stops when it exits or hits the 15-minute cap.
+  Time the agent spent waiting to retry a request its model provider refused is recorded per run, but
+  it is not subtracted: the reported time is the raw wall time.
   One-time work on the host that touches no device, app or session happens before it
   ([`preload.py`](runner/preload.py)); anything that touches the run's device stays inside.
   That rule is the same for every tool, and each tool's preload is declared in one table.
