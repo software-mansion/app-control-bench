@@ -30,7 +30,7 @@ gets its own `configs/<tool>/opencode.json` template, and only that tool's serve
   inside every run. See [harness.md](harness.md#host-preload-one-time-tool-setup-outside-the-timer).
 - Quirks that shaped the harness:
   - It must **`open <app>` to bind a session** before `snapshot` will work.
-  - Snapshots are **slow** (~27 s cold - it drives an XCTest runner).
+  - A snapshot drives an XCTest runner, which is launched on the run's device inside the timed window.
   - Text-only models must use `snapshot` (the AX tree), **not** `screenshot` (an image they cannot read).
   - Foreground apps via **bundle launch**, not URL-scheme `openurl` - the latter triggers iOS's
     "Open in <App>?" universal-link dialog, which silently contaminated an entire overnight batch. See
@@ -103,7 +103,7 @@ the expected, correct result** - that gap *is* the measurement.
 | Tool | Pinned |
 | --- | --- |
 | argent | **0.33.0** |
-| agent-device | **0.21.38** |
+| agent-device | **0.21.40** |
 | mobile-mcp | **1.0.17** (with mobilecli 1.0.23) |
 
 These are the versions the 2026-11 [edition](editions.md) records. The 2026-08 edition ran argent 0.13.0,
@@ -115,12 +115,12 @@ Installing them on the bench host:
 - **mobile-mcp** - `npm install -g @mobilenext/mobile-mcp@1.0.17`, which also installs mobilecli. Then add
   its agent to the golden: `mobilecli agent install --device <golden udid>` while the golden is booted for
   maintenance.
-- **agent-device** - `npm install agent-device@0.21.38`, plus the `skills/` directory of
-  `callstack/agent-device` at tag `v0.21.38` copied into the installed package, with `BENCH_AGENT_DEVICE`
+- **agent-device** - `npm install agent-device@0.21.40`, plus the `skills/` directory of
+  `callstack/agent-device` at tag `v0.21.40` copied into the installed package, with `BENCH_AGENT_DEVICE`
   pointing at its `bin/agent-device.mjs`. The npm package has the CLI but not the `skills/` the harness
   stages, so without the copy it runs with no agent-device skills. A built checkout of the tag does not work
-  instead: its `package.json` says `0.21.38-dev`, which names the result cell and which the host preload,
-  verified for exactly 0.21.38, refuses
+  instead: its `package.json` says `0.21.40-dev`, which names the result cell and which the host preload,
+  verified for exactly 0.21.40, refuses
   ([harness.md](harness.md#host-preload-one-time-tool-setup-outside-the-timer)).
 
 A toolkit's version is part of the axis the site compares, not a footnote on it: a result belongs to

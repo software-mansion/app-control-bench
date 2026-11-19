@@ -5,7 +5,7 @@
 //   node preload-agent-device.mjs build <agent-device dir> <udid>   build it through the tool's own code
 //   node preload-agent-device.mjs check <agent-device dir>          exit 0 iff the tool's next run reuses it
 //
-// 0.21.38 has no device-free way in: `prepare ios-runner` builds the runner and then starts it on a
+// 0.21.40 (like 0.21.38 before it) has no device-free way in: `prepare ios-runner` builds the runner and then starts it on a
 // device. So this calls what every session calls. `build` runs ensureXctestrunArtifact, which builds
 // (or reuses) the artifact and writes the manifest the tool's next run checks; `check` asks the tool's
 // own evaluateExistingXctestrun whether a cache directory is reusable for the metadata it expects now.
@@ -27,7 +27,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const VERSION = '0.21.38';
+const VERSION = '0.21.40';
 const HOST = 'dist/src/runner-client.js';
 const OWNER = 'dist/src/runner-owner-facade.js';
 // name -> [module, strings its minified source must contain].
