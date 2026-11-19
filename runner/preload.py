@@ -41,7 +41,7 @@ PRELOAD = {
     },
     "argent": {
         "why": "The first launch of the install's native binaries, which pays macOS's one-time launch checks "
-               "(measured at 0.15.0: simulator-server ~0.2 s, ax-service ~0.1 s; 0.33.0 launches the same two) inside whichever run goes "
+               "(measured at 0.15.0: simulator-server ~0.2 s, ax-service ~0.1 s; 0.34.0 launches the same two) inside whichever run goes "
                "first. Launched device-free by runner/preload-argent.py; the tool-server is not, since it "
                "reconfigures every booted simulator at startup. ~/.argent is left alone: its "
                "update-suppression.json decides whether the model sees the update notice, and the rest of "

@@ -169,6 +169,6 @@ the path, and re-registers it under the new name.
   so a version that changes mid-roster makes models incomparable. The banked SoTA runs are on **1.17.13**;
   export `OPENCODE_DISABLE_AUTOUPDATE=1` for a long pass, and check `opencode --version` before starting
   (the previous binary is kept beside it as `~/.opencode/bin/opencode-<ver>.bak`).
-- **agent-device snapshots are slow** (~27 s cold). A stalled cell is usually a session bind or a slow
+- **agent-device's first snapshot launches its XCTest runner on the device.** A stalled cell is usually a session bind or a slow
   snapshot; the timeout handles it and the run is recorded as `timed_out`.
 - **API spend** - gpt / haiku / opus are real money. radoniusz's *compute* is free; the model calls are not.

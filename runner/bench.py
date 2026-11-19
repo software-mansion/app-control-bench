@@ -678,6 +678,9 @@ def run_one(model_key, tool, task, force=False):
         # CLI default target, so the agent's bare `agent-device ...` commands hit the run's device.
         if tool == "agent-device":
             run_env["AGENT_DEVICE_CONFIG"] = os.path.join(cfg_dir, "agent-device-cli.json")
+            # No "a newer version is available" line in the CLI's output: the version is pinned, and the
+            # notice would be text in the agent's context that depends on the day the run was made.
+            run_env["AGENT_DEVICE_NO_UPDATE_NOTIFIER"] = "1"
             run_env["PATH"] = bench_env.agent_device_shim_dir() + os.pathsep + os.environ.get("PATH", "")
         elif tool == "mobile-mcp":
             # mobilecli keeps a daemon, a socket and its cloud login under MOBILECLI_HOME (~/.mobilecli).

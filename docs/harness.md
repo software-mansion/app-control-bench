@@ -57,9 +57,9 @@ on a fresh clone:
 | argent 0.15.0 over MCP, `describe` + `screenshot` (median of 5) | 5.27 s | 5.19 s | 4.89 s |
 | argent, new install on a used HOME (a version bump) | 5.28 s | 5.06 s | 4.89 s |
 
-Those were measured at the versions named. At the versions now pinned (agent-device 0.21.38, argent 0.33.0)
-the preloads themselves were re-run on a dev host - agent-device's runner build took 9.4 s, argent's two
-launches 0.9 s - but the timed-session comparison was not repeated.
+Those were measured at the versions named. At the versions now pinned (agent-device 0.21.40, argent 0.34.0)
+the preloads themselves were re-run on the bench host - agent-device's runner build took 10.3 s, argent's
+two launches 0.8 s, mobilecli's 0.1 s - but the timed-session comparison was not repeated.
 
 agent-device's preload takes ~10 s outside the timer, argent's under a second. What argent's preload leaves is
 per-install work inside the simulator: `ax-service` and the dylibs loading there. `~/.argent` makes no measurable
@@ -71,7 +71,7 @@ agent-device, installing and launching the runner on the clone (`xcodebuild test
 argent, the tool-server (which reconfigures every booted simulator as it starts), the per-device
 `simulator-server`, `ax-service` and the injected dylibs.
 
-**agent-device 0.21.38 has no device-free build command** (`prepare ios-runner` builds the runner and then
+**agent-device 0.21.40 has no device-free build command** (`prepare ios-runner` builds the runner and then
 starts it on a device). `runner/preload-agent-device.mjs` therefore calls the function every session calls,
 `ensureXctestrunArtifact`, so the artifact and its manifest are exactly what the tool's own next session
 looks for. Its check asks the tool's own `evaluateExistingXctestrun` whether a cache directory is reusable
