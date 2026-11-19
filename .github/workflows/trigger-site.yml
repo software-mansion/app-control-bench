@@ -1,0 +1,46 @@
+name: Trigger site build
+
+# The report site is not built here. Its build and deploy pipeline runs elsewhere and is started by
+# this workflow:
+#
+#   a push to main      rebuilds the staging site from main
+#   a tag x.y.z         builds that tag and deploys it to appcontrolbench.swmansion.com
+#
+# The tag is the checkpoint the live site corresponds to.
+#
+# Repo secrets: SITE_TRIGGER_URL (the pipeline's trigger endpoint) and SITE_TRIGGER_TOKEN. Without
+# them the job does nothing, so forks and pull requests are unaffected.
+
+on:
+  push:
+    branches: [main]
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+
+concurrency:
+  group: trigger-site-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    env:
+      SITE_TRIGGER_URL: ${{ secrets.SITE_TRIGGER_URL }}
+      SITE_TRIGGER_TOKEN: ${{ secrets.SITE_TRIGGER_TOKEN }}
+    steps:
+      - name: Start the site pipeline
+        run: |
+          if [ -z "$SITE_TRIGGER_URL" ] || [ -z "$SITE_TRIGGER_TOKEN" ]; then
+            echo "No trigger secrets configured; nothing to do."
+            exit 0
+          fi
+          args=(--form-string "token=$SITE_TRIGGER_TOKEN" --form-string "ref=main")
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            args+=(--form-string "variables[RELEASE_TAG]=$GITHUB_REF_NAME")
+          fi
+          # -o /dev/null: the response names the pipeline's host and project.
+          code=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --request POST "${args[@]}" "$SITE_TRIGGER_URL")
+          echo "trigger responded with HTTP $code"
+          [ "$code" = "201" ]

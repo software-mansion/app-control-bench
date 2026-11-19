@@ -175,6 +175,9 @@ The public site, [appcontrolbench.swmansion.com](https://appcontrolbench.swmansi
 tagged commit of this repository: `npm run build` in `web/`, served as static files. The tag is the
 checkpoint the live site corresponds to.
 
+Pushing a tag `x.y.z` deploys it: `.github/workflows/trigger-site.yml` starts the build pipeline with
+that tag. A push to `main` rebuilds the staging site the same way.
+
 ## The `stylized` branch
 
 `stylized` reskins the report as a **1-bit monochrome phosphor CRT terminal**. The look was arrived at by
