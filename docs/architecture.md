@@ -58,7 +58,7 @@ belongs to and may be compared within ([`editions.md`](editions.md)):
 
 | File | Written by | Contents |
 | --- | --- | --- |
-| `meta.json` | `bench.py` | cell, task, app, `nav_category`, `returncode`, `timed_out`, `wall_s`, `provider_retries`, `provider_retry_s`, `n_tool_calls`, `tool_names`, `golden`, `clone_udid`, `versions`, `effort_injected` (requests the effort proxy actually rewrote - `0` on an effort-bearing cell means the run answered at the model's default and is not a result for that cell) |
+| `meta.json` | `bench.py` | cell, task, app, `nav_category`, `returncode`, `timed_out`, `wall_s`, `provider_retries`, `provider_retry_s`, `n_tool_calls`, `tool_names`, `golden`, `clone_udid`, `versions`, `effort_injected` (requests the effort proxy actually rewrote - `0` on an effort-bearing cell means the run answered at the model's default and is not a result for that cell), `mcp_direct_calls` (calls to the tool's MCP server outside code mode - must be `0`, [harness.md](harness.md)), `unknown_tool_calls` (calls OpenCode refused because no such tool exists) |
 | `transcript.jsonl` | OpenCode | the full NDJSON agent transcript (also the cost source) |
 | `final.png` | `bench.py` | the screen at the end of the run - the visual proof, and the only thing the judge scores |
 | `env.json` | `isolation.py` | isolation audit trail (host preload, the instruction files OpenCode loaded and the host sources kept out, golden, clone, proxies, reset outcomes, teardown reports). Ignored by scoring. |

@@ -580,13 +580,43 @@ def provider_retries(path):
     return n, round(max(lost + step_lost, 0.0), 1)
 
 
-def direct_mcp_calls(tool, names):
+UNKNOWN_TOOL_ERROR = "No tool named "     # how opencode refuses a call to a tool it does not offer
+
+
+def unknown_tool_calls(path):
+    """Names of the calls in a run's transcript that opencode refused because no such tool exists: a
+    model that makes up `argent_describe_placeholder` gets `No tool named ... is currently available`
+    back, and the call never reaches any server. These stay in `tool_names` (the model did try them)
+    but are not direct MCP calls."""
+    names = []
+    try:
+        for line in open(path):
+            try:
+                ev = json.loads(line)
+            except Exception:
+                continue
+            if ev.get("type") != "tool_use":
+                continue
+            part = ev.get("part") or {}
+            st = part.get("state") or {}
+            if st.get("status") == "error" and str(st.get("error") or "").startswith(UNKNOWN_TOOL_ERROR):
+                names.append(part.get("tool") or "")
+    except FileNotFoundError:
+        pass
+    return names
+
+
+def direct_mcp_calls(tool, names, unknown=()):
     """How many of a run's calls went to the tool's MCP server as DIRECT tools (`argent_describe`)
     rather than through code mode (`argent.describe`). Non-zero means code mode was off and every
-    tool schema rode in every request. Only an MCP-surface tool can have any."""
+    tool schema rode in every request. Only an MCP-surface tool can have any. `unknown` are the calls
+    opencode refused as tools it does not offer (unknown_tool_calls): a made-up name that happens to
+    start with the tool's prefix reached no server, so it says nothing about code mode."""
     if SURFACE.get(tool) != "mcp":
         return 0
-    return sum(1 for n in names if n.startswith(tool + "_"))
+    prefix = tool + "_"
+    return (sum(1 for n in names if n.startswith(prefix))
+            - sum(1 for n in unknown if n.startswith(prefix)))
 
 
 def count_injections(outdir, proxies):
@@ -776,6 +806,7 @@ def run_one(model_key, tool, task, force=False):
         retries, retry_s = provider_retries(transcript)
         retry_s = min(retry_s, wall)          # a run cut off mid-wait was not waiting past its own end
         injected = count_injections(outdir, env["proxies"])
+        unknown = unknown_tool_calls(transcript)
         screenshot(udid, os.path.join(outdir, "final.png"))
         meta = {"cell": f"{model_key}:{tool}", "model": model_key, "tool": tool, "task": task["id"], "app": task["app"],
                 "kind": task["kind"], "nav_category": task.get("nav_category", task["kind"]),
@@ -784,7 +815,8 @@ def run_one(model_key, tool, task, force=False):
                 "n_tool_calls": n_tools, "tool_names": names, "stderr_tail": err,
                 "ts": int(t_run), "golden": env["golden"], "clone_udid": udid,
                 "sandboxed": sandboxed, "versions": run_versions(tool, task["app"], preloaded),
-                "effort_injected": injected, "mcp_direct_calls": direct_mcp_calls(tool, names)}
+                "effort_injected": injected, "unknown_tool_calls": len(unknown),
+                "mcp_direct_calls": direct_mcp_calls(tool, names, unknown)}
         json.dump(meta, open(meta_path, "w"), indent=2)
         ledger.mark(RESULTS, model_key, variant, task["id"])  # advance pending -> completed (monotonic)
         print(f"  RAN  {label}/{task['id']}  {wall}s  tools={n_tools} rc={rc}{' TIMEOUT' if timed_out else ''}")

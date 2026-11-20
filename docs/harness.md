@@ -231,7 +231,10 @@ agent-device cell's is 25.1k.
 the count stays one of device actions; catalog searches are not counted, and an `execute` that reached no
 tool counts once. `mcp_direct_calls` is the number of calls that went to the tool's MCP server as direct
 tools (`argent_describe`). It must be 0: anything else means code mode was off, and the run prints
-`CODE MODE NOT APPLIED`.
+`CODE MODE NOT APPLIED`. A call to a tool that does not exist is not one of them: when a model makes up
+a name such as `argent_describe_placeholder`, OpenCode refuses it (`No tool named ... is currently
+available`) and nothing reaches a server. Those calls stay in `tool_names` and are counted in
+`unknown_tool_calls`.
 
 ### Credentials
 
