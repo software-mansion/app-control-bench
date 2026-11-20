@@ -100,6 +100,20 @@ imperative to use it. ([details](harness.md#the-none-preamble-neutral-not-bare))
   screenshots show a real Discover feed and the `tester-guy.bsky.social` handle. Do not ground new
   `solved_screen` descriptions on them - use current self-hosted screenshots only.
 - **`silver-v10rsn2`'s 0/30 run** - invalid, an artifact of the 0-tool-calls bug, not a model result.
+- **The first 2026-11 Bluesky pass (240 argent + agent-device runs, 2026-11-20).** Two faults, both found
+  in its judged results, and both the same for every tool:
+  - *No images.* The Bluesky surface rebuilt on 2026-11-17 handed out image and avatar URLs on `:2584` while
+    its AppView listened on `:3002`, so every image was a grey placeholder and the lightbox spun forever.
+    `bsky-18` (open an image full-screen) scored *partial* in all 8 cells, against *success* in every
+    August argent and agent-device cell. Fixed by bridging `:2584` in `bench-server.ts`
+    ([bluesky.md](surfaces/bluesky.md#the-backend---self-hosted-atproto)).
+  - *`bsky-25` asked for less than it scored.* Its prompt said only to reply "nice one"; its `solved_screen`
+    required the post's thread to be open, which is the only place the reply's text shows. Agents that
+    replied and stayed on the feed did what they were told and got a *partial* (most August runs too). The
+    prompt now also asks to open the post so the reply is visible.
+
+  The pass was moved to the bench host's `~/bench-quarantine/` and re-run on the fixed surface, so every
+  tool in the edition, the baseline and Mobile MCP included, is measured on the same Bluesky.
 
 ## Decisions that are settled
 

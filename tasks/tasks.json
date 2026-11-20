@@ -222,7 +222,7 @@
       "app": "bluesky",
       "kind": "interact",
       "needs_auth": true,
-      "prompt": "Reply to the first post in the Bluesky Following feed with the text \"nice one\".",
+      "prompt": "Reply to the first post in the Bluesky Following feed with the text \"nice one\", then open that post so your published reply is visible beneath it.",
       "solved_screen": "The thread/detail view of the whiskers \"Mochi napping in a sunbeam #caturday\" post, with a published reply from bench @bench.test beneath it reading \"nice one\"; a \"Write your reply\" composer sits at the bottom. The reply must be sent — a composer still holding the unsent text does NOT count. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
       "nav_category": "form-entry"
     },

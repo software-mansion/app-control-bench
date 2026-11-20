@@ -12,8 +12,11 @@
  *                    static content accounts + their posts untouched, and never recreates the network,
  *                    so account DIDs (and the golden's login session) stay valid across every run.
  *
- * Ports (see test-pds.ts): PDS :3000, AppView :2584 (matches the app's DEV_ENV_APPVIEW + its DID),
- * PLC :3001. Control API on :1987.
+ * Ports (see test-pds.ts): PDS :3000, PLC :3001, AppView on the next free port (:3002), control API on
+ * :1987. test-pds.ts gives the AppView `publicUrl: http://localhost:2584` (the app's DEV_ENV_APPVIEW and
+ * its DID document), so every image and avatar URL it hands out points at :2584 - where nothing listens.
+ * forwardAppviewPublicPort() bridges :2584 to the AppView's real port; without it every feed image and
+ * avatar is a grey placeholder and the image lightbox spins forever (task bsky-18).
  *
  * Run from dev-env/ (needs its node_modules) on the checkout's Node 24, as an ES module like the stock
  * mock-server.ts:  NODE_ENV=development ./dev-infra/with-test-redis-and-db.sh node ./bench-server.ts
@@ -21,6 +24,7 @@
  */
 import {createServer as createHTTPServer} from 'node:http'
 import fs from 'node:fs'
+import net from 'node:net'
 import path from 'node:path'
 
 import {createServer, type TestPDS} from './test-pds.ts'
@@ -130,9 +134,27 @@ async function wipeBench() {
   } catch {}
 }
 
+const APPVIEW_PUBLIC_PORT = 2584
+
+function forwardAppviewPublicPort() {
+  // See the header: the AppView's URLs say :2584, the AppView listens elsewhere. A plain TCP bridge, so
+  // nothing about the network (DIDs, the golden's session) changes.
+  const port = Number(new URL(server.mocker.testNet.bsky.url).port)
+  if (port === APPVIEW_PUBLIC_PORT) return
+  net
+    .createServer(client => {
+      const upstream = net.connect(port, '127.0.0.1')
+      client.pipe(upstream).pipe(client)
+      client.on('error', () => upstream.destroy())
+      upstream.on('error', () => client.destroy())
+    })
+    .listen(APPVIEW_PUBLIC_PORT, () => console.log(`appview :${APPVIEW_PUBLIC_PORT} -> :${port} (image URLs)`))
+}
+
 async function main() {
   server = await createServer({inviteRequired: false})
   console.log('network up:', server.pdsUrl, 'appview', server.appviewDid)
+  forwardAppviewPublicPort()
   await seedStatic()
   console.log('seeded. bench did =', server.mocker.users[BENCH.replace('.test', '')].did)
 
