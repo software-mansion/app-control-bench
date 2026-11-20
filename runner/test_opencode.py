@@ -71,6 +71,39 @@ def test_direct_mcp_calls():
     check("code-mode calls are not", bench.direct_mcp_calls("argent", ["skill", "argent.describe"]) == 0)
     check("a CLI or shell tool has none", bench.direct_mcp_calls("agent-device", names) ==
           bench.direct_mcp_calls("none", names) == 0)
+    check("a made-up tool opencode refused is not a direct call",
+          bench.direct_mcp_calls("argent", ["argent_describe_placeholder", "argent.describe"],
+                                 ["argent_describe_placeholder"]) == 0)
+    check("... while a real direct call beside it still counts",
+          bench.direct_mcp_calls("argent", ["argent_describe_placeholder", "argent_describe"],
+                                 ["argent_describe_placeholder"]) == 1)
+
+
+def unknown_tool(tool):
+    """A call opencode refused because it offers no such tool (as recorded on 2026-11-20)."""
+    part = {"tool": tool, "state": {"status": "error", "input": {},
+                                    "error": f'No tool named "{tool}" is currently available. '
+                                             "Please use a tool from the available tool list.",
+                                    "metadata": {"providerCall": {"executed": False}}}}
+    return json.dumps({"type": "tool_use", "part": part}) + "\n"
+
+
+def failed_tool(tool):
+    """A call to a real tool that ran and failed: not refused as unknown."""
+    part = {"tool": tool, "state": {"status": "error", "error": "Error: element not found"}}
+    return json.dumps({"type": "tool_use", "part": part}) + "\n"
+
+
+def test_unknown_tool_calls():
+    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as f:
+        f.write(unknown_tool("argent_describe_placeholder") + failed_tool("argent_describe")
+                + tool_use("execute", ["argent.describe"]) + "not json\n")
+    try:
+        got = bench.unknown_tool_calls(f.name)
+    finally:
+        os.unlink(f.name)
+    check("a refused made-up tool is found, a real tool's own error is not", got == ["argent_describe_placeholder"], got)
+    check("a missing transcript has none", bench.unknown_tool_calls("/nonexistent/t.jsonl") == [])
 
 
 def test_require_opencode():
@@ -126,6 +159,18 @@ def test_run_one_flags_direct_mcp_calls():
         with patched(isolation, run_opencode=fake_opencode), patched(bench, detect_tool_version=lambda t: "9.9.9"):
             meta = bench.run_one("gpt_low", "argent", TASK)
         check("a run whose MCP tools were called directly says so", meta["mcp_direct_calls"] == 2, meta)
+
+
+def test_run_one_does_not_flag_a_made_up_tool():
+    with tempfile.TemporaryDirectory() as results, fresh(NO_PRELOAD), harness(results):
+        def fake_opencode(cmd, cwd, timeout, stdout_file, env=None):
+            stdout_file.write(unknown_tool("argent_describe_placeholder") + tool_use("execute", ["argent.describe"]))
+            return 0, "", False
+
+        with patched(isolation, run_opencode=fake_opencode), patched(bench, detect_tool_version=lambda t: "9.9.9"):
+            meta = bench.run_one("gpt_low", "argent", TASK)
+        check("a call opencode refused as unknown is recorded, not flagged as a direct MCP call",
+              (meta["unknown_tool_calls"], meta["mcp_direct_calls"]) == (1, 0), meta)
 
 
 def test_mobile_mcp_is_wired_as_an_mcp_tool():
