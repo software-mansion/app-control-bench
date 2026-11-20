@@ -59,9 +59,18 @@ Bluesky runs against a **self-hosted atproto stack**, not `bsky.social`.
 | Service | Port |
 | --- | --- |
 | PDS | `:3000` |
-| AppView | `:2584` |
+| AppView | `:3002` (the next free port after PLC), reached by the app on `:2584` |
 | PLC | `:3001` |
 | Bench control API | `:1987` |
+
+**Images go through `:2584`.** `test-pds.ts` gives the AppView `publicUrl: http://localhost:2584`, and every
+image and avatar URL it hands out uses that host, but the AppView itself listens on `:3002`.
+`bench-server.ts` bridges `:2584` to the AppView's real port when it starts. Without the bridge every feed
+image and avatar is a grey placeholder and the image lightbox spins forever, which makes `bsky-18`
+unsolvable: that was the state of the surface from its rebuild on 2026-11-17 until 2026-11-20. A backend
+started before this fix can be bridged without a restart (a restart rotates DIDs): run a TCP forward from
+`:2584` to `:3002`, e.g. `node appview-forward.mjs 3002` from the bench host's `~/dev/`. Check with
+`curl -o /dev/null -w '%{http_code}' localhost:2584/img/avatar/plain/<did>/<cid>`.
 
 `tasks/setup/bluesky/bench-server.ts` is the persistent backend. It differs from atproto dev-env's stock
 `mock-server.ts` in the way that matters: **mock-server recreates the whole TestNetwork on every POST, which
