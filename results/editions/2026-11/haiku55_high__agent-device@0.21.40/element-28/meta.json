@@ -1,0 +1,61 @@
+{
+  "cell": "haiku55_high:agent-device",
+  "model": "haiku55_high",
+  "tool": "agent-device",
+  "task": "element-28",
+  "app": "element",
+  "kind": "post",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 25.8,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 14,
+  "tool_names": [
+    "skill",
+    "shell",
+    "shell",
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795218184,
+  "golden": {
+    "name": "bench-element-v4",
+    "udid": "DDA87E02-1323-402E-83FF-4CE77B3EC6C2"
+  },
+  "clone_udid": "18A3D868-8DC2-4103-A74B-57AC6E7EC656",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "cli",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.21.40",
+    "tool_pinned": "0.21.40",
+    "app": "1.11.40",
+    "app_pinned": "1.11.40",
+    "preload": {
+      "state": "present",
+      "s": 0.1
+    }
+  },
+  "effort_injected": 15,
+  "mcp_direct_calls": 0,
+  "unknown_tool_calls": 0
+}

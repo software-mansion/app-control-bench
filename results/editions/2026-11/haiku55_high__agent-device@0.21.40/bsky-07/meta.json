@@ -1,0 +1,52 @@
+{
+  "cell": "haiku55_high:agent-device",
+  "model": "haiku55_high",
+  "tool": "agent-device",
+  "task": "bsky-07",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 12.4,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 5,
+  "tool_names": [
+    "skill",
+    "shell",
+    "shell",
+    "shell",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795233006,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "272CE935-E5B3-423C-B169-55CCC7EDDA91",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "cli",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.21.40",
+    "tool_pinned": "0.21.40",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "present",
+      "s": 0.2
+    }
+  },
+  "effort_injected": 6,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

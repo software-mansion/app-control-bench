@@ -1,0 +1,63 @@
+{
+  "cell": "haiku55_high:none",
+  "model": "haiku55_high",
+  "tool": "none",
+  "task": "element-12",
+  "app": "element",
+  "kind": "nav",
+  "nav_category": "settings-nav",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 152.9,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 16,
+  "tool_names": [
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "read",
+    "shell",
+    "read"
+  ],
+  "stderr_tail": "",
+  "ts": 1795262317,
+  "golden": {
+    "name": "bench-element-v4",
+    "udid": "DDA87E02-1323-402E-83FF-4CE77B3EC6C2"
+  },
+  "clone_udid": "F6DBAFC6-5954-4EFB-9F97-1595B236AB03",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "shell",
+    "skills": false,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.11.40",
+    "app_pinned": "1.11.40",
+    "preload": {
+      "state": "none",
+      "s": 0.0
+    }
+  },
+  "effort_injected": 17,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

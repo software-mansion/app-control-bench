@@ -1,0 +1,56 @@
+{
+  "cell": "gpt6luna_low:none",
+  "model": "gpt6luna_low",
+  "tool": "none",
+  "task": "bsky-24",
+  "app": "bluesky",
+  "kind": "interact",
+  "nav_category": "react",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 20.7,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 9,
+  "tool_names": [
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "read",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795246882,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "FF5FE4A3-9E9D-47A8-BA6C-6A62B2FDB1D6",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "shell",
+    "skills": false,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "none",
+      "s": 0.0
+    }
+  },
+  "effort_injected": 10,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

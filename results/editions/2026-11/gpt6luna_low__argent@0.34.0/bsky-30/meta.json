@@ -1,0 +1,58 @@
+{
+  "cell": "gpt6luna_low:argent",
+  "model": "gpt6luna_low",
+  "tool": "argent",
+  "task": "bsky-30",
+  "app": "bluesky",
+  "kind": "post",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 32.0,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 11,
+  "tool_names": [
+    "skill",
+    "skill",
+    "execute",
+    "argent.describe",
+    "argent.gesture-tap",
+    "argent.gesture-tap",
+    "argent.await-screen-idle",
+    "argent.describe",
+    "argent.keyboard",
+    "argent.gesture-tap",
+    "argent.await-ui-element"
+  ],
+  "stderr_tail": "",
+  "ts": 1795229342,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "F325B3E5-359D-4619-A701-681F05ECB3AA",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "mcp",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.34.0",
+    "tool_pinned": "0.34.0",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "present",
+      "s": 0.1
+    }
+  },
+  "effort_injected": 12,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}
