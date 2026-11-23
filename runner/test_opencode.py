@@ -161,6 +161,32 @@ def test_run_one_flags_direct_mcp_calls():
         check("a run whose MCP tools were called directly says so", meta["mcp_direct_calls"] == 2, meta)
 
 
+def test_each_run_gets_its_own_tmpdir():
+    seen = []
+
+    def fake_opencode(cmd, cwd, timeout, stdout_file, env=None):
+        tmp = (env or {}).get("TMPDIR", "")
+        before = sorted(os.listdir(tmp)) if os.path.isdir(tmp) else None
+        if before is not None:
+            # what an agent does: OpenCode's scratch dir, with a project in it
+            os.makedirs(os.path.join(tmp, "opencode", "SimTap"), exist_ok=True)
+        seen.append((tmp, (env or {}).get("TMP"), before))
+        stdout_file.write(tool_use("bash"))
+        return 0, "", False
+
+    with tempfile.TemporaryDirectory() as results, fresh(NO_PRELOAD), harness(results):
+        with patched(isolation, run_opencode=fake_opencode):
+            bench.run_one("gpt_low", "none", TASK)
+            bench.run_one("gpt_low", "none", dict(TASK, id="bsky-02"))
+        envs = [json.load(open(os.path.join(results, "gpt_low__none", t, "env.json"))) for t in ("bsky-01", "bsky-02")]
+    (t1, tmp1, before1), (t2, tmp2, before2) = seen
+    check("the agent runs with a TMPDIR of the run's own", t1 and before1 == [] and tmp1 == t1.rstrip(os.sep), seen)
+    check("... a different, empty one in the next run", t2 != t1 and before2 == [], seen)
+    check("... and teardown removes it", not os.path.exists(t1) and not os.path.exists(t2), seen)
+    check("env.json records it and its removal",
+          all(e.get("tmpdir") and e.get("tmpdir_removed") is True for e in envs), envs)
+
+
 def test_run_one_does_not_flag_a_made_up_tool():
     with tempfile.TemporaryDirectory() as results, fresh(NO_PRELOAD), harness(results):
         def fake_opencode(cmd, cwd, timeout, stdout_file, env=None):

@@ -129,6 +129,16 @@ imperative to use it. ([details](harness.md#the-none-preamble-neutral-not-bare))
 
   The three prompts were reworded and those tasks re-run for every tool and model; the old runs are in the
   bench host's `~/bench-quarantine/`.
+- **The first 2026-11 no-tool pass (240 runs), 2026-11-23: runs were not isolated from each other.** OpenCode
+  keeps its scratch space in `$TMPDIR/opencode`, and every run inherited the host's `TMPDIR`, which nothing
+  cleaned: by the end it held 1.2 GB of XCUITest projects and screenshots. gpt-6-luna on high effort built its
+  own UI-automation tool there in most no-tool runs (an XCUITest project per run, `xcodebuild`), and 16
+  no-tool runs listed the directory and saw projects earlier runs had left; some opened or built them
+  (haiku-5.5 high on element-12 and element-13 used a project gpt-6-luna had built). argent and agent-device
+  runs only saved their own screenshots there and read them straight back, never another run's files, so
+  their cells were kept. Each run now gets a `TMPDIR` of its own, removed at teardown; the shared directory
+  was cleared and the no-tool pass re-run. The harness stamp was not bumped, because it would have made the
+  unaffected tool cells re-run as well; the fix is recorded here and in each new run's `env.json`.
 
 ## Decisions that are settled
 

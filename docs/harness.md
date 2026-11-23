@@ -11,6 +11,12 @@ records the rules and why they exist.
 - **Same surface.** argent, agent-device, mobile-mcp and `none` all drive the *same native app on the same simulator
   image*. A common native surface is the entire point.
 - **Keep every `final.png`.** It is the visual proof for a verdict and the only thing the judge sees.
+- **Nothing a run writes outlives it.** Each run gets a fresh simulator clone, a per-run config directory,
+  and a `TMPDIR` of its own (`TMPDIR`, `TMP` and `TEMP` point at a fresh `bench-tmp-*` directory), all
+  removed at teardown; `env.json` records the temp directory and whether it was removed (`tmpdir`,
+  `tmpdir_removed`). OpenCode keeps its scratch space in `$TMPDIR/opencode`, and agents write their own
+  files there: before 2026-11-23 it was the host's shared temp directory, so a later run could find and
+  reuse what an earlier one built ([history](history.md#data-that-was-thrown-away-and-why)).
 
 ## Host preload: one-time tool setup outside the timer
 
