@@ -114,6 +114,21 @@ imperative to use it. ([details](harness.md#the-none-preamble-neutral-not-bare))
 
   The pass was moved to the bench host's `~/bench-quarantine/` and re-run on the fixed surface, so every
   tool in the edition, the baseline and Mobile MCP included, is measured on the same Bluesky.
+- **Three more tasks whose prompt and `solved_screen` disagreed (2026-11-23)**, found by reading why runs
+  of both tools were marked down in the full 2026-11 results:
+  - `bsky-16` told the agent to open the hashtag's "dedicated feed", which this app does not have, while
+    `solved_screen` wanted the search results on the "Top" tab, which the prompt never named. Agents that
+    reached the right results kept looking for the promised feed and ended on a post, or stayed on
+    "Latest". It accounted for 1.5 of argent's 2.0-point Bluesky gap to agent-device.
+  - `bsky-25`'s new "open that post" still let agents open their own reply instead of the original post.
+  - `element-07` pointed at a `'...'` in the room header that Element's room header does not have (back,
+    room name, Video Call, Threads); agents of both tools looked for it and said so.
+  - `element-16`'s `solved_screen` accepted only the NOTIFICATIONS section of the Settings page, not the
+    "Default Notifications" page reached from it, though both are the app's own notification settings.
+    That one needs only a re-judge.
+
+  The three prompts were reworded and those tasks re-run for every tool and model; the old runs are in the
+  bench host's `~/bench-quarantine/`.
 
 ## Decisions that are settled
 

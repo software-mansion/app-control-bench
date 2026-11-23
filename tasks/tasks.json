@@ -141,7 +141,7 @@
       "app": "bluesky",
       "kind": "nav",
       "needs_auth": true,
-      "prompt": "In Bluesky, open the hashtag feed for #caturday (search the hashtag, or tap a #caturday tag on a post, to open its dedicated feed).",
+      "prompt": "In Bluesky, search for the hashtag #caturday and open its search results on the \"Top\" tab.",
       "solved_screen": "The Explore search results for #caturday with the query in the search box and the \"Top\" tab selected/underlined (this app has no dedicated hashtag-feed page), showing posts tagged #caturday such as whiskers' cat post with \"#caturday\" visible in the text.",
       "nav_category": "open-item"
     },
@@ -222,7 +222,7 @@
       "app": "bluesky",
       "kind": "interact",
       "needs_auth": true,
-      "prompt": "Reply to the first post in the Bluesky Following feed with the text \"nice one\", then open that post so your published reply is visible beneath it.",
+      "prompt": "Reply to the first post in the Bluesky Following feed with the text \"nice one\", then open that original post (not your reply) so your published reply is visible beneath it.",
       "solved_screen": "The thread/detail view of the whiskers \"Mochi napping in a sunbeam #caturday\" post, with a published reply from bench @bench.test beneath it reading \"nice one\"; a \"Write your reply\" composer sits at the bottom. The reply must be sent — a composer still holding the unsent text does NOT count. A published post/reply showing these exact words counts as done even if the first letter is auto-capitalized by the keyboard or trailing punctuation differs; extra or changed words do NOT count.",
       "nav_category": "form-entry"
     },
@@ -330,7 +330,7 @@
       "app": "element",
       "kind": "interact",
       "needs_auth": true,
-      "prompt": "Open the \"Project Phoenix\" room and open its room-options menu (the '...' in the header).",
+      "prompt": "Open the \"Project Phoenix\" room and open its room options screen (tap the room name in the header).",
       "solved_screen": "The Project Phoenix room info/options screen is open (large \"P\" avatar, title \"Project Phoenix\", topic line), showing options such as Settings, Notifications, Integrations, members count, Poll history, Uploads, Search room, and the red \"Leave room\"/\"Report content\" actions.",
       "nav_category": "open-item"
     },
@@ -412,7 +412,7 @@
       "kind": "nav",
       "needs_auth": true,
       "prompt": "Open the app Settings and go to the Notifications settings.",
-      "solved_screen": "Element's OWN in-app notification settings, reached from the app's Settings (gear icon on All chats): the NOTIFICATIONS section of Element's long in-app Settings page, showing its notification preference rows/toggles. Per the app's structure this is a section of that one Settings page rather than a separate screen, and the section being reached/visible is the end state. This is NOT the iOS system Settings app's per-app notification page.",
+      "solved_screen": "Element's OWN in-app notification settings, reached from the app's Settings (gear icon / User settings on All chats): either the NOTIFICATIONS section of Element's long in-app Settings page, showing its notification preference rows/toggles, or the \"Default Notifications\" page opened from that section. This is NOT the iOS system Settings app's per-app notification page.",
       "nav_category": "settings-nav"
     },
     {
