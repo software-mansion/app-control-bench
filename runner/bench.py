@@ -699,7 +699,7 @@ def run_one(model_key, tool, task, force=False):
     env = {"ts_start": int(t0), "effort": effort, "preload": preloaded, "golden": None, "clone_udid": None,
            "ambient": None, "proxies": None, "reset_pre": None, "reset_post": None,
            "teardown_pre": None, "teardown_post": None}
-    udid = cfg_dir = mobilecli_home = None
+    udid = cfg_dir = mobilecli_home = run_tmp = None
     meta = None
     agent_ran = False
     try:
@@ -733,6 +733,13 @@ def run_one(model_key, tool, task, force=False):
         # set and always-on rule survive. The record names every instruction file opencode loads.
         env["ambient"] = ambient.record(cfg_dir)
         run_env = dict(ambient.RUN_ENV)
+        # A temp directory of the run's own, removed at teardown. OpenCode keeps its scratch space in
+        # $TMPDIR/opencode (pasted images, and where agents put the files they write), and the agent's
+        # shell inherits $TMPDIR. Shared, it outlived every run: a no-tool agent could find the XCUITest
+        # projects earlier runs had built there and reuse them (2026-11, docs/history.md).
+        run_tmp = run_tmp_dir()
+        env["tmpdir"] = run_tmp
+        run_env.update(TMPDIR=run_tmp + os.sep, TMP=run_tmp, TEMP=run_tmp)
         # agent-device is driven through a shell: put `agent-device` on PATH and pin this clone as the
         # CLI default target, so the agent's bare `agent-device ...` commands hit the run's device.
         if tool == "agent-device":
@@ -858,10 +865,19 @@ def run_one(model_key, tool, task, force=False):
             shutil.rmtree(cfg_dir, ignore_errors=True)
         if mobilecli_home:
             shutil.rmtree(mobilecli_home, ignore_errors=True)
+        if run_tmp:
+            shutil.rmtree(run_tmp, ignore_errors=True)
+            env["tmpdir_removed"] = not os.path.exists(run_tmp)
         env["ts_end"] = int(time.time())
         isolation.write_env_manifest(outdir, **env)
         if post_err:
             raise post_err
+
+def run_tmp_dir():
+    """A fresh, empty temp directory for one run (see run_one). Under the host's own temp root, so a
+    path built from it stays short enough for sockets; created 0700 by mkdtemp."""
+    return tempfile.mkdtemp(prefix="bench-tmp-")
+
 
 def ollama_served_tags():
     """Model tags the configured ollama endpoint currently serves (empty set on any failure).
