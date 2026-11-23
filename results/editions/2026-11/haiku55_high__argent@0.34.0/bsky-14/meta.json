@@ -1,0 +1,54 @@
+{
+  "cell": "haiku55_high:argent",
+  "model": "haiku55_high",
+  "tool": "argent",
+  "task": "bsky-14",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "search",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 15.5,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 7,
+  "tool_names": [
+    "skill",
+    "argent.describe",
+    "argent.gesture-tap",
+    "argent.gesture-tap",
+    "argent.keyboard",
+    "argent.keyboard",
+    "argent.gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1795226674,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "BBAC7275-9F98-4053-8E8F-AFB17EA9E89E",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "mcp",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.34.0",
+    "tool_pinned": "0.34.0",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "present",
+      "s": 0.1
+    }
+  },
+  "effort_injected": 6,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

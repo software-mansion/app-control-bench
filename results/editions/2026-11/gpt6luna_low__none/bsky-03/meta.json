@@ -1,0 +1,56 @@
+{
+  "cell": "gpt6luna_low:none",
+  "model": "gpt6luna_low",
+  "tool": "none",
+  "task": "bsky-03",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "search",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 22.4,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 9,
+  "tool_names": [
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "shell",
+    "read"
+  ],
+  "stderr_tail": "",
+  "ts": 1795245608,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "37B497E2-E599-424B-B6A8-FF83DCC614D1",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "shell",
+    "skills": false,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "none",
+      "s": 0.0
+    }
+  },
+  "effort_injected": 10,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

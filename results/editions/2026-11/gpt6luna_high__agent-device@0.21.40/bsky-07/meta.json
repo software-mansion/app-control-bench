@@ -1,0 +1,50 @@
+{
+  "cell": "gpt6luna_high:agent-device",
+  "model": "gpt6luna_high",
+  "tool": "agent-device",
+  "task": "bsky-07",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 12.3,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 3,
+  "tool_names": [
+    "skill",
+    "shell",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795236384,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "B9B567A8-CE40-4113-A63C-1BA25A5C86C5",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "cli",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.21.40",
+    "tool_pinned": "0.21.40",
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "present",
+      "s": 0.1
+    }
+  },
+  "effort_injected": 4,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

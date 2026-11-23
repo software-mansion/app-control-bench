@@ -16,12 +16,18 @@ also built this benchmark. That is why the setup is published before the run, an
 screenshot, transcript, prompt, verdict and timing ships in this repo afterwards: so you can check the
 result rather than take our word for it.
 
-## November 2026 edition: the setup, published for review before the run
+## November 2026 edition: in progress
 
-**This branch holds the setup of the next edition. It has not been run yet, and there are no results
-for it.** We are publishing the harness, the configs and the tasks first so that the makers of the
-tools we compare argent with can tell us what is wrong or unfair about how their tool is set up, before
-any number exists.
+**Three of the four tools have been run; Mobile MCP has not.** The setup was published for review
+before the run, so that the makers of the tools we compare argent with could tell us what is wrong or
+unfair about how their tool is set up before any number existed. argent and agent-device confirmed
+theirs and were run on 2026-11-20, with the no-tool control: 720 runs, all judged, in
+[`results/editions/2026-11/`](results/editions/2026-11/). Mobile MCP runs once its maintainers have
+confirmed its setup, and the edition's results are written up only then.
+
+Four tasks were reworded during the run because their prompt and their success criterion disagreed, and
+the Bluesky surface was fixed so that feed images load; every affected run was re-run for every tool.
+[`docs/history.md`](docs/history.md#data-that-was-thrown-away-and-why) has the details.
 
 | | November 2026 | August 2026 (published) |
 | --- | --- | --- |

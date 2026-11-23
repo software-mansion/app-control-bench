@@ -1,0 +1,56 @@
+{
+  "cell": "haiku55_low:argent",
+  "model": "haiku55_low",
+  "tool": "argent",
+  "task": "element-14",
+  "app": "element",
+  "kind": "nav",
+  "nav_category": "open-item",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 24.3,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 9,
+  "tool_names": [
+    "skill",
+    "execute",
+    "argent.describe",
+    "argent.gesture-tap",
+    "argent.gesture-tap",
+    "argent.gesture-tap",
+    "argent.describe",
+    "argent.describe",
+    "argent.gesture-tap"
+  ],
+  "stderr_tail": "",
+  "ts": 1795203501,
+  "golden": {
+    "name": "bench-element-v4",
+    "udid": "DDA87E02-1323-402E-83FF-4CE77B3EC6C2"
+  },
+  "clone_udid": "B1A0356F-1432-4866-A4F5-4AAF913EEA56",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "mcp",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.34.0",
+    "tool_pinned": "0.34.0",
+    "app": "1.11.40",
+    "app_pinned": "1.11.40",
+    "preload": {
+      "state": "present",
+      "s": 0.1
+    }
+  },
+  "effort_injected": 9,
+  "mcp_direct_calls": 0,
+  "unknown_tool_calls": 0
+}

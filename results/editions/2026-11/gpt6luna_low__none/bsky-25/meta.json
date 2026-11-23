@@ -1,0 +1,50 @@
+{
+  "cell": "gpt6luna_low:none",
+  "model": "gpt6luna_low",
+  "tool": "none",
+  "task": "bsky-25",
+  "app": "bluesky",
+  "kind": "interact",
+  "nav_category": "form-entry",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 17.3,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 3,
+  "tool_names": [
+    "shell",
+    "read",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795431037,
+  "golden": {
+    "name": "bench-golden-bsky-v7",
+    "udid": "25AD7234-75B7-4CF4-8E6B-D5D71044E537"
+  },
+  "clone_udid": "72CC8AA1-14FB-480F-85D2-3D80A6776842",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "shell",
+    "skills": false,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "none",
+      "s": 0.0
+    }
+  },
+  "effort_injected": 4,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

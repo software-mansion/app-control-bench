@@ -1,0 +1,52 @@
+{
+  "cell": "haiku55_low:none",
+  "model": "haiku55_low",
+  "tool": "none",
+  "task": "bsky-14",
+  "app": "bluesky",
+  "kind": "nav",
+  "nav_category": "search",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 14.7,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 5,
+  "tool_names": [
+    "read",
+    "shell",
+    "read",
+    "shell",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795239392,
+  "golden": {
+    "name": "bench-golden-bsky-v6",
+    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+  },
+  "clone_udid": "6C100EF1-3662-414E-BB12-03AEA724AF6F",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "shell",
+    "skills": false,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.122.0",
+    "app_pinned": "1.122.0",
+    "preload": {
+      "state": "none",
+      "s": 0.0
+    }
+  },
+  "effort_injected": 4,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

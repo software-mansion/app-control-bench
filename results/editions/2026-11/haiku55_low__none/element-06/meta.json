@@ -1,0 +1,51 @@
+{
+  "cell": "haiku55_low:none",
+  "model": "haiku55_low",
+  "tool": "none",
+  "task": "element-06",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "menu-drawer",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 7.8,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 4,
+  "tool_names": [
+    "shell",
+    "shell",
+    "read",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795258823,
+  "golden": {
+    "name": "bench-element-v4",
+    "udid": "DDA87E02-1323-402E-83FF-4CE77B3EC6C2"
+  },
+  "clone_udid": "7A8AF426-0BF3-4A99-9F70-7938CF3D99D6",
+  "sandboxed": true,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "shell",
+    "skills": false,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": null,
+    "tool_pinned": null,
+    "app": "1.11.40",
+    "app_pinned": "1.11.40",
+    "preload": {
+      "state": "none",
+      "s": 0.0
+    }
+  },
+  "effort_injected": 4,
+  "unknown_tool_calls": 0,
+  "mcp_direct_calls": 0
+}

@@ -1,0 +1,55 @@
+{
+  "cell": "gpt6luna_low:agent-device",
+  "model": "gpt6luna_low",
+  "tool": "agent-device",
+  "task": "element-27",
+  "app": "element",
+  "kind": "interact",
+  "nav_category": "compose",
+  "needs_auth": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_s": 19.8,
+  "provider_retries": 0,
+  "provider_retry_s": 0.0,
+  "n_tool_calls": 8,
+  "tool_names": [
+    "skill",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell",
+    "shell"
+  ],
+  "stderr_tail": "",
+  "ts": 1795220666,
+  "golden": {
+    "name": "bench-element-v4",
+    "udid": "DDA87E02-1323-402E-83FF-4CE77B3EC6C2"
+  },
+  "clone_udid": "1BFEE647-0A76-444D-8CA4-A15A51AF0514",
+  "sandboxed": false,
+  "versions": {
+    "schema": 2,
+    "edition": "2026-11",
+    "harness": "isolation-v5",
+    "surface": "cli",
+    "skills": true,
+    "opencode": "2.3.0",
+    "opencode_pinned": "2.3.0",
+    "tool_loading": "code-mode",
+    "tool": "0.21.40",
+    "tool_pinned": "0.21.40",
+    "app": "1.11.40",
+    "app_pinned": "1.11.40",
+    "preload": {
+      "state": "present",
+      "s": 0.1
+    }
+  },
+  "effort_injected": 9,
+  "mcp_direct_calls": 0,
+  "unknown_tool_calls": 0
+}
