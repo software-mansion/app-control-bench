@@ -9,26 +9,30 @@
   "needs_auth": true,
   "returncode": 0,
   "timed_out": false,
-  "wall_s": 15.5,
+  "wall_s": 18.0,
   "provider_retries": 0,
   "provider_retry_s": 0.0,
-  "n_tool_calls": 7,
+  "n_tool_calls": 11,
   "tool_names": [
+    "read",
+    "shell",
     "shell",
     "shell",
     "read",
+    "read",
     "shell",
     "read",
+    "shell",
     "shell",
     "read"
   ],
   "stderr_tail": "",
-  "ts": 1795238846,
+  "ts": 1795513389,
   "golden": {
-    "name": "bench-golden-bsky-v6",
-    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+    "name": "bench-golden-bsky-v7",
+    "udid": "25AD7234-75B7-4CF4-8E6B-D5D71044E537"
   },
-  "clone_udid": "4ECD08A6-79F8-4A52-B7AF-FC6642E49BC2",
+  "clone_udid": "058B2028-0505-4694-B9D1-FDD70A1523C7",
   "sandboxed": true,
   "versions": {
     "schema": 2,
@@ -48,7 +52,7 @@
       "s": 0.0
     }
   },
-  "effort_injected": 6,
+  "effort_injected": 7,
   "unknown_tool_calls": 0,
   "mcp_direct_calls": 0
 }

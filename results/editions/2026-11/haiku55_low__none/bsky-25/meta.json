@@ -9,23 +9,23 @@
   "needs_auth": true,
   "returncode": 0,
   "timed_out": false,
-  "wall_s": 8.2,
+  "wall_s": 10.8,
   "provider_retries": 0,
   "provider_retry_s": 0.0,
   "n_tool_calls": 4,
   "tool_names": [
+    "shell",
+    "shell",
     "read",
-    "shell",
-    "shell",
     "shell"
   ],
   "stderr_tail": "",
-  "ts": 1795429898,
+  "ts": 1795514443,
   "golden": {
     "name": "bench-golden-bsky-v7",
     "udid": "25AD7234-75B7-4CF4-8E6B-D5D71044E537"
   },
-  "clone_udid": "6E537CA0-DCDE-4A2C-9181-A1E3F6E19E48",
+  "clone_udid": "5EA71DE5-CF37-4DAC-899A-6E6038087D9C",
   "sandboxed": true,
   "versions": {
     "schema": 2,
