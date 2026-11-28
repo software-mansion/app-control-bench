@@ -1,7 +1,7 @@
 {
   "verdict": "fail",
   "confidence": 1.0,
-  "reason": "The final screenshot still shows the Following timeline with Feeds unselected, not the requested Feeds screen.",
+  "reason": "The screenshot shows Following selected with the home timeline visible, while the Feeds tab remains unopened.",
   "judge_model": "gpt-6.1-sol",
   "cell": "haiku55_low:none",
   "task": "bsky-01",

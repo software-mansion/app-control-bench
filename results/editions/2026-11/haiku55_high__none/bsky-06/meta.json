@@ -9,23 +9,29 @@
   "needs_auth": true,
   "returncode": 0,
   "timed_out": false,
-  "wall_s": 85.4,
+  "wall_s": 146.6,
   "provider_retries": 0,
   "provider_retry_s": 0.0,
-  "n_tool_calls": 17,
+  "n_tool_calls": 23,
   "tool_names": [
     "shell",
-    "shell",
     "read",
-    "webfetch",
     "shell",
     "shell",
     "shell",
     "shell",
-    "read",
+    "shell",
     "shell",
     "read",
     "shell",
+    "shell",
+    "read",
+    "shell",
+    "read",
+    "shell",
+    "shell",
+    "shell",
+    "write",
     "write",
     "write",
     "shell",
@@ -33,12 +39,12 @@
     "read"
   ],
   "stderr_tail": "",
-  "ts": 1795240864,
+  "ts": 1795515012,
   "golden": {
-    "name": "bench-golden-bsky-v6",
-    "udid": "27BF67EB-CFF7-4FC0-94EF-56661AAD9798"
+    "name": "bench-golden-bsky-v7",
+    "udid": "25AD7234-75B7-4CF4-8E6B-D5D71044E537"
   },
-  "clone_udid": "16742830-FD64-4A60-9C58-E89B5CE1B573",
+  "clone_udid": "1D0AF6D0-B96C-454D-84DF-0CEC2509DABE",
   "sandboxed": true,
   "versions": {
     "schema": 2,
@@ -58,7 +64,7 @@
       "s": 0.0
     }
   },
-  "effort_injected": 16,
+  "effort_injected": 22,
   "unknown_tool_calls": 0,
   "mcp_direct_calls": 0
 }

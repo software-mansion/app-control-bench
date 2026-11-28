@@ -140,6 +140,16 @@ imperative to use it. ([details](harness.md#the-none-preamble-neutral-not-bare))
   was cleared and the no-tool pass re-run. The harness stamp was not bumped, because it would have made the
   unaffected tool cells re-run as well; the fix is recorded here and in each new run's `env.json`.
 
+  The re-run started on 2026-11-24 and was stopped that day, part-way through gpt-6-luna high on Bluesky,
+  because the host was needed for other work. Finished runs were kept, and the run cut off mid-way was
+  re-run. Restarting the Bluesky dev-env gave `bench.test` a new DID and signed the app out, so the
+  Bluesky golden was re-made as `bench-golden-bsky-v8` (signed in fresh, runners unchanged) before the
+  re-run resumed on 2026-11-27; it finished on 2026-11-28. One run, haiku-5.5 high on `element-30`, lost
+  the simulator's display part-way through (`simctl io` failed with "Timeout waiting for screen
+  surfaces"). The agent stalled until the time limit and no final screenshot could be taken, so it was
+  re-run as an unfinished run, and the first attempt was quarantined. All 240 new runs have a
+  `TMPDIR` of their own, which was removed at teardown.
+
 ## Decisions that are settled
 
 - **Native, not web.** (v1)

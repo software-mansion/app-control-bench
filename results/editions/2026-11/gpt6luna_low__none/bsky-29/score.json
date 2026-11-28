@@ -1,7 +1,7 @@
 {
   "verdict": "fail",
-  "confidence": 1.0,
-  "reason": "The screenshot shows a signed-out Discover feed with an \u201cOpen in Bluesky?\u201d dialog, not a published post containing the requested text.",
+  "confidence": 0.99,
+  "reason": "The screenshot shows an \u201cOpen in Bluesky?\u201d dialog over the feed, with no published post containing the requested text.",
   "judge_model": "gpt-6.1-sol",
   "cell": "gpt6luna_low:none",
   "task": "bsky-29",

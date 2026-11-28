@@ -1,7 +1,7 @@
 {
   "verdict": "fail",
-  "confidence": 0.99,
-  "reason": "The final screen remains on All chats, with no Project Phoenix timeline or sent \"status update\" message visible.",
+  "confidence": 1.0,
+  "reason": "The final screenshot remains on All chats, with no Project Phoenix room opened or sent \u201cstatus update\u201d message visible.",
   "judge_model": "gpt-6.1-sol",
   "cell": "gpt6luna_low:none",
   "task": "element-28",
